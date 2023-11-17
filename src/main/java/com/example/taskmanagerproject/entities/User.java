@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Set;
@@ -18,4 +19,14 @@ public class User {
   private String confirmPassword;
   private Set<Role> userRoles;
   private List<Task> userTasks;
+
+  @ToString.Include(name = "password")
+  private String maskPassword() {
+    return "********";
+  }
+
+  @ToString.Include(name = "confirmPassword")
+  private String maskConfirmPassword() {
+    return "********";
+  }
 }
