@@ -14,5 +14,5 @@ public class Task {
   private String title;
   private String description;
   private TaskStatus taskStatus;
-  private LocalDateTime expirationDateTime;
+  private LocalDateTime expirationDate;
 }
