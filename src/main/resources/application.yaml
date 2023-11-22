@@ -8,3 +8,11 @@ spring:
     init:
       mode: never #always
       continue-on-error: false
+
+
+
+
+jwt:
+ token:
+  secret: bXkgZmF2b3VyaXRlIHRhc2tfYXBwbGljYXRpb24=
+  expired: 3600000
