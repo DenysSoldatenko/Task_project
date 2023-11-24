@@ -12,8 +12,4 @@ public interface AuthenticationService {
   AuthenticationResponse registerUser(UserDto request);
 
   AuthenticationResponse authenticate(AuthenticationRequest request);
-
-  void authenticateUser(AuthenticationRequest request);
-
-  AuthenticationResponse createAuthenticationResponse(UserDto user);
 }

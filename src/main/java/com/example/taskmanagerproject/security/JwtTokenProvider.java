@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +56,7 @@ public class JwtTokenProvider {
    * @param roles    The roles associated with the user.
    * @return A JWT token as a String.
    */
-  public String createToken(String username, List<Role> roles) {
+  public String createToken(String username, Set<Role> roles) {
 
     Claims claims = Jwts.claims().setSubject(username);
     claims.put("roles", getRoleNames(roles));
@@ -108,7 +111,7 @@ public class JwtTokenProvider {
     return !claims.getBody().getExpiration().before(new Date());
   }
 
-  private List<String> getRoleNames(List<Role> userRoles) {
-    return userRoles.stream().map(Role::name).toList();
+  private Set<String> getRoleNames(Set<Role> userRoles) {
+    return userRoles.stream().map(Role::name).collect(Collectors.toSet());
   }
 }
