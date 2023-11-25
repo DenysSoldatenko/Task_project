@@ -19,41 +19,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-  private final UserService userService;
-  private final TaskService taskService;
-
-  private final UserMapper userMapper;
-  private final TaskMapper taskMapper;
-
   @PutMapping
   public UserDto update(@Valid @RequestBody UserDto dto) {
-    User user = userMapper.toEntity(dto);
-    User updatedUser = userService.updateUser(user);
-    return userMapper.toDto(updatedUser);
+    return null;
   }
 
   @GetMapping("/{id}")
   public UserDto getById(@PathVariable Long id) {
-    User user = userService.getUserById(id);
-    return userMapper.toDto(user);
+    return null;
   }
 
   @DeleteMapping("/{id}")
   public void deleteById(@PathVariable Long id) {
-    userService.deleteUserById(id);
+    System.out.println("null");
   }
 
   @GetMapping("/{id}/tasks")
   public List<TaskDto> getTasksByUserId(@PathVariable Long id) {
-    List<Task> tasks = taskService.getAllTasksByUserId(id);
-    return tasks.stream().map(taskMapper::toDto).toList();
+    return null;
   }
 
   @PostMapping("/{id}/tasks")
   public TaskDto createTask(@PathVariable Long id,
                             @Valid @RequestBody TaskDto dto) {
-    Task task = taskMapper.toEntity(dto);
-    Task createdTask = taskService.createTask(task, id);
-    return taskMapper.toDto(createdTask);
+    return null;
   }
 }

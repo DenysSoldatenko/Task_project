@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
+import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.entities.Task;
 import org.springframework.data.repository.query.Param;
 
@@ -14,9 +15,9 @@ public interface TaskRepository {
 
   void assignTaskToUserById(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
-  void updateTask(Task task);
+  Task updateTask(TaskDto task);
 
-  void createTask(Task task);
+  Task createTask(TaskDto task);
 
   void deleteTaskById(Long taskId);
 }
