@@ -1,18 +1,20 @@
 package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.TaskDto;
+import com.example.taskmanagerproject.entities.Task;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskService {
 
-  TaskDto getTaskById(Long taskId);
+  Task getById(Long id);
 
-  List<TaskDto> getAllTasksByUserId(Long userId);
+  List<Task> getAllByUserId(Long id);
 
-  TaskDto updateTask(TaskDto task);
+  Task update(Task task);
 
-  TaskDto createTask(TaskDto task, Long userId);
+  Task create(Task task, Long userId);
 
-  void deleteTaskById(Long taskId);
+  void delete(Long id);
 }

@@ -1,8 +1,6 @@
 package com.example.taskmanagerproject.entities;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
@@ -11,7 +9,9 @@ import java.util.Set;
  * Represents a user entity in the project.
  */
 @Data
-@Builder
+//@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
   private Long id;

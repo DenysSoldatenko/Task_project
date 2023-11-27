@@ -8,17 +8,18 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-  Optional<User> getUserById(Long userId);
+  Optional<User> findById(Long id);
 
-  Optional<User> getUserByUsername(String username);
+  Optional<User> findByUsername(String username);
 
-  void updateUser(User user);
+  void update(User user);
 
-  void createUser(User user);
+  void create(User user);
 
   void insertUserRole(@Param("userId") Long userId, @Param("role") Role role);
 
   boolean isTaskOwner(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
-  void deleteUserById(Long userId);
+  void delete(Long id);
+
 }

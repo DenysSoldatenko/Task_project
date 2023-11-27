@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 /**
  * Factory class for creating User instances from registration requests.
  */
@@ -25,12 +27,12 @@ public class UserFactory {
    * @return A new User instance.
    */
   public User createUserFromRequest(UserDto request) {
-    return User.builder()
-    .fullName(request.fullName())
-    .username(request.username())
-    .password(passwordEncoder.encode(request.password()))
-    .confirmPassword(passwordEncoder.encode(request.confirmPassword()))
-    .userRoles(singleton(ROLE_USER))
-    .build();
+    User user = new User();
+    user.setFullName(request.fullName());
+    user.setUsername(request.username());
+    user.setPassword(passwordEncoder.encode(request.password()));
+    user.setConfirmPassword(passwordEncoder.encode(request.confirmPassword()));
+    user.setUserRoles(Collections.singleton(ROLE_USER)); // Assuming ROLE_USER is defined elsewhere
+    return user;
   }
 }

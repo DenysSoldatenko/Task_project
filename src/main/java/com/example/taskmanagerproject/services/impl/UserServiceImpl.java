@@ -23,14 +23,14 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(readOnly = true)
   public User getUserById(Long userId) {
-    return userRepository.getUserById(userId)
+    return userRepository.findById(userId)
       .orElseThrow(() -> new UserNotFoundException("User not found."));
   }
 
   @Override
   @Transactional(readOnly = true)
   public User getUserByUsername(String username) {
-    return userRepository.getUserByUsername(username)
+    return userRepository.findByUsername(username)
       .orElseThrow(() -> new UserNotFoundException("User not found."));
   }
 
@@ -38,21 +38,21 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public User updateUser(User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.updateUser(user);
+    userRepository.update(user);
     return user;
   }
 
   @Override
   @Transactional
   public User createUser(User user) {
-    if (userRepository.getUserByUsername(user.getUsername()).isPresent()) {
+    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
       throw new IllegalStateException("User already exists.");
     }
     if (!user.getPassword().equals(user.getConfirmPassword())) {
       throw new IllegalStateException("Password and password confirmation do not match.");
     }
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.createUser(user);
+    userRepository.create(user);
     Set<Role> roles = Set.of(Role.ROLE_USER);
     userRepository.insertUserRole(user.getId(), Role.ROLE_USER);
     user.setUserRoles(roles);
@@ -68,6 +68,6 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public void deleteUserById(Long userId) {
-    userRepository.deleteUserById(userId);
+    userRepository.delete(userId);
   }
 }

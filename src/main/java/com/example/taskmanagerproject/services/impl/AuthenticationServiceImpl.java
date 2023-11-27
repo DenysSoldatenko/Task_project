@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
     authenticateUser(request);
 
-    User user = userRepository.getUserByUsername(request.username())
+    User user = userRepository.findByUsername(request.username())
       .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
     return createAuthenticationResponse(user);
