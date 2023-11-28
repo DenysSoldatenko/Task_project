@@ -1,40 +1,44 @@
 package com.example.taskmanagerproject.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
  * A filter for processing JWT tokens in incoming requests
  * and setting the authentication context.
  */
-@Component
 @AllArgsConstructor
 public class JwtTokenFilter extends GenericFilterBean {
 
   private final JwtTokenProvider jwtTokenProvider;
 
   @Override
-  public void doFilter(ServletRequest req,
-                       ServletResponse res,
-                       FilterChain filterChain) throws IOException, ServletException {
-
-    String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-    if (token != null && jwtTokenProvider.validateToken(token)) {
-      Authentication auth = jwtTokenProvider.getAuthentication(token);
-
-      if (auth != null) {
-        SecurityContextHolder.getContext().setAuthentication(auth);
+  @SneakyThrows
+  public void doFilter(final ServletRequest servletRequest,
+                       final ServletResponse servletResponse,
+                       final FilterChain filterChain) {
+    String bearerToken = extractBearerToken((HttpServletRequest) servletRequest);
+    if (bearerToken != null && jwtTokenProvider.validateToken(bearerToken)) {
+      Authentication authentication = jwtTokenProvider.getAuthentication(bearerToken);
+      if (authentication != null) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     }
-    filterChain.doFilter(req, res);
+    filterChain.doFilter(servletRequest, servletResponse);
+  }
+
+  private String extractBearerToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+      return bearerToken.substring(7);
+    }
+    return null;
   }
 }

@@ -1,15 +1,12 @@
 package com.example.taskmanagerproject.utils;
 
-import static com.example.taskmanagerproject.entities.Role.ROLE_USER;
-import static java.util.Collections.singleton;
-
 import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.entities.Role;
 import com.example.taskmanagerproject.entities.User;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
 
 /**
  * Factory class for creating User instances from registration requests.
@@ -32,7 +29,8 @@ public class UserFactory {
     user.setUsername(request.username());
     user.setPassword(passwordEncoder.encode(request.password()));
     user.setConfirmPassword(passwordEncoder.encode(request.confirmPassword()));
-    user.setUserRoles(Collections.singleton(ROLE_USER)); // Assuming ROLE_USER is defined elsewhere
+    user.setUserRoles(Collections.singleton(Role.ROLE_USER));
+
     return user;
   }
 }

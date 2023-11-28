@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
+
 import com.example.taskmanagerproject.dtos.AuthenticationRequest;
 import com.example.taskmanagerproject.dtos.AuthenticationResponse;
 import com.example.taskmanagerproject.dtos.UserDto;
@@ -7,13 +9,16 @@ import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.AuthenticationService;
-import com.example.taskmanagerproject.utils.UserFactory;
+import com.example.taskmanagerproject.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the AuthenticationService interface.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -21,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
-  private final UserFactory userFactory;
+  private final UserService userService;
 
   /**
    * Registers a new user based on the provided registration request.
@@ -30,9 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
    * @return AuthenticationResponse containing the JWT token.
    */
   public AuthenticationResponse registerUser(UserDto request) {
-    User user = userFactory.createUserFromRequest(request);
-    //userRepository.createUser(user);
-
+    User user = userService.createUser(request);
     return createAuthenticationResponse(user);
   }
 
@@ -46,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     authenticateUser(request);
 
     User user = userRepository.findByUsername(request.username())
-      .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     return createAuthenticationResponse(user);
   }
@@ -58,7 +61,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   private AuthenticationResponse createAuthenticationResponse(User user) {
-    String jwtToken = jwtTokenProvider.createToken(user.getUsername(), user.getUserRoles());
+    String jwtToken = jwtTokenProvider.createAccessToken(
+        user.getId(), user.getUsername(), user.getUserRoles()
+    );
     return new AuthenticationResponse(jwtToken);
   }
 }

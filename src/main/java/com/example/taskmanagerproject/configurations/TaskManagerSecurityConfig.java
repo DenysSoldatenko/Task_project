@@ -1,9 +1,11 @@
 package com.example.taskmanagerproject.configurations;
 
 import com.example.taskmanagerproject.security.JwtTokenFilter;
+import com.example.taskmanagerproject.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,13 +18,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for Task Manager security.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class TaskManagerSecurityConfig {
 
-  private final JwtTokenFilter jwtTokenFilter;
+  private final JwtTokenProvider tokenProvider;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -31,24 +36,36 @@ public class TaskManagerSecurityConfig {
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-    throws Exception {
+      throws Exception {
     return config.getAuthenticationManager();
   }
 
+  /**
+   * Configures the security filter chain.
+   *
+   * @param http The HTTP security object.
+   * @return The security filter chain.
+   * @throws Exception If an error occurs while configuring the security filter chain.
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-      .httpBasic(AbstractHttpConfigurer::disable)
-      .csrf(AbstractHttpConfigurer::disable)
-      .authorizeHttpRequests(
-        authorizeRequests ->
-          authorizeRequests
-            .requestMatchers("/api/v*/auth/**").permitAll()
-            .anyRequest().authenticated()
-      )
-      //.authenticationProvider(authenticationProvider())
-      .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-      .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        .csrf(AbstractHttpConfigurer::disable)
+        //.cors(AbstractHttpConfigurer::disable)
+        //.anonymous(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+          authorizeRequests ->
+            authorizeRequests
+              .requestMatchers("/api/v*/auth/**").permitAll()
+              .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session
+          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .addFilterBefore(new JwtTokenFilter(tokenProvider),
+          UsernamePasswordAuthenticationFilter.class
+        );
 
     return http.build();
   }

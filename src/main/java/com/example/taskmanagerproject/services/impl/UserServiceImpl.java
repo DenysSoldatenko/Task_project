@@ -1,62 +1,70 @@
 package com.example.taskmanagerproject.services.impl;
 
-import com.example.taskmanagerproject.entities.Role;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
+
+import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
-import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
+import com.example.taskmanagerproject.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.UserService;
+import com.example.taskmanagerproject.utils.UserFactory;
+import com.example.taskmanagerproject.utils.UserValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
+/**
+ * Implementation of the UserService interface.
+ */
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final UserMapper userMapper;
+  private final UserFactory userFactory;
+  private final UserValidator userValidator;
 
   @Override
   @Transactional(readOnly = true)
-  public User getUserById(Long userId) {
-    return userRepository.findById(userId)
-      .orElseThrow(() -> new UserNotFoundException("User not found."));
+  public UserDto getUserById(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    return userMapper.toDto(user);
   }
 
   @Override
   @Transactional(readOnly = true)
   public User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
-      .orElseThrow(() -> new UserNotFoundException("User not found."));
+      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
   }
 
   @Override
   @Transactional
-  public User updateUser(User user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.update(user);
-    return user;
+  public UserDto updateUser(UserDto userDto, Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+    user.setFullName(userDto.fullName());
+    user.setUsername(userDto.username());
+    user.setPassword(passwordEncoder.encode(userDto.password()));
+    user.setConfirmPassword(passwordEncoder.encode(userDto.confirmPassword()));
+
+    User updatedUser = userRepository.save(user);
+    return userMapper.toDto(updatedUser);
   }
 
   @Override
   @Transactional
-  public User createUser(User user) {
-    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-      throw new IllegalStateException("User already exists.");
-    }
-    if (!user.getPassword().equals(user.getConfirmPassword())) {
-      throw new IllegalStateException("Password and password confirmation do not match.");
-    }
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.create(user);
-    Set<Role> roles = Set.of(Role.ROLE_USER);
-    userRepository.insertUserRole(user.getId(), Role.ROLE_USER);
-    user.setUserRoles(roles);
-    return user;
+  public User createUser(UserDto userDto) {
+    userValidator.validateUserDto(userDto);
+    User createdUser = userFactory.createUserFromRequest(userDto);
+    userRepository.save(createdUser);
+    return createdUser;
   }
 
   @Override
@@ -66,8 +74,18 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public UserDto getTaskAuthor(Long taskId) {
+    User user = userRepository.findTaskAuthorByTaskId(taskId)
+        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    return userMapper.toDto(user);
+  }
+
+  @Override
   @Transactional
   public void deleteUserById(Long userId) {
-    userRepository.delete(userId);
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    userRepository.delete(user);
   }
 }

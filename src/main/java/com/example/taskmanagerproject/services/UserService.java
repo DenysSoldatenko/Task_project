@@ -1,18 +1,25 @@
 package com.example.taskmanagerproject.services;
 
+import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
 
+/**
+ * Service interface for managing users.
+ */
 public interface UserService {
 
-  User getUserById(Long userId);
+  UserDto getUserById(Long userId);
 
   User getUserByUsername(String username);
 
-  User updateUser(User user);
+  UserDto updateUser(UserDto user, Long userId);
 
-  User createUser(User user);
+  User createUser(UserDto user);
 
   boolean isUserTaskOwner(Long userId, Long taskId);
 
+  UserDto getTaskAuthor(Long taskId);
+
   void deleteUserById(Long userId);
 }
+

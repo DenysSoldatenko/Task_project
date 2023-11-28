@@ -1,23 +1,37 @@
 package com.example.taskmanagerproject.repositories;
 
 import com.example.taskmanagerproject.entities.Task;
+import java.sql.Timestamp;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
+/**
+ * Repository interface for managing Task entities.
+ */
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-public interface TaskRepository {
+  @Query(value = """
+      SELECT * FROM tasks t
+      JOIN users_tasks ut ON ut.task_id = t.id
+      WHERE ut.user_id = :userId
+      """, nativeQuery = true)
+  List<Task> findAllTasksByUserId(@Param("userId") Long userId);
 
-  Optional<Task> findById(Long id);
+  @Query(value = """
+      SELECT * FROM tasks t
+      WHERE t.expiration_date is not null
+      AND t.expiration_date between :start and :end
+      """, nativeQuery = true)
+  List<Task> findAllSoonExpiringTasks(@Param("start") Timestamp start, @Param("end") Timestamp end);
 
-  List<Task> findAllByUserId(Long userId);
-
-  void assignToUserById(@Param("taskId") Long taskId, @Param("userId") Long userId);
-
-  void update(Task task);
-
-  void create(Task task);
-
-  void delete(Long id);
-
+  //@Transactional
+  @Modifying
+  @Query(value = """
+      INSERT INTO users_tasks (user_id, task_id)
+      VALUES (:userId, :taskId)
+      """, nativeQuery = true)
+  void assignTaskToUser(@Param("userId") Long userId, @Param("taskId") Long taskId);
 }

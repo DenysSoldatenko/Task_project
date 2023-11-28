@@ -3,32 +3,26 @@ package com.example.taskmanagerproject.security;
 import com.example.taskmanagerproject.entities.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import lombok.Data;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
- * Provides utility methods for working with JWT tokens.
+ * Service class for managing JWT tokens.
  */
-@Data
-@Component
+@Service
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
   private final UserDetailsService userDetailsService;
@@ -39,79 +33,77 @@ public class JwtTokenProvider {
   @Value("${jwt.token.expired}")
   private long validityInMilliseconds;
 
-  @Autowired
-  public JwtTokenProvider(UserDetailsService userDetailsService) {
-    this.userDetailsService = userDetailsService;
-  }
+  private SecretKey key;
 
   @PostConstruct
-  protected void init() {
-    secret = Base64.getEncoder().encodeToString(secret.getBytes());
+  public void init() {
+    this.key = Keys.hmacShaKeyFor(secret.getBytes());
   }
 
   /**
-   * Creates a JWT token for the given username and roles.
+   * Creates an access token for the specified user.
    *
-   * @param username The username for which the token is created.
-   * @param roles    The roles associated with the user.
-   * @return A JWT token as a String.
+   * @param userId   The ID of the user.
+   * @param username The username of the user.
+   * @param roles    The roles assigned to the user.
+   * @return The generated access token.
    */
-  public String createToken(String username, Set<Role> roles) {
+  public String createAccessToken(final Long userId, final String username, final Set<Role> roles) {
 
-    Claims claims = Jwts.claims().setSubject(username);
-    claims.put("roles", getRoleNames(roles));
+    Claims claims = Jwts.claims()
+        .subject(username)
+        .add("id", userId)
+        .add("roles", resolveRoles(roles))
+        .build();
 
     Date now = new Date();
     Date validity = new Date(now.getTime() + validityInMilliseconds);
 
     return Jwts.builder()
-    .setClaims(claims)
-    .setIssuedAt(now)
-    .setExpiration(validity)
-    .signWith(SignatureAlgorithm.HS256, secret)
-    .compact();
+      .claims(claims)
+      .expiration(validity)
+      .signWith(key)
+      .compact();
   }
 
-  public Authentication getAuthentication(String token) {
-    UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+  private List<String> resolveRoles(final Set<Role> roles) {
+    return roles.stream()
+      .map(Enum::name)
+      .toList();
   }
 
   /**
-   * Retrieves the username from a JWT token.
+   * Validates the provided JWT token.
    *
-   * @param token The JWT token as a String.
-   * @return The username extracted from the token.
+   * @param token The JWT token to validate.
+   * @return true if the token is valid, false otherwise.
    */
-  public String getUsername(String token) {
+  public boolean validateToken(final String token) {
+    Jws<Claims> claims = Jwts.parser()
+        .verifyWith(key)
+        .build()
+        .parseSignedClaims(token);
+    return claims.getPayload().getExpiration().after(new Date());
+  }
+
+  private String getUsername(final String token) {
     return Jwts.parser()
-    .setSigningKey(secret)
-    .parseClaimsJws(token)
-    .getBody()
-    .getSubject();
+      .verifyWith(key)
+      .build()
+      .parseSignedClaims(token)
+      .getPayload()
+      .getSubject();
   }
 
   /**
-   * Resolves a JWT token from the request.
+   * Retrieves the authentication information from the provided JWT token.
    *
-   * @param req The HttpServletRequest object.
-   * @return The JWT token as a String, or null if not found.
+   * @param token The JWT token.
+   * @return The authentication information extracted from the token.
    */
-  public String resolveToken(HttpServletRequest req) {
-    String bearerToken = req.getHeader("Authorization");
-    if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
-      return bearerToken.substring(7);
-    }
-    return null;
-  }
-
-  @SneakyThrows({JwtException.class, IllegalArgumentException.class})
-  public boolean validateToken(String token) {
-    Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-    return !claims.getBody().getExpiration().before(new Date());
-  }
-
-  private Set<String> getRoleNames(Set<Role> userRoles) {
-    return userRoles.stream().map(Role::name).collect(Collectors.toSet());
+  public Authentication getAuthentication(final String token) {
+    String username = getUsername(token);
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
 }
