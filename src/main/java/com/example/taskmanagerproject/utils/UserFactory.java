@@ -30,7 +30,6 @@ public class UserFactory {
     user.setPassword(passwordEncoder.encode(request.password()));
     user.setConfirmPassword(passwordEncoder.encode(request.confirmPassword()));
     user.setUserRoles(Collections.singleton(Role.ROLE_USER));
-
     return user;
   }
 }

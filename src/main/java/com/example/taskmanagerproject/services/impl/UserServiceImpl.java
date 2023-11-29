@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public void deleteUserById(Long userId) {
     User user = userRepository.findById(userId)
-      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     userRepository.delete(user);
   }
 }
