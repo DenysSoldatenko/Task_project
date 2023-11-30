@@ -4,11 +4,12 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-  sql:
-    init:
-      mode: never #always
-      continue-on-error: false
-
+  liquibase:
+    change-log: classpath:liquibase/db.changelog.yaml
+    enabled: true
+    default-schema: task_list
+  jpa:
+    open-in-view: false
 
 
 jwt:

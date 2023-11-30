@@ -10,6 +10,7 @@ import com.example.taskmanagerproject.repositories.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * Configuration class for setting up initial data in the application.
  */
 //@Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class DataSetupConfig {
 
@@ -26,9 +28,18 @@ public class DataSetupConfig {
   private final TaskRepository taskRepository;
   private final PasswordEncoder passwordEncoder;
 
+  /**
+   * Sets up initial data for the application.
+   *
+   * @return A CommandLineRunner for setting up initial data.
+   */
   @Bean
   public CommandLineRunner setUpData() {
-    return args -> generateUsers();
+    return args -> {
+      log.info("Setting up initial data...");
+      generateUsers();
+      log.info("Initial data setup completed");
+    };
   }
 
   private void generateUsers() {
