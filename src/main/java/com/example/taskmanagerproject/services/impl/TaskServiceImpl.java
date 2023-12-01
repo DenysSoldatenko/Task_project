@@ -64,9 +64,9 @@ public class TaskServiceImpl implements TaskService {
     task.setTaskStatus(
         taskDto.taskStatus() != null ? taskDto.taskStatus() : TaskStatus.IN_PROGRESS
     );
-    taskRepository.assignTaskToUser(userId, task.getId());
 
     Task createdTask = taskRepository.save(task);
+    taskRepository.assignTaskToUser(userId, task.getId());
     return taskMapper.toDto(createdTask);
   }
 

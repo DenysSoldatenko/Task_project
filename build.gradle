@@ -33,6 +33,11 @@ dependencies {
 	implementation 'net.datafaker:datafaker:2.1.0'
 	implementation 'org.liquibase:liquibase-core:4.25.1'
 
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"){
+		exclude group: "io.swagger.core.v3", module:"swagger-annotations"
+	}
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+
 	runtimeOnly 'org.postgresql:postgresql:42.7.1'
 
 	compileOnly 'org.projectlombok:lombok:1.18.30'

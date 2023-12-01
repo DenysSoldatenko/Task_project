@@ -29,6 +29,15 @@ public class TaskManagerSecurityConfig {
 
   private final JwtTokenProvider tokenProvider;
 
+  private static final String[] PUBLIC_ROUTES = {
+    "/api/v*/auth/**",
+    "/v3/api-docs/**",
+    "/swagger-ui/**",
+    "/swagger-resources/**",
+    "/swagger-ui.html",
+    "/webjars/**"
+  };
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -51,13 +60,13 @@ public class TaskManagerSecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
-        //.cors(AbstractHttpConfigurer::disable)
-        //.anonymous(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
           authorizeRequests ->
             authorizeRequests
-              .requestMatchers("/api/v*/auth/**").permitAll()
+              .requestMatchers(PUBLIC_ROUTES).permitAll()
               .anyRequest().authenticated()
         )
         .sessionManagement(session -> session

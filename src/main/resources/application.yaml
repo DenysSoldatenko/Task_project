@@ -11,8 +11,10 @@ spring:
   jpa:
     open-in-view: false
 
-
 jwt:
  token:
   secret: bXkgZmF2b3VyaXRlIHRhc2tfYXBwbGljYXRpb24=
   expired: 3600000
+
+springdoc:
+  override-with-generic-response: false
