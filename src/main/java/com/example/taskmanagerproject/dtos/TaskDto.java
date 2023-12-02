@@ -21,7 +21,7 @@ public record TaskDto(
     @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters long!")
     @Schema(
       description = "The title of the task",
-      example = "Buy groceries2",
+      example = "Buy groceries",
       maxLength = 100
     )
     String title,
@@ -37,7 +37,6 @@ public record TaskDto(
     String description,
 
     @NotNull(message = "Task status cannot be null!")
-    @NotBlank(message = "Task status cannot be blank!")
     @Schema(
       description = "The status of the task",
       example = "NOT_STARTED"
@@ -45,7 +44,6 @@ public record TaskDto(
     TaskStatus taskStatus,
 
     @NotNull(message = "Expiration date and time cannot be null!")
-    @NotBlank(message = "Task status cannot be blank!")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
     @Schema(
       description = "The expiration date and time of the task",

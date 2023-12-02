@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,23 +28,25 @@ public class TaskController {
 
   private final TaskService taskService;
 
-  @PutMapping("/{id}")
-  @Operation(
-      summary = "Update an existing task",
-      description = "Update an existing task by its ID"
-  )
-  public ResponseEntity<TaskDto> updateTask(@Valid @RequestBody TaskDto taskDto,
-                                            @PathVariable(name = "id") Long id) {
-    return new ResponseEntity<>(taskService.updateTask(taskDto, id), HttpStatus.OK);
-  }
-
   @GetMapping("/{id}")
   @Operation(
       summary = "Get a task by ID",
       description = "Retrieve a task by its ID"
   )
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public ResponseEntity<TaskDto> getTaskById(@PathVariable(name = "id") Long id) {
     return new ResponseEntity<>(taskService.getTaskById(id), HttpStatus.OK);
+  }
+
+  @PutMapping("/{id}")
+  @Operation(
+      summary = "Update an existing task",
+      description = "Update an existing task by its ID"
+  )
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
+  public ResponseEntity<TaskDto> updateTask(@Valid @RequestBody TaskDto taskDto,
+                                            @PathVariable(name = "id") Long id) {
+    return new ResponseEntity<>(taskService.updateTask(taskDto, id), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
@@ -51,6 +54,7 @@ public class TaskController {
       summary = "Delete a task by ID",
       description = "Delete a task by its ID"
   )
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public ResponseEntity<String> deleteTaskById(@PathVariable(name = "id") Long id) {
     taskService.deleteTaskById(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

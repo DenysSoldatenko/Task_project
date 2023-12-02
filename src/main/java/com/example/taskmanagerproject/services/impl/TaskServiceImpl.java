@@ -45,12 +45,12 @@ public class TaskServiceImpl implements TaskService {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
 
-    task.setTitle(task.getTitle());
-    task.setDescription(task.getDescription());
+    task.setTitle(taskDto.title());
+    task.setDescription(taskDto.description());
     task.setTaskStatus(
         taskDto.taskStatus() != null ? taskDto.taskStatus() : TaskStatus.IN_PROGRESS
     );
-    task.setExpirationDate(task.getExpirationDate());
+    task.setExpirationDate(taskDto.expirationDate());
 
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);

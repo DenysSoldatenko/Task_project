@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class UserController {
       summary = "Update user",
       description = "Update user information by ID"
   )
+  @PreAuthorize("@expressionService.canAccessUser(#id)")
   public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
                                             @PathVariable(name = "id") Long id) {
     return new ResponseEntity<>(userService.updateUser(userDto, id), HttpStatus.OK);
@@ -47,6 +49,7 @@ public class UserController {
       summary = "Get user by ID",
       description = "Retrieve user information by ID"
   )
+  @PreAuthorize("@expressionService.canAccessUser(#id)")
   public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
     return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
   }
@@ -56,6 +59,7 @@ public class UserController {
       summary = "Delete user by ID",
       description = "Delete user by ID"
   )
+  @PreAuthorize("@expressionService.canAccessUser(#id)")
   public ResponseEntity<Void> deleteUserById(@PathVariable(name = "id") Long id) {
     userService.deleteUserById(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -66,6 +70,7 @@ public class UserController {
       summary = "Get tasks by user ID",
       description = "Retrieve tasks assigned to a user by ID"
   )
+  @PreAuthorize("@expressionService.canAccessUser(#id)")
   public ResponseEntity<List<TaskDto>> getTasksByUserId(@PathVariable(name = "id") Long id) {
     return new ResponseEntity<>(taskService.getAllTasksByUserId(id), HttpStatus.OK);
   }
@@ -75,6 +80,7 @@ public class UserController {
       summary = "Create task for user",
       description = "Create a task assigned to a user by ID"
   )
+  @PreAuthorize("@expressionService.canAccessUser(#id)")
   public ResponseEntity<TaskDto> createTaskForUser(@PathVariable(name = "id") Long id,
                                                    @Valid @RequestBody TaskDto taskDto) {
     return new ResponseEntity<>(taskService.createTaskForUser(taskDto, id), HttpStatus.CREATED);

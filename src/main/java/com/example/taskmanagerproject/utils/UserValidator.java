@@ -4,6 +4,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.PASSWORD_MISMATC
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_EXISTS;
 
 import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import jakarta.validation.ConstraintViolation;
@@ -56,7 +57,8 @@ public class UserValidator {
   }
 
   private void validateUserExists(UserDto userDto, Set<String> errorMessages) {
-    if (userRepository.findByUsername(userDto.username()).isPresent()) {
+    User existingUser = userRepository.findByUsername(userDto.username()).orElse(null);
+    if (existingUser != null && !existingUser.getUsername().equals(userDto.username())) {
       errorMessages.add(USER_ALREADY_EXISTS);
     }
   }
