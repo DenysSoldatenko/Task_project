@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Represents a user DTO (Data Transfer Object) in the project.
@@ -55,4 +56,4 @@ public record UserDto(
       maxLength = 20
     )
     String confirmPassword
-) {}
+) implements Serializable {}

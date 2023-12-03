@@ -11,6 +11,9 @@ import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.TaskService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = "TaskService::getById", key = "#taskId")
   public TaskDto getTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
@@ -41,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
+  @CachePut(value = "TaskService::getById", key = "#taskId")
   public TaskDto updateTask(TaskDto taskDto, Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
@@ -72,6 +77,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void deleteTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));

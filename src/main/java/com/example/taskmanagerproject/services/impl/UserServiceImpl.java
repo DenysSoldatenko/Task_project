@@ -11,6 +11,9 @@ import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.UserFactory;
 import com.example.taskmanagerproject.utils.UserValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = "UserService::getById", key = "#userId")
   public UserDto getUserById(Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -38,6 +42,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = "UserService::getByUsername", key = "#username")
   public User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
+  @CachePut(value = "UserService::getById", key = "#userId")
   public UserDto updateUser(UserDto userDto, Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -70,6 +76,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
+  @Cacheable(value = "UserService::isTaskOwner", key = "#userId + '.' + #taskId")
   public boolean isUserTaskOwner(Long userId, Long taskId) {
     return userRepository.isTaskOwner(userId, taskId);
   }
@@ -84,6 +91,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "UserService::getById", key = "#userId")
   public void deleteUserById(Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));

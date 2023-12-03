@@ -21,6 +21,12 @@ public class SecurityExpressionService {
   private static final Logger logger = LoggerFactory.getLogger(SecurityExpressionService.class);
   private final UserService userService;
 
+  /**
+   * Checks if the current user can access the specified user's data.
+   *
+   * @param id The ID of the user to check access for.
+   * @return true if the current user can access the specified user's data, false otherwise.
+   */
   public boolean canAccessUser(Long id) {
     JwtEntity user = (JwtEntity) SecurityContextHolder.getContext()
         .getAuthentication()
@@ -30,6 +36,12 @@ public class SecurityExpressionService {
     return user.getId().equals(id) || isAdmin;
   }
 
+  /**
+   * Checks if the current user can access the specified task's data.
+   *
+   * @param taskId The ID of the task to check access for.
+   * @return true if the current user can access the specified task's data, false otherwise.
+   */
   public boolean canAccessTask(Long taskId) {
     JwtEntity user = (JwtEntity) SecurityContextHolder.getContext()
         .getAuthentication()

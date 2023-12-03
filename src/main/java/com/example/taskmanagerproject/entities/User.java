@@ -15,6 +15,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import lombok.Data;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @Data
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
