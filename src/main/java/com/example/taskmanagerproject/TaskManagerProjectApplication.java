@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * The main class that starts the Task Manager application.
  */
-@EnableCaching
+//@EnableCaching
 @SpringBootApplication
 @EnableTransactionManagement
 public class TaskManagerProjectApplication {
