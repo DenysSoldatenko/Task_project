@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.controllers;
 
 import com.example.taskmanagerproject.dtos.TaskDto;
+import com.example.taskmanagerproject.dtos.TaskImageDto;
 import com.example.taskmanagerproject.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +60,18 @@ public class TaskController {
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public ResponseEntity<String> deleteTaskById(@PathVariable(name = "id") Long id) {
     taskService.deleteTaskById(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @PostMapping("/{id}/image")
+  @Operation(
+      summary = "Upload an image for a task",
+      description = "Upload an image for the task identified by its ID"
+  )
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
+  public ResponseEntity<String> uploadImage(@Valid @ModelAttribute TaskImageDto imageDto,
+                                            @PathVariable(name = "id") Long id) {
+    taskService.uploadImage(id, imageDto);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

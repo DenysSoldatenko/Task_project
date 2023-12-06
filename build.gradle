@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 	implementation 'net.datafaker:datafaker:2.1.0'
 	implementation 'org.liquibase:liquibase-core:4.25.1'
+	implementation 'io.minio:minio:8.5.7'
 
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"){
 		exclude group: "io.swagger.core.v3", module:"swagger-annotations"

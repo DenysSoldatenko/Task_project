@@ -2,12 +2,14 @@ package com.example.taskmanagerproject.dtos;
 
 import com.example.taskmanagerproject.entities.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Represents a task DTO (Data Transfer Object) in the project.
@@ -50,5 +52,9 @@ public record TaskDto(
       description = "The expiration date and time of the task",
       example = "2024-01-19 13:00:00.000000"
     )
-    LocalDateTime expirationDate
+    LocalDateTime expirationDate,
+
+    @Schema(description = "List of images associated with the entity")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    List<String> images
 ) implements Serializable {}

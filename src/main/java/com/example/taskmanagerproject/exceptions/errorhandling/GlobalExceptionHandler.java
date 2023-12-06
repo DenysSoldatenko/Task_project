@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.exceptions.errorhandling;
 
+import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
@@ -77,6 +78,27 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ValidationException.class)
   public ResponseEntity<ErrorDetails> handleAuthException(
       ValidationException exception, WebRequest webRequest
+  ) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        String.valueOf(HttpStatus.BAD_REQUEST.value()),
+        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(4)
+    );
+    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link ImageUploadException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(ImageUploadException.class)
+  public ResponseEntity<ErrorDetails> handleImageUploadException(
+      ImageUploadException exception, WebRequest webRequest
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),

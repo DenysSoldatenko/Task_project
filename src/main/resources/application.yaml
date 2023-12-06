@@ -26,5 +26,11 @@ jwt:
   secret: ${JWT_TOKEN_SECRET}
   expired: ${JWT_TOKEN_EXPIRED}
 
+minio:
+  bucket: ${MINIO_BUCKET}
+  url: ${MINIO_URL}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}
+
 springdoc:
   override-with-generic-response: false

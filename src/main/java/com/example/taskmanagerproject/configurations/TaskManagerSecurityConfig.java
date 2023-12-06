@@ -2,6 +2,7 @@ package com.example.taskmanagerproject.configurations;
 
 import com.example.taskmanagerproject.security.JwtTokenFilter;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
+import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class TaskManagerSecurityConfig {
 
   private final JwtTokenProvider tokenProvider;
+  private final MinioProperties minioProperties;
 
   private static final String[] PUBLIC_ROUTES = {
     "/api/v*/auth/**",
@@ -47,6 +49,20 @@ public class TaskManagerSecurityConfig {
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
       throws Exception {
     return config.getAuthenticationManager();
+  }
+
+  /**
+   * Creates a MinioClient bean to interact with MinIO server.
+   *
+   * @param minioProperties The properties for configuring the MinIO client.
+   * @return A MinioClient instance.
+   */
+  @Bean
+  public MinioClient minioClient() {
+    return MinioClient.builder()
+      .endpoint(minioProperties.getUrl())
+      .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+      .build();
   }
 
   /**
