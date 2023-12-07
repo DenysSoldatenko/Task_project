@@ -54,7 +54,6 @@ public class TaskManagerSecurityConfig {
   /**
    * Creates a MinioClient bean to interact with MinIO server.
    *
-   * @param minioProperties The properties for configuring the MinIO client.
    * @return A MinioClient instance.
    */
   @Bean
