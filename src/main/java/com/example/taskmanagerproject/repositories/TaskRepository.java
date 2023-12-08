@@ -25,7 +25,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
       WHERE t.expiration_date is not null
       AND t.expiration_date between :start and :end
       """, nativeQuery = true)
-  List<Task> findAllSoonExpiringTasks(@Param("start") Timestamp start, @Param("end") Timestamp end);
+  List<Task> findAllSoonExpiringTasks(@Param("start") Timestamp start,
+                                      @Param("end") Timestamp end);
 
   //@Transactional
   @Modifying
@@ -33,5 +34,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
       INSERT INTO users_tasks (user_id, task_id)
       VALUES (:userId, :taskId)
       """, nativeQuery = true)
-  void assignTaskToUser(@Param("userId") Long userId, @Param("taskId") Long taskId);
+  void assignTaskToUser(@Param("userId") Long userId,
+                        @Param("taskId") Long taskId);
 }

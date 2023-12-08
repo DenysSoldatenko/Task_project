@@ -10,4 +10,4 @@ public record TaskImageDto(
 
     @NotNull(message = "Image cannot be null!")
     MultipartFile file
-) {}
+) { }

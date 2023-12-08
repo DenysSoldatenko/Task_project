@@ -23,7 +23,7 @@ public class UserFactory {
    * @param request The registration request containing user information.
    * @return A new User instance.
    */
-  public User createUserFromRequest(UserDto request) {
+  public User createUserFromRequest(final UserDto request) {
     User user = new User();
     user.setFullName(request.fullName());
     user.setUsername(request.username());

@@ -28,61 +28,113 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "Endpoints for managing users")
-public class UserController {
+public final class UserController {
 
   private final UserService userService;
   private final TaskService taskService;
 
+  /**
+   * Updates user information by ID.
+   *
+   * @param userDto The DTO containing the updated user information.
+   * @param id      The ID of the user to update.
+   * @return ResponseEntity containing the updated user DTO.
+   */
   @PutMapping("/{id}")
   @Operation(
       summary = "Update user",
       description = "Update user information by ID"
   )
   @PreAuthorize("@expressionService.canAccessUser(#id)")
-  public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
-                                            @PathVariable(name = "id") Long id) {
-    return new ResponseEntity<>(userService.updateUser(userDto, id), HttpStatus.OK);
+  public ResponseEntity<UserDto> updateUser(
+      @Valid @RequestBody final UserDto userDto,
+      @PathVariable(name = "id") final Long id
+  ) {
+    return new ResponseEntity<>(
+      userService.updateUser(userDto, id), HttpStatus.OK
+    );
   }
 
+  /**
+   * Retrieves user information by ID.
+   *
+   * @param id The ID of the user to retrieve.
+   * @return ResponseEntity containing the user DTO.
+   */
   @GetMapping("/{id}")
   @Operation(
       summary = "Get user by ID",
       description = "Retrieve user information by ID"
   )
   @PreAuthorize("@expressionService.canAccessUser(#id)")
-  public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
-    return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+  public ResponseEntity<UserDto> getUserById(
+      @PathVariable(name = "id") final Long id
+  ) {
+    return new ResponseEntity<>(
+      userService.getUserById(id), HttpStatus.OK
+    );
   }
 
+  /**
+   * Deletes a user by ID.
+   *
+   * @param id The ID of the user to delete.
+   * @return ResponseEntity indicating the success of the operation.
+   */
   @DeleteMapping("/{id}")
   @Operation(
       summary = "Delete user by ID",
       description = "Delete user by ID"
   )
   @PreAuthorize("@expressionService.canAccessUser(#id)")
-  public ResponseEntity<Void> deleteUserById(@PathVariable(name = "id") Long id) {
+  public ResponseEntity<Void> deleteUserById(
+      @PathVariable(name = "id") final Long id
+  ) {
     userService.deleteUserById(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(
+      HttpStatus.NO_CONTENT
+    );
   }
 
+  /**
+   * Retrieves tasks assigned to a user by ID.
+   *
+   * @param id The ID of the user to retrieve tasks for.
+   * @return ResponseEntity containing a list of task DTOs.
+   */
   @GetMapping("/{id}/tasks")
   @Operation(
       summary = "Get tasks by user ID",
       description = "Retrieve tasks assigned to a user by ID"
   )
   @PreAuthorize("@expressionService.canAccessUser(#id)")
-  public ResponseEntity<List<TaskDto>> getTasksByUserId(@PathVariable(name = "id") Long id) {
-    return new ResponseEntity<>(taskService.getAllTasksByUserId(id), HttpStatus.OK);
+  public ResponseEntity<List<TaskDto>> getTasksByUserId(
+      @PathVariable(name = "id") final Long id
+  ) {
+    return new ResponseEntity<>(
+      taskService.getAllTasksByUserId(id), HttpStatus.OK
+    );
   }
 
+  /**
+   * Creates a task assigned to a user by ID.
+   *
+   * @param id      The ID of the user to assign the task to.
+   * @param taskDto The DTO containing the task information.
+   * @return ResponseEntity containing the created task DTO.
+   */
   @PostMapping("/{id}/tasks")
   @Operation(
       summary = "Create task for user",
       description = "Create a task assigned to a user by ID"
   )
   @PreAuthorize("@expressionService.canAccessUser(#id)")
-  public ResponseEntity<TaskDto> createTaskForUser(@PathVariable(name = "id") Long id,
-                                                   @Valid @RequestBody TaskDto taskDto) {
-    return new ResponseEntity<>(taskService.createTaskForUser(taskDto, id), HttpStatus.CREATED);
+  public ResponseEntity<TaskDto> createTaskForUser(
+      @PathVariable(name = "id") final Long id,
+      @Valid @RequestBody final TaskDto taskDto
+  ) {
+    return new ResponseEntity<>(
+      taskService.createTaskForUser(taskDto, id), HttpStatus.CREATED
+    );
   }
 }

@@ -21,21 +21,29 @@ public record TaskDto(
 
     @NotNull(message = "Title cannot be null!")
     @NotBlank(message = "Title cannot be blank!")
-    @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters long!")
+    @Size(
+      min = MIN_TITLE_LENGTH,
+      max = MAX_TITLE_LENGTH,
+      message = "Title must be between 2 and 100 characters long!"
+    )
     @Schema(
       description = "The title of the task",
       example = "Buy groceries",
-      maxLength = 100
+      maxLength = MAX_TITLE_LENGTH
     )
     String title,
 
     @NotNull(message = "Description cannot be null!")
     @NotBlank(message = "Description cannot be blank!")
-    @Size(min = 2, max = 255, message = "Description must be between 2 and 255 characters long!")
+    @Size(
+      min = MIN_DESCRIPTION_LENGTH,
+      max = MAX_DESCRIPTION_LENGTH,
+      message = "Description must be between 2 and 255 characters long!"
+    )
     @Schema(
       description = "The description of the task",
       example = "Get milk, bread, and eggs",
-      maxLength = 255
+      maxLength = MAX_DESCRIPTION_LENGTH
     )
     String description,
 
@@ -57,4 +65,9 @@ public record TaskDto(
     @Schema(description = "List of images associated with the entity")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     List<String> images
-) implements Serializable {}
+) implements Serializable {
+  private static final int MIN_TITLE_LENGTH = 2;
+  private static final int MAX_TITLE_LENGTH = 100;
+  private static final int MIN_DESCRIPTION_LENGTH = 2;
+  private static final int MAX_DESCRIPTION_LENGTH = 255;
+}

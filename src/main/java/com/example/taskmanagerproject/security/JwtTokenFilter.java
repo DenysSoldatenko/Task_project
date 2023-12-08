@@ -15,7 +15,9 @@ import org.springframework.web.filter.GenericFilterBean;
  * and setting the authentication context.
  */
 @AllArgsConstructor
-public class JwtTokenFilter extends GenericFilterBean {
+public final class JwtTokenFilter extends GenericFilterBean {
+
+  private static final int BEARER_TOKEN_PREFIX_LENGTH = 7;
 
   private final JwtTokenProvider jwtTokenProvider;
 
@@ -24,20 +26,21 @@ public class JwtTokenFilter extends GenericFilterBean {
   public void doFilter(final ServletRequest servletRequest,
                        final ServletResponse servletResponse,
                        final FilterChain filterChain) {
-    String bearerToken = extractBearerToken((HttpServletRequest) servletRequest);
+    String bearerToken = extractBearerToken(
+        (HttpServletRequest) servletRequest
+    );
     if (bearerToken != null && jwtTokenProvider.validateToken(bearerToken)) {
-      Authentication authentication = jwtTokenProvider.getAuthentication(bearerToken);
-      if (authentication != null) {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-      }
+      Authentication authentication = jwtTokenProvider
+          .getAuthentication(bearerToken);
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
     filterChain.doFilter(servletRequest, servletResponse);
   }
 
-  private String extractBearerToken(HttpServletRequest request) {
+  private String extractBearerToken(final HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
+      return bearerToken.substring(BEARER_TOKEN_PREFIX_LENGTH);
     }
     return null;
   }

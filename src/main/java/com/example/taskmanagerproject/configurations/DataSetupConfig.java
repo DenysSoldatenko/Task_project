@@ -24,6 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class DataSetupConfig {
 
+  private static final int NUM_USERS = 100;
+  private static final int MIN_TASKS_PER_USER = 1;
+  private static final int MAX_TASKS_PER_USER = 10;
+  private static final int MAX_DAYS_TO_EXPIRE = 30;
+
   private final UserRepository userRepository;
   private final TaskRepository taskRepository;
   private final PasswordEncoder passwordEncoder;
@@ -44,14 +49,14 @@ public class DataSetupConfig {
 
   private void generateUsers() {
     Faker faker = new Faker();
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < NUM_USERS; i++) {
       User user = createUser(faker);
       userRepository.save(user);
       generateTasksForUser(user, faker);
     }
   }
 
-  private User createUser(Faker faker) {
+  private User createUser(final Faker faker) {
     User user = new User();
     user.setFullName(faker.name().fullName());
     user.setUsername(faker.internet().emailAddress());
@@ -61,8 +66,9 @@ public class DataSetupConfig {
     return user;
   }
 
-  private void generateTasksForUser(User user, Faker faker) {
-    int numTasks = faker.number().numberBetween(1, 10);
+  private void generateTasksForUser(final User user, final Faker faker) {
+    int numTasks = faker.number()
+        .numberBetween(MIN_TASKS_PER_USER, MAX_TASKS_PER_USER);
     for (int j = 0; j < numTasks; j++) {
       Task task = createTask(faker);
       taskRepository.save(task);
@@ -70,12 +76,18 @@ public class DataSetupConfig {
     }
   }
 
-  private Task createTask(Faker faker) {
+  private Task createTask(final Faker faker) {
     Task task = new Task();
     task.setTitle(faker.lorem().sentence());
     task.setDescription(faker.lorem().sentence());
-    task.setTaskStatus(values()[faker.number().numberBetween(0, values().length)]);
-    task.setExpirationDate(LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30)));
+    task.setTaskStatus(
+        values()[faker.number().numberBetween(0, values().length)]
+    );
+    task.setExpirationDate(
+        LocalDateTime.now().plusDays(
+          faker.number().numberBetween(1, MAX_DAYS_TO_EXPIRE)
+        )
+    );
     return task;
   }
 }

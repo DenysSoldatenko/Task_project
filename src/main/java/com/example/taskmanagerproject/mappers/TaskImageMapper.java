@@ -5,7 +5,8 @@ import com.example.taskmanagerproject.entities.TaskImage;
 import org.mapstruct.Mapper;
 
 /**
- * Mapper interface for mapping User entities to TaskImageDto objects and vice versa.
+ * Mapper interface for mapping User entities
+ * to TaskImageDto objects and vice versa.
  */
 @Mapper(componentModel = "spring")
 public interface TaskImageMapper {

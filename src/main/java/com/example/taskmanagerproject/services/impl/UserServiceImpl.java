@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(readOnly = true)
   //@Cacheable(value = "UserService::getById", key = "#userId")
-  public UserDto getUserById(Long userId) {
+  public UserDto getUserById(final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     return userMapper.toDto(user);
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(readOnly = true)
   //@Cacheable(value = "UserService::getByUsername", key = "#username")
-  public User getUserByUsername(String username) {
+  public User getUserByUsername(final String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
   }
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   //@CachePut(value = "UserService::getById", key = "#userId")
-  public UserDto updateUser(UserDto userDto, Long userId) {
+  public UserDto updateUser(final UserDto userDto, final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     userValidator.validateUserDto(userDto);
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public User createUser(UserDto userDto) {
+  public User createUser(final UserDto userDto) {
     userValidator.validateUserDto(userDto);
     User createdUser = userFactory.createUserFromRequest(userDto);
     userRepository.save(createdUser);
@@ -76,14 +76,17 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  //@Cacheable(value = "UserService::isTaskOwner", key = "#userId + '.' + #taskId")
-  public boolean isUserTaskOwner(Long userId, Long taskId) {
+  //@Cacheable(
+  // value = "UserService::isTaskOwner",
+  // key = "#userId + '.' + #taskId"
+  // )
+  public boolean isUserTaskOwner(final Long userId, final Long taskId) {
     return userRepository.isTaskOwner(userId, taskId);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public UserDto getTaskAuthor(Long taskId) {
+  public UserDto getTaskAuthor(final Long taskId) {
     User user = userRepository.findTaskAuthorByTaskId(taskId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     return userMapper.toDto(user);
@@ -92,7 +95,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   //@CacheEvict(value = "UserService::getById", key = "#userId")
-  public void deleteUserById(Long userId) {
+  public void deleteUserById(final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     userRepository.delete(user);

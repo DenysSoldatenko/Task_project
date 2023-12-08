@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class JwtUserDetailsService implements UserDetailsService {
+public final class JwtUserDetailsService implements UserDetailsService {
 
   private final UserService userService;
 

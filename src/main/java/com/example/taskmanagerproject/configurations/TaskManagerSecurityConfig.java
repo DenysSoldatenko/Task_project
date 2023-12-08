@@ -46,7 +46,9 @@ public class TaskManagerSecurityConfig {
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+  public AuthenticationManager authenticationManager(
+      final AuthenticationConfiguration config
+  )
       throws Exception {
     return config.getAuthenticationManager();
   }
@@ -60,7 +62,9 @@ public class TaskManagerSecurityConfig {
   public MinioClient minioClient() {
     return MinioClient.builder()
       .endpoint(minioProperties.getUrl())
-      .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+      .credentials(
+        minioProperties.getAccessKey(), minioProperties.getSecretKey()
+      )
       .build();
   }
 
@@ -69,10 +73,13 @@ public class TaskManagerSecurityConfig {
    *
    * @param http The HTTP security object.
    * @return The security filter chain.
-   * @throws Exception If an error occurs while configuring the security filter chain.
+   * @throws Exception If an error occurs
+   *     while configuring the security filter chain.
    */
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(
+      final HttpSecurity http
+  ) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)

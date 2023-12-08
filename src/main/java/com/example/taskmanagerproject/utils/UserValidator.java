@@ -32,7 +32,7 @@ public class UserValidator {
    * @param userDto The UserDto object to validate.
    * @throws ValidationException If validation fails.
    */
-  public void validateUserDto(UserDto userDto) {
+  public void validateUserDto(final UserDto userDto) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(userDto, errorMessages);
     validateUserExists(userDto, errorMessages);
@@ -43,22 +43,34 @@ public class UserValidator {
     }
   }
 
-  private void validateConstraints(UserDto userDto, Set<String> errorMessages) {
+  private void validateConstraints(
+      final UserDto userDto,
+      final Set<String> errorMessages
+  ) {
     Set<ConstraintViolation<UserDto>> violations = validator.validate(userDto);
     for (ConstraintViolation<UserDto> violation : violations) {
       errorMessages.add(violation.getMessage());
     }
   }
 
-  private void validatePasswordMatching(UserDto userDto, Set<String> errorMessages) {
+  private void validatePasswordMatching(
+      final UserDto userDto,
+      final Set<String> errorMessages
+  ) {
     if (!userDto.password().equals(userDto.confirmPassword())) {
       errorMessages.add(PASSWORD_MISMATCH);
     }
   }
 
-  private void validateUserExists(UserDto userDto, Set<String> errorMessages) {
-    User existingUser = userRepository.findByUsername(userDto.username()).orElse(null);
-    if (existingUser != null && !existingUser.getUsername().equals(userDto.username())) {
+  private void validateUserExists(
+      final UserDto userDto,
+      final Set<String> errorMessages
+  ) {
+    User existingUser = userRepository
+        .findByUsername(userDto.username())
+        .orElse(null);
+    if (existingUser != null
+        && !existingUser.getUsername().equals(userDto.username())) {
       errorMessages.add(USER_ALREADY_EXISTS);
     }
   }

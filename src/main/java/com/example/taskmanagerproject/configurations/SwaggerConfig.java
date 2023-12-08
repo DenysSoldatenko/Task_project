@@ -42,9 +42,18 @@ import org.springframework.context.annotation.Configuration;
 @SecurityScheme(name = "Bearer Authentication", type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT", scheme = "bearer")
 public class SwaggerConfig {
+
+  /**
+   * Configures OpenAPI documentation with
+   * security requirements for Bearer Authentication.
+   *
+   * @return The OpenAPI instance.
+   */
   @Bean
   public OpenAPI openApi() {
     return new OpenAPI()
-      .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"));
+      .addSecurityItem(
+        new SecurityRequirement().addList("Bearer Authentication")
+      );
   }
 }

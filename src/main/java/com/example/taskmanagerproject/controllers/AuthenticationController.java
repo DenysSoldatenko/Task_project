@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication Controller", description = "Endpoints for user authentication")
-public class AuthenticationController {
+@Tag(
+    name = "Authentication Controller",
+    description = "Endpoints for user authentication"
+)
+public final class AuthenticationController {
 
   private final AuthenticationService authenticationService;
 
@@ -31,7 +34,7 @@ public class AuthenticationController {
       description = "Register a new user with the provided data"
   )
   public ResponseEntity<AuthenticationResponse> register(
-      @Valid @RequestBody UserDto request
+      @Valid @RequestBody final UserDto request
   ) {
     return ResponseEntity.ok(authenticationService.registerUser(request));
   }
@@ -42,7 +45,7 @@ public class AuthenticationController {
       description = "Authenticate a user with the provided credentials"
   )
   public ResponseEntity<AuthenticationResponse> authenticate(
-      @Valid @RequestBody AuthenticationRequest request
+      @Valid @RequestBody final AuthenticationRequest request
   ) {
     return ResponseEntity.ok(authenticationService.authenticate(request));
   }

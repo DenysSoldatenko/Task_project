@@ -26,14 +26,14 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @RequiredArgsConstructor
-public class ImageServiceImpl implements ImageService {
+public final class ImageServiceImpl implements ImageService {
 
   private final MinioClient minioClient;
   private final MinioProperties minioProperties;
   private final TaskImageMapper taskImageMapper;
 
   @Override
-  public String uploadImage(TaskImageDto taskImageDto) {
+  public String uploadImage(final TaskImageDto taskImageDto) {
     TaskImage taskImage = taskImageMapper.toEntity(taskImageDto);
     try {
       createBucketIfNotExists();
@@ -62,23 +62,28 @@ public class ImageServiceImpl implements ImageService {
     }
   }
 
-  private void validateImage(MultipartFile file) {
+  private void validateImage(final MultipartFile file) {
     if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
       throw new ImageUploadException(IMAGE_MUST_NOT_BE_EMPTY);
     }
   }
 
-  private String generateFileName(MultipartFile file) {
+  private String generateFileName(final MultipartFile file) {
     String originalFilename = file.getOriginalFilename();
     if (originalFilename != null) {
-      String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+      String extension = originalFilename.substring(
+          originalFilename.lastIndexOf(".") + 1
+      );
       return UUID.randomUUID() + "." + extension;
     } else {
       throw new ImageUploadException(IMAGE_MUST_NOT_BE_EMPTY);
     }
   }
 
-  private void uploadImageToMinio(InputStream inputStream, String fileName) {
+  private void uploadImageToMinio(
+      final InputStream inputStream,
+      final String fileName
+  ) {
     try {
       minioClient.putObject(PutObjectArgs.builder()
           .stream(inputStream, inputStream.available(), -1)

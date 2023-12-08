@@ -8,10 +8,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MessageUtils {
 
-  public static final String USER_NOT_FOUND = "User not found!";
-  public static final String USER_ALREADY_EXISTS = "User already exists!";
-  public static final String PASSWORD_MISMATCH = "Password and password confirmation do not match!";
-  public static final String TASK_NOT_FOUND = "Task not found!";
+  public static final String USER_NOT_FOUND
+      = "User not found!";
+  public static final String USER_ALREADY_EXISTS
+      = "User already exists!";
+  public static final String PASSWORD_MISMATCH
+      = "Password and password confirmation do not match!";
+  public static final String TASK_NOT_FOUND
+      = "Task not found!";
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

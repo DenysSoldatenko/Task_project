@@ -17,43 +17,71 @@ public record UserDto(
 
     @NotNull(message = "Full name cannot be null!")
     @NotBlank(message = "Full name cannot be blank!")
-    @Size(min = 2, max = 50, message = "Full name must be between 2 and 50 characters long!")
+    @Size(
+      min = MIN_FULL_NAME_LENGTH,
+      max = MAX_FULL_NAME_LENGTH,
+      message = "Full name must be between " + MIN_FULL_NAME_LENGTH
+        + " and " + MAX_FULL_NAME_LENGTH + " characters long!"
+    )
     @Schema(
       description = "The full name of the user",
       example = "Alice Johnson",
-      maxLength = 50
+      maxLength = MAX_FULL_NAME_LENGTH
     )
     String fullName,
 
     @NotNull(message = "Username cannot be null!")
     @NotBlank(message = "Username cannot be blank!")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters long!")
+    @Size(
+      min = MIN_USERNAME_LENGTH,
+      max = MAX_USERNAME_LENGTH,
+      message = "Username must be between " + MIN_USERNAME_LENGTH
+        + " and " + MAX_USERNAME_LENGTH + " characters long!"
+    )
     @Schema(
       description = "The username of the user",
       example = "alice123@gmail.com",
-      maxLength = 20
+      maxLength = MAX_USERNAME_LENGTH
     )
     String username,
 
     @NotNull(message = "Password cannot be null!")
     @NotBlank(message = "Password cannot be blank!")
-    @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters long!")
+    @Size(
+      min = MIN_PASSWORD_LENGTH,
+      max = MAX_PASSWORD_LENGTH,
+      message = "Password must be between " + MIN_PASSWORD_LENGTH
+        + " and " + MAX_PASSWORD_LENGTH + " characters long!"
+    )
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(
       description = "The password of the user",
       example = "password123",
-      maxLength = 20
+      maxLength = MAX_PASSWORD_LENGTH
     )
     String password,
 
     @NotNull(message = "Confirm password cannot be null!")
     @NotBlank(message = "Confirm password cannot be blank!")
-    @Size(min = 6, max = 20, message = "Confirm password must be between 6 and 20 characters long!")
+    @Size(
+      min = MIN_PASSWORD_LENGTH,
+      max = MAX_PASSWORD_LENGTH,
+      message = "Confirm password must be between " + MIN_PASSWORD_LENGTH
+        + " and " + MAX_PASSWORD_LENGTH + " characters long!"
+    )
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(
       description = "The confirmation password of the user",
       example = "password123",
-      maxLength = 20
+      maxLength = MAX_PASSWORD_LENGTH
     )
     String confirmPassword
-) implements Serializable {}
+) implements Serializable {
+
+  public static final int MIN_FULL_NAME_LENGTH = 2;
+  public static final int MAX_FULL_NAME_LENGTH = 50;
+  public static final int MIN_USERNAME_LENGTH = 4;
+  public static final int MAX_USERNAME_LENGTH = 20;
+  public static final int MIN_PASSWORD_LENGTH = 6;
+  public static final int MAX_PASSWORD_LENGTH = 20;
+}

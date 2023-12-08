@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ImageUploadException extends RuntimeException {
 
-  public ImageUploadException(String message) {
+  public ImageUploadException(final String message) {
     super(message);
   }
 }
