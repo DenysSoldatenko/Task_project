@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
     name = "Authentication Controller",
     description = "Endpoints for user authentication"
 )
-public final class AuthenticationController {
+public class AuthenticationController {
 
   private final AuthenticationService authenticationService;
 

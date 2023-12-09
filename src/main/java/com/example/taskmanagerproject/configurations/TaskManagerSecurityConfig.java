@@ -37,7 +37,8 @@ public class TaskManagerSecurityConfig {
     "/swagger-ui/**",
     "/swagger-resources/**",
     "/swagger-ui.html",
-    "/webjars/**"
+    "/webjars/**",
+    "/graphiql"
   };
 
   @Bean

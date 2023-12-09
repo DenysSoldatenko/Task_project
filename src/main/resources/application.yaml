@@ -18,6 +18,9 @@ spring:
     change-log: classpath:liquibase/db.changelog.yaml
     enabled: true
     default-schema: task_list
+  graphql:
+    graphiql:
+      enabled: true
   jpa:
     open-in-view: false
 
