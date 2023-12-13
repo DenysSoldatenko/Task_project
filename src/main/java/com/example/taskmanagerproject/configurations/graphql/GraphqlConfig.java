@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.configurations;
+package com.example.taskmanagerproject.configurations.graphql;
 
 import graphql.schema.GraphQLScalarType;
 import org.springframework.context.annotation.Bean;

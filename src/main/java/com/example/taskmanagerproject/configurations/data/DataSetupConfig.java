@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.configurations;
+package com.example.taskmanagerproject.configurations.data;
 
 import static com.example.taskmanagerproject.entities.TaskStatus.values;
 

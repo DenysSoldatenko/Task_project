@@ -5,7 +5,6 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND;
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
 import com.example.taskmanagerproject.entities.Task;
-import com.example.taskmanagerproject.entities.TaskImage;
 import com.example.taskmanagerproject.entities.TaskStatus;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.mappers.TaskMapper;
@@ -33,7 +32,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  //@Cacheable(value = "TaskService::getById", key = "#taskId")
+  @Cacheable(value = "TaskService::getById", key = "#taskId")
   public TaskDto getTaskById(final Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
@@ -49,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  //@CachePut(value = "TaskService::getById", key = "#taskId")
+  @CachePut(value = "TaskService::getById", key = "#taskId")
   public TaskDto updateTask(final TaskDto taskDto, final Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
@@ -85,7 +84,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  //@CacheEvict(value = "TaskService::getById", key = "#taskId")
+  @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void deleteTaskById(final Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
@@ -94,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  //@CacheEvict(value = "TaskService::getById", key = "#taskId")
+  @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void uploadImage(final Long taskId, final TaskImageDto image) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));

@@ -5,7 +5,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_UPLOAD
 import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_MUST_NOT_BE_EMPTY;
 import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_UPLOAD_FAILED;
 
-import com.example.taskmanagerproject.configurations.MinioProperties;
+import com.example.taskmanagerproject.configurations.minio.MinioProperties;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
 import com.example.taskmanagerproject.entities.TaskImage;
 import com.example.taskmanagerproject.exceptions.ImageUploadException;

@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.configurations;
+package com.example.taskmanagerproject.configurations.minio;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.configurations;
+package com.example.taskmanagerproject.configurations.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

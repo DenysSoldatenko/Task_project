@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  //@Cacheable(value = "UserService::getById", key = "#userId")
+  @Cacheable(value = "UserService::getById", key = "#userId")
   public UserDto getUserById(final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  //@Cacheable(value = "UserService::getByUsername", key = "#username")
+  @Cacheable(value = "UserService::getByUsername", key = "#username")
   public User getUserByUsername(final String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  //@CachePut(value = "UserService::getById", key = "#userId")
+  @CachePut(value = "UserService::getById", key = "#userId")
   public UserDto updateUser(final UserDto userDto, final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  //@Cacheable(
-  // value = "UserService::isTaskOwner",
-  // key = "#userId + '.' + #taskId"
-  // )
+  @Cacheable(
+      value = "UserService::isTaskOwner",
+      key = "#userId + '.' + #taskId"
+  )
   public boolean isUserTaskOwner(final Long userId, final Long taskId) {
     return userRepository.isTaskOwner(userId, taskId);
   }
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  //@CacheEvict(value = "UserService::getById", key = "#userId")
+  @CacheEvict(value = "UserService::getById", key = "#userId")
   public void deleteUserById(final Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
