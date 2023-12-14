@@ -14,6 +14,7 @@ import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;
+import com.example.taskmanagerproject.services.MailService;
 import com.example.taskmanagerproject.utils.UserFactory;
 import com.example.taskmanagerproject.utils.UserValidator;
 import java.util.Optional;
@@ -39,6 +40,9 @@ class UserServiceImplTest {
 
   @Mock
   private UserFactory userFactory;
+
+  @Mock
+  private MailService mailService;
 
   @Mock
   private UserValidator userValidator;
