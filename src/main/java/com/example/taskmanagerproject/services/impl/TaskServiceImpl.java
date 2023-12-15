@@ -1,6 +1,8 @@
 package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND;
+import static java.sql.Timestamp.valueOf;
+import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
@@ -11,6 +13,8 @@ import com.example.taskmanagerproject.mappers.TaskMapper;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.TaskService;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -60,7 +64,10 @@ public class TaskServiceImpl implements TaskService {
           : TaskStatus.IN_PROGRESS
     );
     task.setExpirationDate(taskDto.expirationDate());
-    task.setImages(taskDto.images());
+    task.setImages(
+        taskDto.images() != null ? taskDto.images()
+          : task.getImages()
+    );
 
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);
@@ -89,6 +96,16 @@ public class TaskServiceImpl implements TaskService {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
     taskRepository.delete(task);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<TaskDto> findAllSoonExpiringTasks(final Duration duration) {
+    LocalDateTime now = now();
+    List<Task> taskList = taskRepository.findAllSoonExpiringTasks(
+        valueOf(now), valueOf(now.plus(duration))
+    );
+    return taskList.stream().map(taskMapper::toDto).toList();
   }
 
   @Override

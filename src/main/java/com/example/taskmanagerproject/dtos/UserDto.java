@@ -81,7 +81,7 @@ public record UserDto(
   public static final int MIN_FULL_NAME_LENGTH = 2;
   public static final int MAX_FULL_NAME_LENGTH = 50;
   public static final int MIN_USERNAME_LENGTH = 4;
-  public static final int MAX_USERNAME_LENGTH = 20;
+  public static final int MAX_USERNAME_LENGTH = 25;
   public static final int MIN_PASSWORD_LENGTH = 6;
   public static final int MAX_PASSWORD_LENGTH = 20;
 }

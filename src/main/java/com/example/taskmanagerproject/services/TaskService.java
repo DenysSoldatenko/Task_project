@@ -2,6 +2,7 @@ package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public interface TaskService {
   TaskDto createTaskForUser(TaskDto taskDto, Long userId);
 
   void deleteTaskById(Long taskId);
+
+  List<TaskDto> findAllSoonExpiringTasks(Duration duration);
 
   void uploadImage(Long id, TaskImageDto image);
 }
