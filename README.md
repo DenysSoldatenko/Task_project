@@ -1,4 +1,4 @@
-### TaskManager project
+# TaskManager project
 
 The TaskManager application helps you organize tasks for users. It provides endpoints for creating, accessing, and managing tasks.
 
