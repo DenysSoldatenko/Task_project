@@ -1,15 +1,15 @@
 -- Insert Users
 INSERT INTO users (full_name, username, password, confirm_password)
 VALUES
-    ('John Doe', 'john@example.com',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m'),
-    ('Jane Smith', 'jane@example.com',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m'),
-    ('Mike Smith', 'mikesmith@yahoo.com',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m',
-     '$2a$10$fFLij9aYgaNCFPTL9WcA/uoCRukxnwf.vOQ8nrEEOskrCNmGsxY7m');
+    ('John Doe', 'john.doe@gmail.com',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi'),
+    ('Jane Smith', 'jane.smith@gmail.com',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi'),
+    ('Mike Smith', 'mike.smith@gmail.com',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi',
+     '$2a$10$OPjq5KTJH8YfBpV1bbrY2ur/x2HNyfnokaeycts/WdHqBqKQxMRBi');
 
 -- Insert Tasks
 INSERT INTO tasks (title, description, task_status, expiration_date)

@@ -1,14 +1,14 @@
 spring:
   config:
     import: optional:file:.env[.properties]
-#  cache:
-#    type: redis
-#    cache-names: redis-cache
-#  data:
-#    redis:
-#      host: ${SPRING_DATA_REDIS_HOST}
-#      port: ${SPRING_DATA_REDIS_PORT}
-#      database: ${SPRING_DATA_REDIS_DATABASE}
+  cache:
+    type: redis
+    cache-names: redis-cache
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      database: ${SPRING_DATA_REDIS_DATABASE}
   datasource:
     url: jdbc:postgresql://${SPRING_DATASOURCE_HOST}:5432/example_database?currentSchema=task_list
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -39,6 +39,7 @@ spring:
             trust: smtp.gmail.com
   jpa:
     open-in-view: false
+    show-sql: true
 
 jwt:
  token:
