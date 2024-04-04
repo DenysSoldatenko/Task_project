@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.configurations.graphql;
 
+import static graphql.schema.GraphQLScalarType.newScalar;
+
 import graphql.schema.GraphQLScalarType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,7 @@ public class GraphqlConfig {
    */
   @Bean
   public GraphQLScalarType localDateTimeScalar() {
-    return GraphQLScalarType.newScalar()
+    return newScalar()
       .name("LocalDateTime")
       .description("LocalDateTime scalar")
       .coercing(new LocalDateTimeCoercing())

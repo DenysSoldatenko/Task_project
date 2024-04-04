@@ -1,5 +1,10 @@
 package com.example.taskmanagerproject.configurations.graphql;
 
+import static java.time.LocalDateTime.parse;
+import static java.time.ZoneId.systemDefault;
+import static java.util.Date.from;
+import static java.util.Locale.ENGLISH;
+
 import graphql.GraphQLContext;
 import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
@@ -10,8 +15,6 @@ import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Locale;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,13 +30,10 @@ public class LocalDateTimeCoercing implements Coercing<LocalDateTime, String> {
       @NotNull final GraphQLContext graphQlContext,
       @NotNull final Locale locale
   ) throws CoercingSerializeException {
-    SimpleDateFormat formatter = new SimpleDateFormat(
-        "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
-        Locale.ENGLISH
-    );
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", ENGLISH);
     return formatter.format(
-      Date.from(((LocalDateTime) dataFetcherResult)
-        .atZone(ZoneId.systemDefault())
+      from(((LocalDateTime) dataFetcherResult)
+        .atZone(systemDefault())
         .toInstant())
     );
   }
@@ -44,7 +44,7 @@ public class LocalDateTimeCoercing implements Coercing<LocalDateTime, String> {
       @NotNull final GraphQLContext graphQlContext,
       @NotNull final Locale locale
   ) throws CoercingParseValueException {
-    return LocalDateTime.parse((String) input);
+    return parse((String) input);
   }
 
   @Override
@@ -54,6 +54,6 @@ public class LocalDateTimeCoercing implements Coercing<LocalDateTime, String> {
       @NotNull final GraphQLContext graphQlContext,
       @NotNull final Locale locale
   ) throws CoercingParseLiteralException {
-    return LocalDateTime.parse(((StringValue) input).getValue());
+    return parse(((StringValue) input).getValue());
   }
 }

@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.configurations.minio;
 
+import static io.minio.MinioClient.builder;
+
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +23,9 @@ public class MinioConfig {
    */
   @Bean
   public MinioClient minioClient() {
-    return MinioClient.builder()
+    return builder()
       .endpoint(minioProperties.getUrl())
-      .credentials(
-        minioProperties.getAccessKey(), minioProperties.getSecretKey()
-      )
+      .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
       .build();
   }
 }

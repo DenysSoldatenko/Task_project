@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.configurations;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import com.example.taskmanagerproject.security.JwtTokenFilter;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -47,8 +48,7 @@ public class TaskManagerSecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(
       final AuthenticationConfiguration config
-  )
-      throws Exception {
+  ) throws Exception {
     return config.getAuthenticationManager();
   }
 
@@ -75,12 +75,8 @@ public class TaskManagerSecurityConfig {
               .requestMatchers(PUBLIC_ROUTES).permitAll()
               .anyRequest().authenticated()
         )
-        .sessionManagement(session -> session
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        )
-        .addFilterBefore(new JwtTokenFilter(tokenProvider),
-          UsernamePasswordAuthenticationFilter.class
-        );
+        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+        .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
