@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @Param("taskId") Long taskId)}.
  */
 @Slf4j
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 public class DataSetupConfig {
 
