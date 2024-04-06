@@ -54,22 +54,22 @@ public class UserController {
       summary = "Get user by ID",
       description = "Retrieve user information by ID",
       responses = {
-        @ApiResponse(responseCode = "200", description = "User retrieved successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = UserDto.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "200", description = "User retrieved successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = UserDto.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(OK)
@@ -92,22 +92,22 @@ public class UserController {
       summary = "Get tasks by user ID",
       description = "Retrieve tasks assigned to a user by ID",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto[].class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = TaskDto[].class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(OK)
@@ -131,26 +131,26 @@ public class UserController {
       summary = "Create task for user",
       description = "Create a task assigned to a user by ID",
       responses = {
-        @ApiResponse(responseCode = "201", description = "Task created successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto.class))
-        ),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "201", description = "Task created successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = TaskDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(CREATED)
@@ -175,26 +175,26 @@ public class UserController {
       summary = "Update user",
       description = "Update user information by ID",
       responses = {
-        @ApiResponse(responseCode = "200", description = "User updated successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = UserDto.class))
-        ),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "200", description = "User updated successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = UserDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(OK)
@@ -217,19 +217,19 @@ public class UserController {
       summary = "Delete user by ID",
       description = "Delete user by ID",
       responses = {
-        @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(NO_CONTENT)

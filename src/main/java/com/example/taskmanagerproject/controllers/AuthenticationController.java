@@ -42,18 +42,18 @@ public class AuthenticationController {
   )
   @ResponseStatus(OK)
   @ApiResponses(value = {
-    @ApiResponse(responseCode = "201", description = "User registered successfully",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = AuthenticationResponse.class))
-    ),
-    @ApiResponse(responseCode = "400", description = "Invalid input data",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = ErrorDetails.class))
-    ),
-    @ApiResponse(responseCode = "500", description = "Internal server error",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = ErrorDetails.class))
-    )
+      @ApiResponse(responseCode = "201", description = "User registered successfully",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = AuthenticationResponse.class))
+      ),
+      @ApiResponse(responseCode = "400", description = "Invalid input data",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = ErrorDetails.class))
+      )
   })
   public AuthenticationResponse register(
       @Valid @RequestBody final UserDto request
@@ -68,22 +68,22 @@ public class AuthenticationController {
   )
   @ResponseStatus(OK)
   @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "Authentication successful",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = AuthenticationResponse.class))
-    ),
-    @ApiResponse(responseCode = "401", description = "Invalid credentials",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = ErrorDetails.class))
-    ),
-    @ApiResponse(responseCode = "400", description = "Invalid input data",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = ErrorDetails.class))
-    ),
-    @ApiResponse(responseCode = "500", description = "Internal server error",
-      content = @Content(mediaType = "application/json",
-      schema = @Schema(implementation = ErrorDetails.class))
-    )
+      @ApiResponse(responseCode = "200", description = "Authentication successful",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = AuthenticationResponse.class))
+      ),
+      @ApiResponse(responseCode = "401", description = "Invalid credentials",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "400", description = "Invalid input data",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = ErrorDetails.class))
+      )
   })
   public AuthenticationResponse authenticate(
       @Valid @RequestBody final AuthenticationRequest request

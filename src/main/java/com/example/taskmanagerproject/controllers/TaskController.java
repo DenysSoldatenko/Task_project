@@ -51,22 +51,22 @@ public class TaskController {
       summary = "Get a task by ID",
       description = "Retrieve a task by its ID",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Task retrieved successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "Task not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          @ApiResponse(responseCode = "200", description = "Task retrieved successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = TaskDto.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "Task not found",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(OK)
@@ -90,26 +90,26 @@ public class TaskController {
       summary = "Update an existing task",
       description = "Update an existing task by its ID",
       responses = {
-        @ApiResponse(responseCode = "200", description = "Task updated successfully",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto.class))
-        ),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "200", description = "Task updated successfully",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = TaskDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "Task not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "Task not found",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(OK)
@@ -132,19 +132,19 @@ public class TaskController {
       summary = "Delete a task by ID",
       description = "Delete a task by its ID",
       responses = {
-        @ApiResponse(responseCode = "204", description = "Task deleted successfully"),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "204", description = "Task deleted successfully"),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "Task not found",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "Task not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(NO_CONTENT)
@@ -167,23 +167,23 @@ public class TaskController {
       summary = "Upload an image for a task",
       description = "Upload an image for the task identified by its ID",
       responses = {
-        @ApiResponse(responseCode = "204", description = "Image uploaded successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json",
+          @ApiResponse(responseCode = "204", description = "Image uploaded successfully"),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "404", description = "Task not found",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        ),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-        )
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "Task not found",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ErrorDetails.class))
+          )
       }
   )
   @ResponseStatus(NO_CONTENT)
