@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.dtos;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+
 import com.example.taskmanagerproject.entities.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,9 +16,13 @@ import java.util.List;
 /**
  * Represents a task DTO (Data Transfer Object) in the project.
  */
+@Schema(description = "Data Transfer Object representing a task")
 public record TaskDto(
 
-    @Schema(description = "The unique identifier of the task", hidden = true)
+    @Schema(
+      description = "The unique identifier of the task",
+      hidden = true
+    )
     Long id,
 
     @NotNull(message = "Title cannot be null!")
@@ -63,7 +69,7 @@ public record TaskDto(
     LocalDateTime expirationDate,
 
     @Schema(description = "List of images associated with the entity")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = READ_ONLY)
     List<String> images
 ) implements Serializable {
   private static final int MIN_TITLE_LENGTH = 2;

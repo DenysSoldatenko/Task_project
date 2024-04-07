@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.dtos;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -10,9 +12,13 @@ import java.io.Serializable;
 /**
  * Represents a user DTO (Data Transfer Object) in the project.
  */
+@Schema(description = "Data Transfer Object representing a user")
 public record UserDto(
 
-    @Schema(description = "The unique identifier of the user", hidden = true)
+    @Schema(
+      description = "The unique identifier of the user",
+      hidden = true
+    )
     Long id,
 
     @NotNull(message = "Full name cannot be null!")
@@ -53,7 +59,7 @@ public record UserDto(
       message = "Password must be between " + MIN_PASSWORD_LENGTH
         + " and " + MAX_PASSWORD_LENGTH + " characters long!"
     )
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = WRITE_ONLY)
     @Schema(
       description = "The password of the user",
       example = "password123",
@@ -69,7 +75,7 @@ public record UserDto(
       message = "Confirm password must be between " + MIN_PASSWORD_LENGTH
         + " and " + MAX_PASSWORD_LENGTH + " characters long!"
     )
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = WRITE_ONLY)
     @Schema(
       description = "The confirmation password of the user",
       example = "password123",
