@@ -1,13 +1,14 @@
 package com.example.taskmanagerproject.entities;
 
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serializable;
@@ -24,20 +25,20 @@ import lombok.Data;
 public class Task implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
   private String title;
 
   private String description;
 
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(value = STRING)
   private TaskStatus taskStatus;
 
   private LocalDateTime expirationDate;
 
   @Column(name = "image")
-  @CollectionTable(name = "tasks_images")
   @ElementCollection
+  @CollectionTable(name = "tasks_images")
   private List<String> images;
 }
