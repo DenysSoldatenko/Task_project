@@ -1,13 +1,18 @@
 package com.example.taskmanagerproject.exceptions.errorhandling;
 
+import static java.lang.String.valueOf;
+import static java.util.stream.Collectors.joining;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Date;
-import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
@@ -41,13 +46,13 @@ public class GlobalExceptionHandler {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.NOT_FOUND.value()),
-        HttpStatus.NOT_FOUND.getReasonPhrase(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
 
-    return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
   }
 
   /**
@@ -64,12 +69,12 @@ public class GlobalExceptionHandler {
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.NOT_FOUND.value()),
-        HttpStatus.NOT_FOUND.getReasonPhrase(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
   }
 
   /**
@@ -86,12 +91,12 @@ public class GlobalExceptionHandler {
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 
   /**
@@ -108,12 +113,12 @@ public class GlobalExceptionHandler {
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 
   /**
@@ -130,12 +135,12 @@ public class GlobalExceptionHandler {
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
-        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        valueOf(INTERNAL_SERVER_ERROR.value()),
+        INTERNAL_SERVER_ERROR.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(errorDetails, INTERNAL_SERVER_ERROR);
   }
 
   /**
@@ -154,18 +159,18 @@ public class GlobalExceptionHandler {
 
     String errorMessage = exception.getBindingResult().getFieldErrors().stream()
         .map(FieldError::getDefaultMessage)
-        .collect(Collectors.joining(", "));
+        .collect(joining(", "));
 
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
         errorMessage,
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
 
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 
   /**
@@ -177,19 +182,19 @@ public class GlobalExceptionHandler {
    *     details and HTTP status BAD_REQUEST.
    */
   @ExceptionHandler(IllegalStateException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(BAD_REQUEST)
   public ResponseEntity<ErrorDetails> handleIllegalStateException(
       final IllegalStateException exception,
       final WebRequest webRequest
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 
   /**
@@ -201,19 +206,19 @@ public class GlobalExceptionHandler {
    *     details and HTTP status FORBIDDEN.
    */
   @ExceptionHandler(AccessDeniedException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
+  @ResponseStatus(FORBIDDEN)
   public ResponseEntity<ErrorDetails> handleAccessDeniedException(
       final AccessDeniedException exception,
       final WebRequest webRequest
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.FORBIDDEN.value()),
-        HttpStatus.FORBIDDEN.getReasonPhrase(),
+        valueOf(FORBIDDEN.value()),
+        FORBIDDEN.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(errorDetails, FORBIDDEN);
   }
 
   /**
@@ -225,18 +230,18 @@ public class GlobalExceptionHandler {
    *     details and HTTP status BAD_REQUEST.
    */
   @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(BAD_REQUEST)
   public ResponseEntity<ErrorDetails> handleConstraintViolationException(
       final ConstraintViolationException exception,
       final WebRequest webRequest
   ) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
-        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
         exception.getMessage(),
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
-    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 }
