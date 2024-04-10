@@ -1,10 +1,11 @@
 package com.example.taskmanagerproject.security;
 
+import static java.util.stream.Collectors.toList;
+
 import com.example.taskmanagerproject.entities.Role;
 import com.example.taskmanagerproject.entities.User;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,6 +38,6 @@ public final class JwtEntityFactory {
     return roles.stream()
       .map(Enum::name)
       .map(SimpleGrantedAuthority::new)
-      .collect(Collectors.toList());
+      .collect(toList());
   }
 }

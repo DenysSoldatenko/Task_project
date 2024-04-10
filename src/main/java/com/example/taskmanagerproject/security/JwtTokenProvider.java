@@ -1,10 +1,13 @@
 package com.example.taskmanagerproject.security;
 
+import static io.jsonwebtoken.Jwts.builder;
+import static io.jsonwebtoken.Jwts.claims;
+import static io.jsonwebtoken.Jwts.parser;
+import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
+
 import com.example.taskmanagerproject.entities.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +40,7 @@ public class JwtTokenProvider {
 
   @PostConstruct
   public void init() {
-    this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    this.key = hmacShaKeyFor(secret.getBytes());
   }
 
   /**
@@ -54,7 +57,7 @@ public class JwtTokenProvider {
       final Set<Role> roles
   ) {
 
-    Claims claims = Jwts.claims()
+    Claims claims = claims()
         .subject(username)
         .add("id", userId)
         .add("roles", resolveRoles(roles))
@@ -63,7 +66,7 @@ public class JwtTokenProvider {
     Date now = new Date();
     Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-    return Jwts.builder()
+    return builder()
       .claims(claims)
       .expiration(validity)
       .signWith(key)
@@ -83,7 +86,7 @@ public class JwtTokenProvider {
    * @return true if the token is valid, false otherwise.
    */
   public boolean validateToken(final String token) {
-    Jws<Claims> claims = Jwts.parser()
+    Jws<Claims> claims = parser()
         .verifyWith(key)
         .build()
         .parseSignedClaims(token);
@@ -91,7 +94,7 @@ public class JwtTokenProvider {
   }
 
   private String getUsername(final String token) {
-    return Jwts.parser()
+    return parser()
       .verifyWith(key)
       .build()
       .parseSignedClaims(token)
@@ -108,8 +111,6 @@ public class JwtTokenProvider {
   public Authentication getAuthentication(final String token) {
     String username = getUsername(token);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    return new UsernamePasswordAuthenticationToken(
-      userDetails, "", userDetails.getAuthorities()
-    );
+    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
 }
