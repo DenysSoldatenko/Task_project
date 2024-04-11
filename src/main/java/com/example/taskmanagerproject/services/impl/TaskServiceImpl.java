@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.entities.TaskStatus.IN_PROGRESS;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND;
 import static java.sql.Timestamp.valueOf;
 import static java.time.LocalDateTime.now;
@@ -7,14 +8,12 @@ import static java.time.LocalDateTime.now;
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
 import com.example.taskmanagerproject.entities.Task;
-import com.example.taskmanagerproject.entities.TaskStatus;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.mappers.TaskMapper;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.TaskService;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -59,15 +58,9 @@ public class TaskServiceImpl implements TaskService {
 
     task.setTitle(taskDto.title());
     task.setDescription(taskDto.description());
-    task.setTaskStatus(
-        taskDto.taskStatus() != null ? taskDto.taskStatus()
-          : TaskStatus.IN_PROGRESS
-    );
+    task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus() : IN_PROGRESS);
     task.setExpirationDate(taskDto.expirationDate());
-    task.setImages(
-        taskDto.images() != null ? taskDto.images()
-          : task.getImages()
-    );
+    task.setImages(taskDto.images() != null ? taskDto.images() : task.getImages());
 
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);
@@ -77,11 +70,7 @@ public class TaskServiceImpl implements TaskService {
   @Transactional
   public TaskDto createTaskForUser(final TaskDto taskDto, final Long userId) {
     Task task = taskMapper.toEntity(taskDto);
-
-    task.setTaskStatus(
-        taskDto.taskStatus() != null ? taskDto.taskStatus()
-          : TaskStatus.IN_PROGRESS
-    );
+    task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus() : IN_PROGRESS);
     task.setImages(taskDto.images());
 
     Task createdTask = taskRepository.save(task);
@@ -101,9 +90,8 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> findAllSoonExpiringTasks(final Duration duration) {
-    LocalDateTime now = now();
     List<Task> taskList = taskRepository.findAllSoonExpiringTasks(
-        valueOf(now), valueOf(now.plus(duration))
+        valueOf(now()), valueOf(now().plus(duration))
     );
     return taskList.stream().map(taskMapper::toDto).toList();
   }

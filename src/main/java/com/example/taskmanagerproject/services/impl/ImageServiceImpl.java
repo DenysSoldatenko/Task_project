@@ -4,6 +4,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_CREATE
 import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_UPLOAD_IMAGE;
 import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_MUST_NOT_BE_EMPTY;
 import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_UPLOAD_FAILED;
+import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.configurations.minio.MinioProperties;
 import com.example.taskmanagerproject.dtos.TaskImageDto;
@@ -16,7 +17,6 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import java.io.InputStream;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,13 +49,17 @@ public final class ImageServiceImpl implements ImageService {
 
   private void createBucketIfNotExists() {
     try {
-      boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
-          .bucket(minioProperties.getBucket())
-          .build());
-      if (!bucketExists) {
-        minioClient.makeBucket(MakeBucketArgs.builder()
+      boolean bucketExists = minioClient.bucketExists(
+          BucketExistsArgs.builder()
             .bucket(minioProperties.getBucket())
-            .build());
+            .build()
+      );
+      if (!bucketExists) {
+        minioClient.makeBucket(
+            MakeBucketArgs.builder()
+              .bucket(minioProperties.getBucket())
+              .build()
+        );
       }
     } catch (Exception e) {
       throw new ImageUploadException(FAILED_TO_CREATE_BUCKET + e.getMessage());
@@ -71,19 +75,14 @@ public final class ImageServiceImpl implements ImageService {
   private String generateFileName(final MultipartFile file) {
     String originalFilename = file.getOriginalFilename();
     if (originalFilename != null) {
-      String extension = originalFilename.substring(
-          originalFilename.lastIndexOf(".") + 1
-      );
-      return UUID.randomUUID() + "." + extension;
+      String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+      return randomUUID() + "." + extension;
     } else {
       throw new ImageUploadException(IMAGE_MUST_NOT_BE_EMPTY);
     }
   }
 
-  private void uploadImageToMinio(
-      final InputStream inputStream,
-      final String fileName
-  ) {
+  private void uploadImageToMinio(final InputStream inputStream, final String fileName) {
     try {
       minioClient.putObject(PutObjectArgs.builder()
           .stream(inputStream, inputStream.available(), -1)

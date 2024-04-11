@@ -1,9 +1,9 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.entities.MailType.REGISTRATION;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
 
 import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.MailType;
 import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.mappers.UserMapper;
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     userValidator.validateUserDto(userDto);
     User createdUser = userFactory.createUserFromRequest(userDto);
     userRepository.save(createdUser);
-    mailService.sendEmail(userDto, MailType.REGISTRATION, new Properties());
+    mailService.sendEmail(userDto, REGISTRATION, new Properties());
     return createdUser;
   }
 

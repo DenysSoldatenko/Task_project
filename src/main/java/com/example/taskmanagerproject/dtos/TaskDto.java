@@ -68,7 +68,10 @@ public record TaskDto(
     )
     LocalDateTime expirationDate,
 
-    @Schema(description = "List of images associated with the entity")
+    @Schema(
+      description = "List of images associated with the entity",
+      example = "image.png"
+    )
     @JsonProperty(access = READ_ONLY)
     List<String> images
 ) implements Serializable {

@@ -33,9 +33,7 @@ public class MailServiceImpl implements MailService {
       final Properties params
   ) {
     MimeMessage mimeMessage = mailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(
-        mimeMessage, false, "UTF-8"
-    );
+    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
     helper.setTo(user.username());
 
     switch (type) {
@@ -84,7 +82,6 @@ public class MailServiceImpl implements MailService {
       final UserDto user,
       final Properties params
   ) {
-    StringWriter writer = new StringWriter();
     Map<String, Object> model = new HashMap<>();
     model.put("name", user.fullName());
     if (params.containsKey("task.title")) {
@@ -93,6 +90,7 @@ public class MailServiceImpl implements MailService {
     if (params.containsKey("task.description")) {
       model.put("description", params.getProperty("task.description"));
     }
+    StringWriter writer = new StringWriter();
     configuration.getTemplate(templateName).process(model, writer);
     return writer.toString();
   }

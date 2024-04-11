@@ -35,9 +35,7 @@ public class TaskReminderServiceImpl implements TaskReminderService {
     taskService.findAllSoonExpiringTasks(DURATION)
         .forEach(task -> {
             UserDto user = userService.getTaskAuthor(task.id());
-            mailService.sendEmail(
-                user, REMINDER, createPropertiesForTask(task)
-            );
+            mailService.sendEmail(user, REMINDER, createPropertiesForTask(task));
           }
         );
   }
