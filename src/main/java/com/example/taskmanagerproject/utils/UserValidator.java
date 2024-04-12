@@ -2,6 +2,7 @@ package com.example.taskmanagerproject.utils;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.PASSWORD_MISMATCH;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_EXISTS;
+import static java.lang.String.join;
 
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
@@ -39,38 +40,26 @@ public class UserValidator {
     validatePasswordMatching(userDto, errorMessages);
 
     if (!errorMessages.isEmpty()) {
-      throw new ValidationException(String.join(", ", errorMessages));
+      throw new ValidationException(join(", ", errorMessages));
     }
   }
 
-  private void validateConstraints(
-      final UserDto userDto,
-      final Set<String> errorMessages
-  ) {
+  private void validateConstraints(final UserDto userDto, final Set<String> errorMessages) {
     Set<ConstraintViolation<UserDto>> violations = validator.validate(userDto);
     for (ConstraintViolation<UserDto> violation : violations) {
       errorMessages.add(violation.getMessage());
     }
   }
 
-  private void validatePasswordMatching(
-      final UserDto userDto,
-      final Set<String> errorMessages
-  ) {
+  private void validatePasswordMatching(final UserDto userDto, final Set<String> errorMessages) {
     if (!userDto.password().equals(userDto.confirmPassword())) {
       errorMessages.add(PASSWORD_MISMATCH);
     }
   }
 
-  private void validateUserExists(
-      final UserDto userDto,
-      final Set<String> errorMessages
-  ) {
-    User existingUser = userRepository
-        .findByUsername(userDto.username())
-        .orElse(null);
-    if (existingUser != null
-        && !existingUser.getUsername().equals(userDto.username())) {
+  private void validateUserExists(final UserDto userDto, final Set<String> errorMessages) {
+    User existingUser = userRepository.findByUsername(userDto.username()).orElse(null);
+    if (existingUser != null && !existingUser.getUsername().equals(userDto.username())) {
       errorMessages.add(USER_ALREADY_EXISTS);
     }
   }
