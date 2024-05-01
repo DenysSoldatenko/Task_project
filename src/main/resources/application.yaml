@@ -10,7 +10,7 @@ spring:
       port: ${SPRING_DATA_REDIS_PORT}
       database: ${SPRING_DATA_REDIS_DATABASE}
   datasource:
-    url: jdbc:postgresql://${SPRING_DATASOURCE_HOST}:5432/example_database?currentSchema=task_list
+    url: jdbc:postgresql://${SPRING_DATASOURCE_HOST}:5432/${SPRING_DATASOURCE_DATABASE}?currentSchema=${SPRING_DATASOURCE_SCHEMA}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver

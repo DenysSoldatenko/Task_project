@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 }
 
 group = 'com.example'
@@ -22,35 +22,35 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-web:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-graphql:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-freemarker:3.2.2'
+	implementation "org.springframework.boot:spring-boot-starter-data-jdbc:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-graphql:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-mail:${springBootVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-freemarker:${springBootVersion}"
 
-	implementation 'io.jsonwebtoken:jjwt:0.12.5'
-	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-	implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
-	implementation 'net.datafaker:datafaker:2.1.0'
-	implementation 'org.liquibase:liquibase-core:4.25.1'
-	implementation 'io.minio:minio:8.5.7'
-	implementation 'com.graphql-java-kickstart:graphql-java-servlet:15.2.0'
-	implementation 'com.graphql-java:graphql-java-extended-scalars:21.0'
+	implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
+	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+	implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationVersion}"
+	implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
+	implementation "net.datafaker:datafaker:${datafakerVersion}"
+	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	implementation "io.minio:minio:${minioVersion}"
+	implementation "com.graphql-java-kickstart:graphql-java-servlet:${graphqlJavaServletVersion}"
+	implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"){
-		exclude group: "io.swagger.core.v3", module:"swagger-annotations"
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}") {
+		exclude group: "io.swagger.core.v3", module: "swagger-annotations"
 	}
-	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+	implementation "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
-	runtimeOnly 'org.postgresql:postgresql:42.7.1'
-	compileOnly 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+	compileOnly "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructProcessorVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 }
 
 tasks.named('test') {
