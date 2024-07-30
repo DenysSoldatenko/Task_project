@@ -1,4 +1,7 @@
 databaseChangeLog:
-  - includeAll:
-      path: /changesets
-      relativeToChangelogFile: true
+  - changeSet:
+      id: 1
+      author: owner
+      sqlFile:
+        path: "changesets/v2_create_tables.sql"
+        relativeToChangelogFile: true

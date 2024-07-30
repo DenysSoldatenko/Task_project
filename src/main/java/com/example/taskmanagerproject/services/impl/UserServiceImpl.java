@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.MailType.REGISTRATION;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
 
 import com.example.taskmanagerproject.dtos.UserDto;
@@ -8,11 +7,9 @@ import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;
-import com.example.taskmanagerproject.services.MailService;
 import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.UserFactory;
 import com.example.taskmanagerproject.utils.UserValidator;
-import java.util.Properties;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -33,7 +30,6 @@ public class UserServiceImpl implements UserService {
   private final UserMapper userMapper;
   private final UserFactory userFactory;
   private final UserValidator userValidator;
-  private final MailService mailService;
 
   @Override
   @Transactional(readOnly = true)
@@ -75,7 +71,6 @@ public class UserServiceImpl implements UserService {
     userValidator.validateUserDto(userDto);
     User createdUser = userFactory.createUserFromRequest(userDto);
     userRepository.save(createdUser);
-    mailService.sendEmail(userDto, REGISTRATION, new Properties());
     return createdUser;
   }
 
