@@ -1,44 +1,61 @@
 package com.example.taskmanagerproject.entities;
 
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.GenerationType.IDENTITY;
+import jakarta.persistence.*;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-/**
- * Represents a task entity in the project.
- */
-@Data
 @Entity
 @Table(name = "tasks")
-public class Task implements Serializable {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Task {
 
   @Id
-  @GeneratedValue(strategy = IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "project_id", nullable = false)
+  private Project project;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_task_id")
+  private Task parentTask;
+
+  @ManyToOne
+  @JoinColumn(name = "team_id", nullable = false)
+  private Team team;
 
   private String title;
 
   private String description;
 
-  @Enumerated(value = STRING)
-  private TaskStatus taskStatus;
+  private String taskStatus;
 
-  private LocalDateTime expirationDate;
+  private String priority;
+
+  private LocalDateTime createdAt;
+
+  @OneToMany(mappedBy = "task")
+  private List<TaskDependency> taskDependencies;
 
   @Column(name = "image")
   @ElementCollection
   @CollectionTable(name = "tasks_images")
   private List<String> images;
+
+  @OneToMany(mappedBy = "task")
+  private List<TaskComment> taskComments;
+
+  @OneToMany(mappedBy = "task")
+  private List<TaskHistory> taskHistories;
 }

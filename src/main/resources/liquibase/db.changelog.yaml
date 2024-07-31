@@ -5,3 +5,9 @@ databaseChangeLog:
       sqlFile:
         path: "changesets/v2_create_tables.sql"
         relativeToChangelogFile: true
+  - changeSet:
+      id: 2
+      author: owner
+      sqlFile:
+        path: "changesets/v2_insert_data.sql"
+        relativeToChangelogFile: true

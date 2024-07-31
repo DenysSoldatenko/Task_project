@@ -81,7 +81,14 @@ public record UserDto(
       example = "password123",
       maxLength = MAX_PASSWORD_LENGTH
     )
-    String confirmPassword
+    String confirmPassword,
+
+    @Schema(
+      description = "Role of the user for authentication (e.g., ADMIN, USER)",
+      example = "ADMIN"
+    )
+    @JsonProperty(access = WRITE_ONLY)
+    String role
 ) implements Serializable {
 
   public static final int MIN_FULL_NAME_LENGTH = 2;

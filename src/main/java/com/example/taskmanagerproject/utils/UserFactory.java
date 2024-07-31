@@ -1,10 +1,12 @@
 package com.example.taskmanagerproject.utils;
 
-import static com.example.taskmanagerproject.entities.Role.ROLE_USER;
-import static java.util.Collections.singleton;
+import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND;
 
 import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.entities.Role;
+import com.example.taskmanagerproject.entities.RoleName;
 import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class UserFactory {
 
   private final PasswordEncoder passwordEncoder;
+  private final RoleRepository roleRepository;
 
   /**
    * Creates a new User instance from a registration request.
@@ -25,12 +28,15 @@ public class UserFactory {
    * @return A new User instance.
    */
   public User createUserFromRequest(final UserDto request) {
+    Role role = roleRepository.findByName(RoleName.valueOf(request.role()))
+      .orElseThrow(() -> new IllegalArgumentException(ROLE_NOT_FOUND));
+
     User user = new User();
     user.setFullName(request.fullName());
     user.setUsername(request.username());
     user.setPassword(passwordEncoder.encode(request.password()));
     user.setConfirmPassword(passwordEncoder.encode(request.confirmPassword()));
-    user.setUserRoles(singleton(ROLE_USER));
+    user.setRole(role);
     return user;
   }
 }

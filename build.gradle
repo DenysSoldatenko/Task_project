@@ -28,8 +28,6 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-graphql:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-mail:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-freemarker:${springBootVersion}"
 
 	implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
 	implementation "org.mapstruct:mapstruct:${mapStructVersion}"

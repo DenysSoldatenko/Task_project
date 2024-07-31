@@ -1,9 +1,9 @@
 package com.example.taskmanagerproject.security;
 
-import static com.example.taskmanagerproject.entities.Role.ROLE_ADMIN;
+import static com.example.taskmanagerproject.entities.RoleName.ADMIN;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
-import com.example.taskmanagerproject.entities.Role;
+import com.example.taskmanagerproject.entities.RoleName;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,9 @@ public class SecurityExpressionService {
    * @return true if the current user can
    *     access the specified user's data, false otherwise.
    */
-  public boolean canAccessUser(final Long id) {
+  public boolean hasRoleAdmin(final Long id) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean isAdmin = hasAnyRole(ROLE_ADMIN);
+    boolean isAdmin = hasAnyRole(ADMIN);
     log.info("Checking user access for user id: {} - isAdmin: {}", id, isAdmin);
     return user.getId().equals(id) || isAdmin;
   }
@@ -50,10 +50,10 @@ public class SecurityExpressionService {
     return isTaskOwner;
   }
 
-  private boolean hasAnyRole(final Role... roles) {
+  private boolean hasAnyRole(final RoleName... roles) {
     Authentication authentication = getContext().getAuthentication();
     boolean hasRole = Arrays.stream(roles)
-        .map(Role::name)
+        .map(RoleName::name)
         .map(SimpleGrantedAuthority::new)
         .anyMatch(authentication.getAuthorities()::contains);
     log.info("Checking roles: {} - hasRole: {}", Arrays.toString(roles), hasRole);

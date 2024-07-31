@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.configurations.data;
 
-import static com.example.taskmanagerproject.entities.Role.ROLE_USER;
 import static com.example.taskmanagerproject.entities.TaskStatus.values;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singleton;
@@ -68,7 +67,6 @@ public class DataGenerator {
     user.setUsername(faker.internet().emailAddress());
     user.setPassword(passwordEncoder.encode("password123"));
     user.setConfirmPassword(passwordEncoder.encode("password123"));
-    user.setUserRoles(singleton(ROLE_USER));
     return user;
   }
 
@@ -85,8 +83,6 @@ public class DataGenerator {
     Task task = new Task();
     task.setTitle(faker.lorem().sentence());
     task.setDescription(faker.lorem().sentence());
-    task.setTaskStatus(values()[faker.number().numberBetween(0, values().length)]);
-    task.setExpirationDate(now().plusDays(faker.number().numberBetween(1, MAX_DAYS_TO_EXPIRE)));
     return task;
   }
 }

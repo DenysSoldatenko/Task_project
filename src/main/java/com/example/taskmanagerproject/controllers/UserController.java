@@ -74,7 +74,7 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getUserById")
-  @PreAuthorize("@expressionService.canAccessUser(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public UserDto getUserById(
       @PathVariable(name = "id") @Argument final Long id
   ) {
@@ -112,7 +112,7 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getTasksByUserId")
-  @PreAuthorize("@expressionService.canAccessUser(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public List<TaskDto> getTasksByUserId(
       @PathVariable(name = "id") @Argument final Long id
   ) {
@@ -155,7 +155,7 @@ public class UserController {
   )
   @ResponseStatus(CREATED)
   @MutationMapping(name = "createTaskForUser")
-  @PreAuthorize("@expressionService.canAccessUser(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public TaskDto createTaskForUser(
       @PathVariable(name = "id") @Argument final Long id,
       @Valid @RequestBody @Argument final TaskDto taskDto
@@ -199,7 +199,7 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @MutationMapping(name = "updateUser")
-  @PreAuthorize("@expressionService.canAccessUser(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public UserDto updateUser(
       @Valid @RequestBody @Argument final UserDto userDto,
       @PathVariable(name = "id") @Argument final Long id
@@ -234,7 +234,7 @@ public class UserController {
   )
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteUserById")
-  @PreAuthorize("@expressionService.canAccessUser(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public void deleteUserById(
       @PathVariable(name = "id") @Argument final Long id
   ) {

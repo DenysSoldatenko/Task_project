@@ -5,13 +5,11 @@ import static io.jsonwebtoken.Jwts.claims;
 import static io.jsonwebtoken.Jwts.parser;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 
-import com.example.taskmanagerproject.entities.Role;
+import com.example.taskmanagerproject.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.annotation.PostConstruct;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +26,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
+  private final UserRepository userRepository;
   private final UserDetailsService userDetailsService;
 
   @Value("${jwt.token.secret}")
@@ -48,19 +47,19 @@ public class JwtTokenProvider {
    *
    * @param userId   The ID of the user.
    * @param username The username of the user.
-   * @param roles    The roles assigned to the user.
+   * @param role     The role assigned to the user.
    * @return The generated access token.
    */
   public String createAccessToken(
       final Long userId,
       final String username,
-      final Set<Role> roles
+      final String role
   ) {
 
     Claims claims = claims()
         .subject(username)
         .add("id", userId)
-        .add("roles", resolveRoles(roles))
+        .add("roles", role)
         .build();
 
     Date now = new Date();
@@ -71,12 +70,6 @@ public class JwtTokenProvider {
       .expiration(validity)
       .signWith(key)
       .compact();
-  }
-
-  private List<String> resolveRoles(final Set<Role> roles) {
-    return roles.stream()
-      .map(Enum::name)
-      .toList();
   }
 
   /**

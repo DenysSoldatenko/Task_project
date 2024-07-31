@@ -1,8 +1,26 @@
 package com.example.taskmanagerproject.entities;
 
-/**
- * Enumeration representing user roles in the project.
- */
-public enum Role {
-  ROLE_USER, ROLE_ADMIN
+import lombok.*;
+
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+
+@Entity
+@Table(name = "roles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Role implements Serializable {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Enumerated(EnumType.STRING)
+  private RoleName name;
+
+  private String description;
 }

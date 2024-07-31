@@ -1,26 +1,14 @@
 package com.example.taskmanagerproject.entities;
 
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.EAGER;
-import static jakarta.persistence.GenerationType.IDENTITY;
-
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
-import lombok.Data;
-import lombok.ToString;
+
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 /**
  * Represents a user entity in the project.
@@ -43,25 +31,15 @@ public class User implements Serializable {
 
   private String confirmPassword;
 
-  @Column(name = "role")
-  @Enumerated(value = STRING)
-  @ElementCollection(fetch = EAGER)
-  @CollectionTable(name = "users_roles")
-  private Set<Role> userRoles;
+  @ManyToOne(fetch = EAGER)
+  @JoinTable(name = "users_roles",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Role role;
 
-  @OneToMany(fetch = EAGER)
-  @JoinTable(name = "users_tasks",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "task_id"))
-  private List<Task> userTasks;
+  @OneToMany(mappedBy = "user")
+  private List<UserTask> userTasks;
 
-  @ToString.Include(name = "password")
-  private String maskPassword() {
-    return "********";
-  }
-
-  @ToString.Include(name = "confirmPassword")
-  private String maskConfirmPassword() {
-    return "********";
-  }
+  @OneToMany(mappedBy = "user")
+  private List<UserTeam> userTeams;
 }

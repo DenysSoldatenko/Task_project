@@ -16,6 +16,9 @@ public class MessageUtils {
       = "Password and password confirmation do not match!";
   public static final String TASK_NOT_FOUND
       = "Task not found!";
+  public static final String ROLE_NOT_FOUND
+      = "Role not found!";
+
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.controllers;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.example.taskmanagerproject.dtos.AuthenticationRequest;
@@ -40,7 +41,7 @@ public class AuthenticationController {
       summary = "Register a new user",
       description = "Register a new user with the provided data"
   )
-  @ResponseStatus(OK)
+  @ResponseStatus(CREATED)
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "User registered successfully",
         content = @Content(mediaType = "application/json",

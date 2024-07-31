@@ -59,7 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   private AuthenticationResponse createAuthenticationResponse(final User user) {
-    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getUserRoles());
+    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getRole().getName().name());
     return new AuthenticationResponse(jwtToken);
   }
 }

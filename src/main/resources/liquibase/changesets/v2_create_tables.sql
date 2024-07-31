@@ -27,6 +27,15 @@ CREATE TABLE IF NOT EXISTS role_hierarchy
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
+CREATE TABLE IF NOT EXISTS users_roles
+(
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    CONSTRAINT fk_users_roles_users FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
 CREATE TABLE IF NOT EXISTS teams
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -71,7 +80,6 @@ CREATE TABLE IF NOT EXISTS tasks
     task_status    VARCHAR(255) NOT NULL DEFAULT 'Assigned',
     priority       VARCHAR(50)  NOT NULL DEFAULT 'Medium',
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tasks_project FOREIGN KEY (project_id) REFERENCES projects (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_tasks_parent_task FOREIGN KEY (parent_task_id) REFERENCES tasks (id)
@@ -109,10 +117,8 @@ CREATE TABLE IF NOT EXISTS task_dependencies
 
 CREATE TABLE IF NOT EXISTS tasks_images
 (
-    id          BIGSERIAL PRIMARY KEY,
-    task_id     BIGINT       NOT NULL,
-    image       VARCHAR(255) NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    task_id BIGINT       NOT NULL,
+    image   VARCHAR(255) NOT NULL,
     CONSTRAINT fk_tasks_images_tasks FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
