@@ -36,6 +36,7 @@ dependencies {
 	implementation "net.datafaker:datafaker:${datafakerVersion}"
 	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
 	implementation "io.minio:minio:${minioVersion}"
+	implementation "com.github.slugify:slugify:${slugifyVersion}"
 	implementation "com.graphql-java-kickstart:graphql-java-servlet:${graphqlJavaServletVersion}"
 	implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 

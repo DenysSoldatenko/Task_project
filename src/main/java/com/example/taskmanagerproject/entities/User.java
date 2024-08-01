@@ -27,6 +27,8 @@ public class User implements Serializable {
   @Email
   private String username;
 
+  private String slug;
+
   private String password;
 
   private String confirmPassword;

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users
     id               BIGSERIAL PRIMARY KEY,
     full_name        VARCHAR(255) NOT NULL,
     username         VARCHAR(255) NOT NULL UNIQUE,
+    slug             VARCHAR(255) NOT NULL UNIQUE,
     password         VARCHAR(255) NOT NULL,
     confirm_password VARCHAR(255) NOT NULL,
     CONSTRAINT chk_password_length CHECK (LENGTH(password) >= 6),

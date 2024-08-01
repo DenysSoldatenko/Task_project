@@ -1,9 +1,12 @@
 package com.example.taskmanagerproject.configurations;
 
+import static com.github.slugify.Slugify.builder;
+import static java.util.Locale.ENGLISH;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import com.example.taskmanagerproject.security.JwtTokenFilter;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
+import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +46,11 @@ public class TaskManagerSecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public Slugify slugGenerator() {
+    return builder().locale(ENGLISH).build();
   }
 
   @Bean

@@ -33,9 +33,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(value = "UserService::getById", key = "#userId")
-  public UserDto getUserById(final Long userId) {
-    User user = userRepository.findById(userId)
+  @Cacheable(value = "UserService::getUserBySlug", key = "#slug")
+  public UserDto getUserBySlug(final String slug) {
+    User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     return userMapper.toDto(user);
   }
@@ -50,9 +50,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  @CachePut(value = "UserService::getById", key = "#userId")
-  public UserDto updateUser(final UserDto userDto, final Long userId) {
-    User user = userRepository.findById(userId)
+  @CachePut(value = "UserService::getUserBySlug", key = "#slug")
+  public UserDto updateUser(final UserDto userDto, final String slug) {
+    User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     userValidator.validateUserDto(userDto);
 
@@ -94,9 +94,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  @CacheEvict(value = "UserService::getById", key = "#userId")
-  public void deleteUserById(final Long userId) {
-    User user = userRepository.findById(userId)
+  @CacheEvict(value = "UserService::getById", key = "#slug")
+  public void deleteUserBySlug(final String slug) {
+    User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     userRepository.delete(user);
   }

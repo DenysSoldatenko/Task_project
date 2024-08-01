@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.security;
 import static com.example.taskmanagerproject.entities.RoleName.ADMIN;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
+import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.RoleName;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.Arrays;
@@ -25,15 +26,16 @@ public class SecurityExpressionService {
   /**
    * Checks if the current user can access the specified user's data.
    *
-   * @param id The ID of the user to check access for.
+   * @param slug The slug of the user to check access for.
    * @return true if the current user can
    *     access the specified user's data, false otherwise.
    */
-  public boolean hasRoleAdmin(final Long id) {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+  public boolean hasRoleAdmin(final String slug) {
+    JwtEntity jwtEntity = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    UserDto user = userService.getUserBySlug(slug);
     boolean isAdmin = hasAnyRole(ADMIN);
-    log.info("Checking user access for user id: {} - isAdmin: {}", id, isAdmin);
-    return user.getId().equals(id) || isAdmin;
+    log.info("Checking user access for user id: {} - isAdmin: {}", slug, isAdmin);
+    return jwtEntity.getId().equals(user.id()) || isAdmin;
   }
 
   /**

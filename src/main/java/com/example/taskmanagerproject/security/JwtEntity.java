@@ -14,8 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 public final class JwtEntity implements UserDetails {
 
   private final Long id;
-  private final String username;
   private final String name;
+  private final String username;
   private final String password;
   private final Collection<? extends GrantedAuthority> authorities;
 

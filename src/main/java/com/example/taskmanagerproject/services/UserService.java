@@ -8,11 +8,11 @@ import com.example.taskmanagerproject.entities.User;
  */
 public interface UserService {
 
-  UserDto getUserById(Long userId);
+  UserDto getUserBySlug(String slug);
 
   User getUserByUsername(String username);
 
-  UserDto updateUser(UserDto user, Long userId);
+  UserDto updateUser(UserDto user, String slug);
 
   User createUser(UserDto user);
 
@@ -20,6 +20,6 @@ public interface UserService {
 
   UserDto getTaskAuthor(Long taskId);
 
-  void deleteUserById(Long userId);
+  void deleteUserBySlug(String slug);
 }
 

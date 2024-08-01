@@ -15,21 +15,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controller class for handling user-related endpoints.
@@ -44,41 +37,41 @@ public class UserController {
   private final TaskService taskService;
 
   /**
-   * Retrieves user information by ID.
+   * Retrieves user information by slug.
    *
-   * @param id The ID of the user to retrieve.
+   * @param slug The slug of the user to retrieve.
    * @return ResponseEntity containing the user DTO.
    */
-  @GetMapping("/{id}")
+  @GetMapping("/{slug}")
   @Operation(
-      summary = "Get user by ID",
-      description = "Retrieve user information by ID",
-      responses = {
-          @ApiResponse(responseCode = "200", description = "User retrieved successfully",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = UserDto.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "User not found",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          )
-      }
+    summary = "Get user by slug",
+    description = "Retrieve user information by slug",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "User retrieved successfully",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = UserDto.class))
+      ),
+      @ApiResponse(responseCode = "403", description = "Access denied",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "404", description = "User not found",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      )
+    }
   )
   @ResponseStatus(OK)
-  @QueryMapping(name = "getUserById")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
-  public UserDto getUserById(
-      @PathVariable(name = "id") @Argument final Long id
+  @QueryMapping(name = "getUserBySlug")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
+  public UserDto getUserBySlug(
+    @PathVariable(name = "slug") @Argument final String slug
   ) {
-    return userService.getUserById(id);
+    return userService.getUserBySlug(slug);
   }
 
   /**
@@ -89,32 +82,32 @@ public class UserController {
    */
   @GetMapping("/{id}/tasks")
   @Operation(
-      summary = "Get tasks by user ID",
-      description = "Retrieve tasks assigned to a user by ID",
-      responses = {
-          @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = TaskDto[].class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "User not found",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          )
-      }
+    summary = "Get tasks by user ID",
+    description = "Retrieve tasks assigned to a user by ID",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = TaskDto[].class))
+      ),
+      @ApiResponse(responseCode = "403", description = "Access denied",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "404", description = "User not found",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      )
+    }
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getTasksByUserId")
   @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public List<TaskDto> getTasksByUserId(
-      @PathVariable(name = "id") @Argument final Long id
+    @PathVariable(name = "id") @Argument final Long id
   ) {
     return taskService.getAllTasksByUserId(id);
   }
@@ -128,116 +121,116 @@ public class UserController {
    */
   @PostMapping("/{id}/tasks")
   @Operation(
-      summary = "Create task for user",
-      description = "Create a task assigned to a user by ID",
-      responses = {
-          @ApiResponse(responseCode = "201", description = "Task created successfully",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = TaskDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "User not found",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          )
-      }
+    summary = "Create task for user",
+    description = "Create a task assigned to a user by ID",
+    responses = {
+      @ApiResponse(responseCode = "201", description = "Task created successfully",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = TaskDto.class))
+      ),
+      @ApiResponse(responseCode = "400", description = "Invalid input data",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "403", description = "Access denied",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "404", description = "User not found",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      )
+    }
   )
   @ResponseStatus(CREATED)
   @MutationMapping(name = "createTaskForUser")
   @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
   public TaskDto createTaskForUser(
-      @PathVariable(name = "id") @Argument final Long id,
-      @Valid @RequestBody @Argument final TaskDto taskDto
+    @PathVariable(name = "id") @Argument final Long id,
+    @Valid @RequestBody @Argument final TaskDto taskDto
   ) {
     return taskService.createTaskForUser(taskDto, id);
   }
 
   /**
-   * Updates user information by ID.
+   * Updates user information by slug.
    *
    * @param userDto The DTO containing the updated user information.
-   * @param id      The ID of the user to update.
+   * @param slug    The slug of the user to update.
    * @return ResponseEntity containing the updated user DTO.
    */
-  @PutMapping("/{id}")
+  @PutMapping("/{slug}")
   @Operation(
-      summary = "Update user",
-      description = "Update user information by ID",
-      responses = {
-          @ApiResponse(responseCode = "200", description = "User updated successfully",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = UserDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "User not found",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          )
-      }
+    summary = "Update user",
+    description = "Update user information by slug",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "User updated successfully",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = UserDto.class))
+      ),
+      @ApiResponse(responseCode = "400", description = "Invalid input data",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "403", description = "Access denied",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "404", description = "User not found",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      )
+    }
   )
   @ResponseStatus(OK)
   @MutationMapping(name = "updateUser")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
   public UserDto updateUser(
-      @Valid @RequestBody @Argument final UserDto userDto,
-      @PathVariable(name = "id") @Argument final Long id
+    @Valid @RequestBody @Argument final UserDto userDto,
+    @PathVariable(name = "slug") @Argument final String slug
   ) {
-    return userService.updateUser(userDto, id);
+    return userService.updateUser(userDto, slug);
   }
 
   /**
-   * Deletes a user by ID.
+   * Deletes a user by slug.
    *
-   * @param id The ID of the user to delete.
+   * @param slug The slug of the user to delete.
    */
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/{slug}")
   @Operation(
-      summary = "Delete user by ID",
-      description = "Delete user by ID",
-      responses = {
-          @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "User not found",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = ErrorDetails.class))
-          )
-      }
+    summary = "Delete user by slug",
+    description = "Delete user by slug",
+    responses = {
+      @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+      @ApiResponse(responseCode = "403", description = "Access denied",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "404", description = "User not found",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      ),
+      @ApiResponse(responseCode = "500", description = "Internal server error",
+        content = @Content(mediaType = "application/json",
+          schema = @Schema(implementation = ErrorDetails.class))
+      )
+    }
   )
   @ResponseStatus(NO_CONTENT)
-  @MutationMapping(name = "deleteUserById")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
-  public void deleteUserById(
-      @PathVariable(name = "id") @Argument final Long id
+  @MutationMapping(name = "deleteUserBySlug")
+  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
+  public void deleteUserBySlug(
+    @PathVariable(name = "slug") @Argument final String slug
   ) {
-    userService.deleteUserById(id);
+    userService.deleteUserBySlug(slug);
   }
 }

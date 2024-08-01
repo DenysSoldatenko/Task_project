@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByUsername(String username);
 
+  Optional<User> findBySlug(String slug);
+
   @Query(value = """
             SELECT u.id,
                    u.full_name,
