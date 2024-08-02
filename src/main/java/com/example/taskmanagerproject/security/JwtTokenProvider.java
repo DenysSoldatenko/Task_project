@@ -5,7 +5,6 @@ import static io.jsonwebtoken.Jwts.claims;
 import static io.jsonwebtoken.Jwts.parser;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 
-import com.example.taskmanagerproject.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.annotation.PostConstruct;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-  private final UserRepository userRepository;
   private final UserDetailsService userDetailsService;
 
   @Value("${jwt.token.secret}")
@@ -37,6 +35,12 @@ public class JwtTokenProvider {
 
   private SecretKey key;
 
+  /**
+   * Initializes the HMAC key using the provided secret.
+   *
+   * <p>This method is annotated with {@link PostConstruct} and is automatically
+   * called after the bean has been created and dependencies are injected.
+   */
   @PostConstruct
   public void init() {
     this.key = hmacShaKeyFor(secret.getBytes());

@@ -24,18 +24,41 @@ public class SecurityExpressionService {
   private final UserService userService;
 
   /**
-   * Checks if the current user can access the specified user's data.
+   * Checks if the current user has the ADMIN role.
    *
-   * @param slug The slug of the user to check access for.
-   * @return true if the current user can
-   *     access the specified user's data, false otherwise.
+   * @return true if the current user has the 'ADMIN' role, false otherwise.
+   */
+  public boolean hasRoleAdmin() {
+    boolean isAdmin = hasAnyRole(ADMIN);
+    log.info("Checking if user has ADMIN role - isAdmin: {}", isAdmin);
+    return isAdmin;
+  }
+
+  /**
+   * Checks if the current user can access the specified user's data by slug.
+   *
+   * @param slug The slug of the user to check.
+   * @return true if the current user is an admin or matches the user's slug.
    */
   public boolean hasRoleAdmin(final String slug) {
+    boolean isAdmin = hasAnyRole(ADMIN);
     JwtEntity jwtEntity = (JwtEntity) getContext().getAuthentication().getPrincipal();
     UserDto user = userService.getUserBySlug(slug);
-    boolean isAdmin = hasAnyRole(ADMIN);
-    log.info("Checking user access for user id: {} - isAdmin: {}", slug, isAdmin);
+    log.info("Checking access for user slug: {} - isAdmin: {}", slug, isAdmin);
     return jwtEntity.getId().equals(user.id()) || isAdmin;
+  }
+
+  /**
+   * Checks if the current user can access the specified user's data by ID.
+   *
+   * @param id The ID of the user to check.
+   * @return true if the current user is an admin or matches the user's ID.
+   */
+  public boolean hasRoleAdmin(Long id) {
+    boolean isAdmin = hasAnyRole(ADMIN);
+    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    log.info("Checking access for user ID: {} - isAdmin: {}", id, isAdmin);
+    return user.getId().equals(id) || isAdmin;
   }
 
   /**

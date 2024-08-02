@@ -1,11 +1,10 @@
 package com.example.taskmanagerproject.security;
 
 import com.example.taskmanagerproject.entities.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.util.Collections;
 import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Factory class for creating JwtEntity objects.
@@ -24,7 +23,7 @@ public final class JwtEntityFactory {
       user.getUsername(),
       user.getFullName(),
       user.getPassword(),
-      mapToGrantedAuthorities(user.getRole().getName().name())
+      mapToGrantedAuthorities(user.getRole().getName())
     );
   }
 

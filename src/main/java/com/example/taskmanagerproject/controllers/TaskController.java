@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller class for handling task-related endpoints.
  */
 @RestController
-@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/tasks")
 @Tag(name = "Task Controller", description = "Endpoints for managing tasks")
 public class TaskController {
 

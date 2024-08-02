@@ -8,6 +8,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.Objects;
+
 import static com.example.taskmanagerproject.entities.RoleName.USER;
 
 /**
@@ -26,14 +28,11 @@ public interface UserMapper {
 
   @Named("roleToString")
   default String roleToString(Role role) {
-    return role != null ? role.getName().toString() : null;
+    return role != null ? role.getName() : null;
   }
 
   @Named("stringToRole")
   default Role stringToRole(String roleName) {
-    if (roleName != null) {
-      return Role.builder().name(RoleName.valueOf(roleName)).build();
-    }
-    return Role.builder().name(USER).build(); // Default to USER
+    return Role.builder().name(Objects.requireNonNullElseGet(roleName, USER::name)).build();
   }
 }

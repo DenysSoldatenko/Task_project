@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(BAD_REQUEST)
 public class ImageUploadException extends RuntimeException {
 
+  /**
+   * Constructs a new ImageUploadException with the specified detail message.
+   *
+   * @param message The detail message explaining the error.
+   */
   public ImageUploadException(final String message) {
     super(message);
   }

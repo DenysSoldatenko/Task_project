@@ -7,5 +7,11 @@ import com.example.taskmanagerproject.dtos.TaskImageDto;
  */
 public interface ImageService {
 
+  /**
+   * Uploads an image for a task.
+   *
+   * @param taskImage The TaskImageDto containing the image data and task information.
+   * @return A string representing the location or URL of the uploaded image.
+   */
   String uploadImage(TaskImageDto taskImage);
 }

@@ -19,4 +19,4 @@ public record AuthenticationRequest(
       example = "password123"
     )
     String password
-) { }
+) {}

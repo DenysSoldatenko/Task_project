@@ -16,8 +16,20 @@ public class MessageUtils {
       = "Password and password confirmation do not match!";
   public static final String TASK_NOT_FOUND
       = "Task not found!";
+
+
   public static final String ROLE_NOT_FOUND
       = "Role not found!";
+  public static final String ROLE_ALREADY_EXISTS
+      = "Role already exists!";
+  public static final String ROLE_NAME_NULL_OR_EMPTY
+      = "Role name cannot be null or empty";
+  public static final String ROLE_NAME_LENGTH_INVALID
+      = "Role name must be between 3 and 50 characters.";
+  public static final String ROLE_DESCRIPTION_TOO_LONG
+      = "Role description must be 200 characters or less";
+  public static final String ROLE_NAME_INVALID_FORMAT
+      = "Role name can only contain alphanumeric characters and underscores";
 
 
   public static final String IMAGE_UPLOAD_FAILED

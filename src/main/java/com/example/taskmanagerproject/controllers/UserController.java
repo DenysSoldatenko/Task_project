@@ -28,8 +28,8 @@ import java.util.List;
  * Controller class for handling user-related endpoints.
  */
 @RestController
-@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/users")
 @Tag(name = "User Controller", description = "Endpoints for managing users")
 public class UserController {
 

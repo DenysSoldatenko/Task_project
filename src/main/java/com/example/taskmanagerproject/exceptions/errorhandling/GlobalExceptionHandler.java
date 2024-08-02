@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.example.taskmanagerproject.exceptions.ImageUploadException;
+import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
@@ -41,6 +42,30 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(TaskNotFoundException.class)
   public ResponseEntity<ErrorDetails> handlePostNotFoundException(
       final TaskNotFoundException exception,
+      final WebRequest webRequest
+  ) {
+
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
+  }
+
+  /**
+   * Handles the exception when a {@link RoleNotFoundException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(RoleNotFoundException.class)
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
+      final RoleNotFoundException exception,
       final WebRequest webRequest
   ) {
 

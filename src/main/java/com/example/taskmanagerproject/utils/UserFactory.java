@@ -5,8 +5,8 @@ import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.Role;
-import com.example.taskmanagerproject.entities.RoleName;
 import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,8 @@ public class UserFactory {
    * @return The Role entity.
    */
   private Role getRoleFromRequest(final UserDto request) {
-    return roleRepository.findByName(RoleName.valueOf(request.role()))
-      .orElseThrow(() -> new IllegalArgumentException(ROLE_NOT_FOUND));
+    return roleRepository.findByName(request.role())
+      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
   }
 
   /**
@@ -67,7 +67,8 @@ public class UserFactory {
   /**
    * Generates a unique slug from the user's full name by appending a shortened UUID.
    *
-   * <p>The base slug is created from the full name, and a unique 8-character suffix from a UUID is appended.
+   * <p>The base slug is created from the full name,
+   * and a unique 8-character suffix from a UUID is appended.
    *
    * @param fullName The full name to generate the slug for.
    * @return A unique slug consisting of the base slug and a shortened UUID.

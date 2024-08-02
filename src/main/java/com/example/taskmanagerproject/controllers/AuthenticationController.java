@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller class for handling authentication-related operations.
  */
 @RestController
-@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 @Tag(
     name = "Authentication Controller",
     description = "Endpoints for user authentication"
@@ -36,6 +36,12 @@ public class AuthenticationController {
 
   private final AuthenticationService authenticationService;
 
+  /**
+   * Registers a new user with the provided data.
+   *
+   * @param request The UserDto containing the user's registration data.
+   * @return The authentication response containing token and user details.
+   */
   @PostMapping("/register")
   @Operation(
       summary = "Register a new user",
@@ -45,15 +51,15 @@ public class AuthenticationController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "User registered successfully",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = AuthenticationResponse.class))
+          schema = @Schema(implementation = AuthenticationResponse.class))
       ),
       @ApiResponse(responseCode = "400", description = "Invalid input data",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = ErrorDetails.class))
+          schema = @Schema(implementation = ErrorDetails.class))
       ),
       @ApiResponse(responseCode = "500", description = "Internal server error",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = ErrorDetails.class))
+          schema = @Schema(implementation = ErrorDetails.class))
       )
   })
   public AuthenticationResponse register(
@@ -62,6 +68,12 @@ public class AuthenticationController {
     return authenticationService.registerUser(request);
   }
 
+  /**
+   * Authenticates a user with the provided credentials.
+   *
+   * @param request The AuthenticationRequest containing the user's credentials.
+   * @return The authentication response containing a token.
+   */
   @PostMapping("/authenticate")
   @Operation(
       summary = "Authenticate a user",
@@ -71,19 +83,19 @@ public class AuthenticationController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Authentication successful",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = AuthenticationResponse.class))
+          schema = @Schema(implementation = AuthenticationResponse.class))
       ),
       @ApiResponse(responseCode = "401", description = "Invalid credentials",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = ErrorDetails.class))
+          schema = @Schema(implementation = ErrorDetails.class))
       ),
       @ApiResponse(responseCode = "400", description = "Invalid input data",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = ErrorDetails.class))
+          schema = @Schema(implementation = ErrorDetails.class))
       ),
       @ApiResponse(responseCode = "500", description = "Internal server error",
         content = @Content(mediaType = "application/json",
-        schema = @Schema(implementation = ErrorDetails.class))
+          schema = @Schema(implementation = ErrorDetails.class))
       )
   })
   public AuthenticationResponse authenticate(

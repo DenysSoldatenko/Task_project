@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(NOT_FOUND)
 public class UserNotFoundException extends RuntimeException {
+
+  /**
+   * Constructs a new UserNotFoundException with the specified detail message.
+   *
+   * @param message The detail message explaining the error.
+   */
   public UserNotFoundException(final String message) {
     super(message);
   }
