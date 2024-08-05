@@ -24,8 +24,8 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 public class UserValidator {
 
-  private final UserRepository userRepository;
   private final Validator validator;
+  private final UserRepository userRepository;
 
   /**
    * Validates a UserDto object.

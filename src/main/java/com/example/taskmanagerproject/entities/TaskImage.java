@@ -5,4 +5,4 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Represents an image associated with a task.
  */
-public record TaskImage(MultipartFile file) { }
+public record TaskImage(MultipartFile file) {}

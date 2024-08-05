@@ -18,8 +18,8 @@ public class RoleFactory {
    */
   public Role createRoleFromRequest(final RoleDto request) {
     Role role = new Role();
-    role.setName(request.getName().toUpperCase());
-    role.setDescription(request.getDescription());
+    role.setName(request.name().toUpperCase());
+    role.setDescription(request.description());
     return role;
   }
 }

@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.configurations;
 
-import static com.github.slugify.Slugify.builder;
 import static java.util.Locale.ENGLISH;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -43,16 +42,40 @@ public class TaskManagerSecurityConfig {
     "/graphiql"
   };
 
+  /**
+   * Bean for password encoding using BCrypt hashing algorithm.
+   * This encoder is typically used for securely hashing passwords
+   * before storing them in a database.
+   *
+   * @return a PasswordEncoder instance using BCrypt algorithm.
+   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * Bean for generating slugs (URL-friendly strings) from given text.
+   * This is typically used to convert a string into a simpler, more readable format,
+   * which can be used in URLs, titles, or metadata.
+   *
+   * @return a Slugify instance configured with English locale.
+   */
   @Bean
   public Slugify slugGenerator() {
-    return builder().locale(ENGLISH).build();
+    return Slugify.builder().locale(ENGLISH).build();
   }
 
+  /**
+   * Bean for AuthenticationManager.
+   * This bean is responsible for managing authentication requests
+   * within the Spring Security framework.
+   *
+   * @param config the AuthenticationConfiguration object used
+   *               to configure the AuthenticationManager.
+   * @return the AuthenticationManager bean.
+   * @throws Exception if an error occurs while retrieving the AuthenticationManager.
+   */
   @Bean
   public AuthenticationManager authenticationManager(
       final AuthenticationConfiguration config
@@ -84,7 +107,10 @@ public class TaskManagerSecurityConfig {
               .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-        .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(
+          new JwtTokenFilter(tokenProvider),
+          UsernamePasswordAuthenticationFilter.class
+        );
 
     return http.build();
   }

@@ -16,4 +16,4 @@ public record TaskImageDto(
       example = "image.png"
     )
     MultipartFile file
-) { }
+) {}

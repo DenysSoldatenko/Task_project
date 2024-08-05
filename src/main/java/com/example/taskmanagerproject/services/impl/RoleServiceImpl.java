@@ -85,8 +85,8 @@ public class RoleServiceImpl implements RoleService {
 
     roleValidator.validateRoleDto(existingRole, roleDto);
 
-    existingRole.setName(roleDto.getName());
-    existingRole.setDescription(roleDto.getDescription());
+    existingRole.setName(roleDto.name());
+    existingRole.setDescription(roleDto.description());
 
     roleRepository.save(existingRole);
     return roleMapper.toDto(existingRole);
