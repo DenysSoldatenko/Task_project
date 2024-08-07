@@ -1,6 +1,8 @@
 package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.RoleDto;
+import com.example.taskmanagerproject.dtos.RoleHierarchyDto;
+import com.example.taskmanagerproject.dtos.RoleHierarchyListDto;
 import java.util.List;
 
 /**
@@ -50,4 +52,30 @@ public interface RoleService {
    * @param roleName The name of the role to delete.
    */
   void deleteRole(String roleName);
+
+  /**
+   * Creates multiple role hierarchies from a list of RoleHierarchyDto objects.
+   *
+   * @param roleHierarchyDtoList A list of RoleHierarchyDto objects representing
+   *                             the role hierarchies to be created.
+   * @return A list of RoleHierarchyDto objects representing the created role hierarchies.
+   */
+  List<RoleHierarchyDto> createRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList);
+
+  /**
+   * Finds a role along with its higher and lower roles in the hierarchy
+   * based on the provided role name.
+   *
+   * @param roleName The name of the role to retrieve (e.g., ADMIN).
+   * @return A RoleHierarchyListDto containing the role and its associated higher and lower roles.
+   */
+  RoleHierarchyListDto findRoleWithHierarchy(String roleName);
+
+  /**
+   * Deletes multiple role hierarchies based on a list of RoleHierarchyDto objects.
+   *
+   * @param roleHierarchyDtoList A list of RoleHierarchyDto objects representing
+   *                             the role hierarchies to be deleted.
+   */
+  void deleteRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList);
 }

@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a Role hierarchy in the system.
+ */
 @Entity
 @Table(name = "role_hierarchy")
 @Getter

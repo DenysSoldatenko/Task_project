@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a Role entity in the system.
+ */
 @Entity
 @Table(name = "roles")
 @Getter

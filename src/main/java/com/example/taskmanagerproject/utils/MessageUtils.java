@@ -22,7 +22,8 @@ public class MessageUtils {
       = "Role not found!";
   public static final String ROLE_ALREADY_EXISTS
       = "Role already exists!";
-
+  public static final String ROLE_HIERARCHY_NOT_FOUND
+      = "Role hierarchy not found!";
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class UserFactory {
+public final class UserFactory {
 
   private final Slugify slugGenerator;
   private final PasswordEncoder passwordEncoder;
