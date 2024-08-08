@@ -1,7 +1,8 @@
 package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_HIERARCHY_NOT_FOUND;
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
+import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.RoleDto;
 import com.example.taskmanagerproject.dtos.RoleHierarchyDto;
@@ -64,7 +65,7 @@ public class RoleServiceImpl implements RoleService {
   @Cacheable(value = "roles", key = "#roleName")
   public RoleDto getRoleByName(String roleName) {
     Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
     return roleMapper.toDto(role);
   }
 
@@ -95,7 +96,7 @@ public class RoleServiceImpl implements RoleService {
   @CachePut(value = "roles", key = "#roleDto.name")
   public RoleDto updateRole(String roleName, RoleDto roleDto) {
     Role existingRole = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     roleValidator.validateRoleDto(existingRole, roleDto);
 
@@ -116,7 +117,7 @@ public class RoleServiceImpl implements RoleService {
   @CacheEvict(value = "roles", key = "#roleName")
   public void deleteRole(String roleName) {
     Role existingRole = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     roleRepository.delete(existingRole);
   }
@@ -151,7 +152,7 @@ public class RoleServiceImpl implements RoleService {
   @Override
   public RoleHierarchyListDto findRoleWithHierarchy(String roleName) {
     Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     List<RoleHierarchy> higherRoleHierarchies = roleHierarchyRepository.findByLowerRole(role);
     List<RoleDto> higherRoles = higherRoleHierarchies.stream()
@@ -180,7 +181,13 @@ public class RoleServiceImpl implements RoleService {
       RoleHierarchy roleHierarchy = findByHigherRoleNameAndLowerRoleName(
           roleHierarchyDto.higherRole().name(),
           roleHierarchyDto.lowerRole().name()
-      ).orElseThrow(() -> new RoleHierarchyNotFoundException(ROLE_HIERARCHY_NOT_FOUND));
+      ).orElseThrow(() -> new RoleHierarchyNotFoundException(
+          format(
+            ROLE_HIERARCHY_NOT_FOUND,
+            roleHierarchyDto.higherRole().name(),
+            roleHierarchyDto.lowerRole().name()
+          )
+      ));
 
       roleHierarchyRepository.delete(roleHierarchy);
     }

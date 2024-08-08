@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
 import com.example.taskmanagerproject.dtos.AuthenticationRequest;
 import com.example.taskmanagerproject.dtos.AuthenticationResponse;
@@ -23,10 +23,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public final class AuthenticationServiceImpl implements AuthenticationService {
 
-  private final AuthenticationManager authenticationManager;
+  private final UserService userService;
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
-  private final UserService userService;
+  private final AuthenticationManager authenticationManager;
 
   /**
    * Registers a new user based on the provided registration request.
@@ -49,7 +49,9 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
     authenticateUser(request);
 
     User user = userRepository.findByUsername(request.username())
-        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
+        .orElseThrow(
+          () -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + request.username())
+        );
 
     return createAuthenticationResponse(user);
   }

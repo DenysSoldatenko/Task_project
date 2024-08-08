@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.utils;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 
 import com.example.taskmanagerproject.dtos.RoleHierarchyDto;
 import com.example.taskmanagerproject.entities.Role;
@@ -40,7 +40,7 @@ public final class RoleHierarchyFactory {
    */
   private Role getRoleFromDto(final String roleName) {
     return roleRepository.findByName(roleName)
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
   }
 
   /**

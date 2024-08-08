@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.utils;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.dtos.UserDto;
@@ -43,7 +43,7 @@ public final class UserFactory {
    */
   private Role getRoleFromRequest(final UserDto request) {
     return roleRepository.findByName(request.role())
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND));
+      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + request.role()));
   }
 
   /**

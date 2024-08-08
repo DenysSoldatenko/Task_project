@@ -80,7 +80,7 @@ public class RoleValidator {
    */
   private void validateRoleExists(RoleDto roleDto, Set<String> errorMessages) {
     if (roleRepository.existsByName(roleDto.name().toUpperCase())) {
-      errorMessages.add(ROLE_ALREADY_EXISTS);
+      errorMessages.add(ROLE_ALREADY_EXISTS + roleDto.name().toUpperCase());
     }
   }
 
@@ -94,7 +94,7 @@ public class RoleValidator {
   private void validateRoleExists(Role role, RoleDto roleDto, Set<String> errorMessages) {
     if (!role.getName().equals(roleDto.name().toUpperCase())
         && roleRepository.existsByName(roleDto.name().toUpperCase())) {
-      errorMessages.add(ROLE_ALREADY_EXISTS);
+      errorMessages.add(ROLE_ALREADY_EXISTS + roleDto.name().toUpperCase());
     }
   }
 }

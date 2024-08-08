@@ -1,7 +1,5 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
-
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
@@ -14,9 +12,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.taskmanagerproject.utils.MessageUtils.*;
 
 /**
  * Implementation of the UserService interface.
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
   @Cacheable(value = "UserService::getUserBySlug", key = "#slug")
   public UserDto getUserBySlug(final String slug) {
     User user = userRepository.findBySlug(slug)
-        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
     return userMapper.toDto(user);
   }
 
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
   @Cacheable(value = "UserService::getByUsername", key = "#username")
   public User getUserByUsername(final String username) {
     return userRepository.findByUsername(username)
-      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+      .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
   }
 
   @Override
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
   @CachePut(value = "UserService::getUserBySlug", key = "#slug")
   public UserDto updateUser(final UserDto userDto, final String slug) {
     User user = userRepository.findBySlug(slug)
-        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
     userValidator.validateUserDto(userDto);
 
     user.setFullName(userDto.fullName());
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserService {
   @CacheEvict(value = "UserService::getById", key = "#slug")
   public void deleteUserBySlug(final String slug) {
     User user = userRepository.findBySlug(slug)
-        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
     userRepository.delete(user);
   }
 }

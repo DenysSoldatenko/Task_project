@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.PASSWORD_MISMATCH;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_EXISTS;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_EXISTS_WITH_USERNAME;
 import static java.lang.String.join;
 
 import com.example.taskmanagerproject.dtos.UserDto;
@@ -60,7 +60,7 @@ public class UserValidator {
   private void validateUserExists(final UserDto userDto, final Set<String> errorMessages) {
     User existingUser = userRepository.findByUsername(userDto.username()).orElse(null);
     if (existingUser != null && !existingUser.getUsername().equals(userDto.username())) {
-      errorMessages.add(USER_ALREADY_EXISTS);
+      errorMessages.add(USER_ALREADY_EXISTS_WITH_USERNAME + userDto.username());
     }
   }
 }
