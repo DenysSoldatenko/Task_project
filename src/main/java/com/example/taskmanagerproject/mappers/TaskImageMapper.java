@@ -11,7 +11,19 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface TaskImageMapper {
 
-  TaskImageDto toDto(TaskImage user);
+  /**
+   * Converts a TaskImage entity to a TaskImageDto object.
+   *
+   * @param taskImage The TaskImage entity to convert.
+   * @return The corresponding TaskImageDto object.
+   */
+  TaskImageDto toDto(TaskImage taskImage);
 
+  /**
+   * Converts a TaskImageDto object to a TaskImage entity.
+   *
+   * @param dto The TaskImageDto object to convert.
+   * @return The corresponding TaskImage entity.
+   */
   TaskImage toEntity(TaskImageDto dto);
 }

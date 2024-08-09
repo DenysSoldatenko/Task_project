@@ -44,23 +44,12 @@ public class RoleServiceImpl implements RoleService {
   private final RoleHierarchyFactory roleHierarchyFactory;
   private final RoleHierarchyRepository roleHierarchyRepository;
 
-  /**
-   * Get all roles.
-   *
-   * @return A list of all roles in the system.
-   */
   @Override
   @Cacheable(value = "roles", key = "'all_roles'")
   public List<RoleDto> getAllRoles() {
     return roleRepository.findAll().stream().map(roleMapper::toDto).toList();
   }
 
-  /**
-   * Get a specific role by its name.
-   *
-   * @param roleName The name of the role (e.g., ADMIN, USER).
-   * @return The role with the specified name.
-   */
   @Override
   @Cacheable(value = "roles", key = "#roleName")
   public RoleDto getRoleByName(String roleName) {
@@ -69,12 +58,6 @@ public class RoleServiceImpl implements RoleService {
     return roleMapper.toDto(role);
   }
 
-  /**
-   * Create a new role.
-   *
-   * @param roleDto Data Transfer Object containing the role information.
-   * @return The created role.
-   */
   @Override
   @Transactional
   @CachePut(value = "roles", key = "#roleDto.name")
@@ -85,12 +68,6 @@ public class RoleServiceImpl implements RoleService {
     return roleMapper.toDto(newRole);
   }
 
-  /**
-   * Update an existing role.
-   *
-   * @param roleDto  Data Transfer Object containing the updated role information.
-   * @return The updated role.
-   */
   @Override
   @Transactional
   @CachePut(value = "roles", key = "#roleDto.name")
@@ -107,11 +84,6 @@ public class RoleServiceImpl implements RoleService {
     return roleMapper.toDto(existingRole);
   }
 
-  /**
-   * Delete a role by its name.
-   *
-   * @param roleName The name of the role to delete.
-   */
   @Override
   @Transactional
   @CacheEvict(value = "roles", key = "#roleName")
@@ -122,14 +94,6 @@ public class RoleServiceImpl implements RoleService {
     roleRepository.delete(existingRole);
   }
 
-  /**
-   * Creates role hierarchies from a list of RoleHierarchyDto objects.
-   * Saves each hierarchy into the repository and returns
-   * the created hierarchy list as RoleHierarchyDto.
-   *
-   * @param roleHierarchyDtoList A list of RoleHierarchyDto objects to create.
-   * @return A list of RoleHierarchyDto objects that were created and saved.
-   */
   @Override
   @Transactional
   public List<RoleHierarchyDto> createRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList) {
@@ -140,40 +104,22 @@ public class RoleServiceImpl implements RoleService {
       .toList();
   }
 
-  /**
-   * Finds a role and its higher and lower roles in the hierarchy.
-   * This method retrieves the given role by name, then finds its higher and lower roles
-   * in the hierarchy, returning them as a RoleHierarchyListDto.
-   *
-   * @param roleName The name of the role to retrieve (e.g., ADMIN).
-   * @return A RoleHierarchyListDto containing the role and its higher and lower roles.
-   * @throws RoleNotFoundException If the role with the specified name does not exist.
-   */
   @Override
   public RoleHierarchyListDto findRoleWithHierarchy(String roleName) {
     Role role = roleRepository.findByName(roleName)
         .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
-    List<RoleHierarchy> higherRoleHierarchies = roleHierarchyRepository.findByLowerRole(role);
-    List<RoleDto> higherRoles = higherRoleHierarchies.stream()
+    List<RoleDto> higherRoles = roleHierarchyRepository.findByLowerRole(role).stream()
         .map(roleHierarchy -> roleMapper.toDto(roleHierarchy.getHigherRole()))
         .collect(Collectors.toList());
 
-    List<RoleHierarchy> lowerRoleHierarchies = roleHierarchyRepository.findByHigherRole(role);
-    List<RoleDto> lowerRoles = lowerRoleHierarchies.stream()
+    List<RoleDto> lowerRoles = roleHierarchyRepository.findByHigherRole(role).stream()
         .map(roleHierarchy -> roleMapper.toDto(roleHierarchy.getLowerRole()))
         .collect(Collectors.toList());
 
     return new RoleHierarchyListDto(role.getName(), higherRoles, lowerRoles);
   }
 
-  /**
-   * Deletes role hierarchies from a list of RoleHierarchyDto objects.
-   * For each role hierarchy, the corresponding record is found and deleted from the repository.
-   *
-   * @param roleHierarchyDtoList A list of RoleHierarchyDto objects to delete.
-   * @throws RoleHierarchyNotFoundException If any of the specified role hierarchies are not found.
-   */
   @Override
   @Transactional
   public void deleteRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList) {
@@ -193,13 +139,6 @@ public class RoleServiceImpl implements RoleService {
     }
   }
 
-  /**
-   * Finds a role hierarchy by the names of the higher and lower roles.
-   *
-   * @param higherRoleName The name of the higher role in the hierarchy.
-   * @param lowerRoleName The name of the lower role in the hierarchy.
-   * @return An Optional containing the RoleHierarchy if found, otherwise empty.
-   */
   private Optional<RoleHierarchy> findByHigherRoleNameAndLowerRoleName(
       String higherRoleName, String lowerRoleName
   ) {

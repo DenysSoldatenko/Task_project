@@ -42,7 +42,7 @@ public final class UserFactory {
    * @return The Role entity.
    */
   private Role getRoleFromRequest(final UserDto request) {
-    return roleRepository.findByName(request.role())
+    return roleRepository.findByName(request.role().name())
       .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + request.role()));
   }
 

@@ -1,38 +1,31 @@
 package com.example.taskmanagerproject.mappers;
 
 import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.RoleName;
 import com.example.taskmanagerproject.entities.User;
-import com.example.taskmanagerproject.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
-import java.util.Objects;
-
-import static com.example.taskmanagerproject.entities.RoleName.USER;
 
 /**
  * Mapper interface for converting User entities to UserDto objects and vice versa.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = RoleMapper.class)
 public interface UserMapper {
 
-  @Mapping(source = "role", target = "role", qualifiedByName = "roleToString")
+  /**
+   * Converts a User entity to a UserDto object.
+   *
+   * @param user The User entity to convert.
+   * @return The corresponding UserDto object.
+   */
+  @Mapping(source = "role", target = "role")
   UserDto toDto(User user);
 
-  @Mapping(target = "userTeams", ignore = true)
-  @Mapping(target = "userTasks", ignore = true)
-  @Mapping(source = "role", target = "role", qualifiedByName = "stringToRole")
+  /**
+   * Converts a UserDto object to a User entity.
+   *
+   * @param dto The UserDto object to convert.
+   * @return The corresponding User entity.
+   */
+  @Mapping(source = "role", target = "role")
   User toEntity(UserDto dto);
-
-  @Named("roleToString")
-  default String roleToString(Role role) {
-    return role != null ? role.getName() : null;
-  }
-
-  @Named("stringToRole")
-  default Role stringToRole(String roleName) {
-    return Role.builder().name(Objects.requireNonNullElseGet(roleName, USER::name)).build();
-  }
 }

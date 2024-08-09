@@ -11,8 +11,22 @@ import org.springframework.data.repository.query.Param;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+  /**
+   * Finds a User by username and fetches the associated Role.
+   *
+   * @param username The username of the user.
+   * @return An Optional containing the User if found, or empty if not.
+   */
+  @Query("SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.username = :username")
   Optional<User> findByUsername(String username);
 
+  /**
+   * Finds a User by slug and fetches the associated Role.
+   *
+   * @param slug The slug of the user.
+   * @return An Optional containing the User if found, or empty if not.
+   */
+  @Query("SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.slug = :slug")
   Optional<User> findBySlug(String slug);
 
   @Query(value = """

@@ -1,5 +1,9 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_SLUG;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
@@ -16,8 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.example.taskmanagerproject.utils.MessageUtils.*;
 
 /**
  * Implementation of the UserService interface.

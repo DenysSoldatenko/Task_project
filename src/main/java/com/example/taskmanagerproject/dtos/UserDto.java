@@ -85,10 +85,12 @@ public record UserDto(
 
     @Schema(
       description = "Role of the user for authentication (e.g., ADMIN, USER)",
-      example = "ADMIN"
+      example = "[{\"id\": \"1\", "
+        + "\"name\": {\"ADMIN\","
+        + " \"description\": \"Administrator with full access\"}]"
     )
     @JsonProperty(access = WRITE_ONLY)
-    String role
+    RoleDto role
 ) implements Serializable {
 
   public static final int MIN_FULL_NAME_LENGTH = 2;
