@@ -13,5 +13,4 @@ public record AuthenticationResponse(
       example = "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
     )
     String token
-) {
-}
+) {}

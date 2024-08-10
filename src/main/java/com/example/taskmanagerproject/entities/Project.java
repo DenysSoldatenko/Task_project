@@ -14,13 +14,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a Project entity in the system.
+ */
 @Entity
-@Table(name = "projects")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "projects")
 public class Project {
 
   @Id
@@ -32,8 +35,12 @@ public class Project {
   private String description;
 
   @ManyToOne
-  @JoinColumn(name = "team_id", nullable = false)
+  @JoinColumn(name = "team_id")
   private Team team;
+
+  @ManyToOne
+  @JoinColumn(name = "creator_id", nullable = false)
+  private User creator;
 
   private LocalDateTime createdAt;
 }

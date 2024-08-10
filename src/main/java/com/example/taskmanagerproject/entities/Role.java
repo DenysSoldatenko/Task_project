@@ -16,12 +16,12 @@ import lombok.Setter;
  * Represents a Role entity in the system.
  */
 @Entity
-@Table(name = "roles")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "roles")
 public class Role implements Serializable {
 
   @Id

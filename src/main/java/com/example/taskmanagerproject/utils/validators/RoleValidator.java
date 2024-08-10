@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.utils;
+package com.example.taskmanagerproject.utils.validators;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_ALREADY_EXISTS;
 import static java.lang.String.join;
@@ -78,7 +78,7 @@ public class RoleValidator {
    * @param roleDto The RoleDto object to check.
    * @param errorMessages The collection to hold error messages.
    */
-  private void validateRoleExists(RoleDto roleDto, Set<String> errorMessages) {
+  private void validateRoleExists(final RoleDto roleDto, final Set<String> errorMessages) {
     if (roleRepository.existsByName(roleDto.name().toUpperCase())) {
       errorMessages.add(ROLE_ALREADY_EXISTS + roleDto.name().toUpperCase());
     }
@@ -91,7 +91,11 @@ public class RoleValidator {
    * @param roleDto The RoleDto object to check.
    * @param errorMessages The collection to hold error messages.
    */
-  private void validateRoleExists(Role role, RoleDto roleDto, Set<String> errorMessages) {
+  private void validateRoleExists(
+      final Role role,
+      final RoleDto roleDto,
+      final Set<String> errorMessages
+  ) {
     if (!role.getName().equals(roleDto.name().toUpperCase())
         && roleRepository.existsByName(roleDto.name().toUpperCase())) {
       errorMessages.add(ROLE_ALREADY_EXISTS + roleDto.name().toUpperCase());

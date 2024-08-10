@@ -16,6 +16,8 @@ public class MessageUtils {
       = "User not found with username: ";
   public static final String USER_ALREADY_EXISTS_WITH_USERNAME
       = "User already exists with username: ";
+  public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_PROJECT
+      = "The user with username %s does not have the necessary role to create a project!";
   public static final String PASSWORD_MISMATCH
       = "Password and password confirmation do not match!";
   public static final String TASK_NOT_FOUND
@@ -28,6 +30,13 @@ public class MessageUtils {
       = "Role already exists with name: ";
   public static final String ROLE_HIERARCHY_NOT_FOUND
       = "Role hierarchy not found with higher role %s and lower role %s!";
+
+  public static final String PROJECT_NOT_FOUND_WITH_NAME
+      = "Project not found with name: ";
+  public static final String PROJECT_NOT_FOUND_WITH_ID
+      = "Project not found with id: ";
+  public static final String PROJECT_ALREADY_EXISTS
+      = "Project already exists with name: ";
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

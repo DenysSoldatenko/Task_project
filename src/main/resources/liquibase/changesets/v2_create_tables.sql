@@ -64,7 +64,8 @@ CREATE TABLE IF NOT EXISTS projects
     id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
     description TEXT         NULL,
-    team_id     BIGINT       NOT NULL,
+    team_id     BIGINT,
+    creator_id  BIGINT       NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_projects_team FOREIGN KEY (team_id) REFERENCES teams (id)
         ON DELETE CASCADE ON UPDATE NO ACTION

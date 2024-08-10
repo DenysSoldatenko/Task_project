@@ -50,4 +50,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
   boolean isTaskOwner(@Param("userId") Long userId,
                       @Param("taskId") Long taskId);
 
+
+  /**
+   * Checks if a given user is the creator of a specific project.
+   *
+   * @param projectName the name of the project
+   * @param userId the ID of the user
+   * @return true if the user is the creator of the project, false otherwise
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
+      FROM Project p
+      WHERE p.name = :projectName AND p.creator.id = :userId
+      """)
+  boolean isProjectCreator(@Param("projectName") String projectName, @Param("userId") Long userId);
+
 }

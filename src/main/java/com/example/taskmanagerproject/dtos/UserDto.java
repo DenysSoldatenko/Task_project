@@ -83,12 +83,6 @@ public record UserDto(
     )
     String confirmPassword,
 
-    @Schema(
-      description = "Role of the user for authentication (e.g., ADMIN, USER)",
-      example = "[{\"id\": \"1\", "
-        + "\"name\": {\"ADMIN\","
-        + " \"description\": \"Administrator with full access\"}]"
-    )
     @JsonProperty(access = WRITE_ONLY)
     RoleDto role
 ) implements Serializable {

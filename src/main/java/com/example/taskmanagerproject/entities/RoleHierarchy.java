@@ -19,12 +19,12 @@ import lombok.Setter;
  * Represents a Role hierarchy in the system.
  */
 @Entity
-@Table(name = "role_hierarchy")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "role_hierarchy")
 public class RoleHierarchy {
 
   @Id

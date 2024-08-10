@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.entities.Task;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
-import com.example.taskmanagerproject.mappers.TaskMapper;
+import com.example.taskmanagerproject.utils.mappers.TaskMapper;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

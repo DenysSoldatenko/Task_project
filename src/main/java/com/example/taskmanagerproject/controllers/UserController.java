@@ -4,9 +4,12 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.example.taskmanagerproject.dtos.ProjectDto;
 import com.example.taskmanagerproject.dtos.TaskDto;
 import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
+import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TaskService;
 import com.example.taskmanagerproject.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +38,7 @@ public class UserController {
 
   private final UserService userService;
   private final TaskService taskService;
+  private final ProjectService projectService;
 
   /**
    * Retrieves user information by slug.
@@ -44,34 +48,71 @@ public class UserController {
    */
   @GetMapping("/{slug}")
   @Operation(
-    summary = "Get user by slug",
-    description = "Retrieve user information by slug",
-    responses = {
-      @ApiResponse(responseCode = "200", description = "User retrieved successfully",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = UserDto.class))
-      ),
-      @ApiResponse(responseCode = "403", description = "Access denied",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "404", description = "User not found",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-    }
+      summary = "Get user by slug",
+      description = "Retrieve user information by slug",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "User retrieved successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDto.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getUserBySlug")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto getUserBySlug(
-    @PathVariable(name = "slug") @Argument final String slug
+      @PathVariable(name = "slug") @Argument final String slug
   ) {
     return userService.getUserBySlug(slug);
+  }
+
+  /**
+   * Retrieves projects associated with a user based on the user's slug.
+   *
+   * @param slug the unique identifier (slug) of the user
+   * @return a list of projects associated with the specified user
+   * @throws UserNotFoundException if the user is not found
+   */
+  @GetMapping("/{slug}/projects")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  @Operation(
+      summary = "Get projects by user username",
+      description = "Fetches all projects associated with a user identified by the username",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Successfully retrieved projects",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ProjectDto.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  public List<ProjectDto> getProjectsByUserSlug(
+      @PathVariable(name = "slug") final String slug
+  ) {
+    return projectService.getProjectsBySlug(slug);
   }
 
   /**
@@ -105,7 +146,7 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getTasksByUserId")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
+  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public List<TaskDto> getTasksByUserId(
     @PathVariable(name = "id") @Argument final Long id
   ) {
@@ -148,7 +189,7 @@ public class UserController {
   )
   @ResponseStatus(CREATED)
   @MutationMapping(name = "createTaskForUser")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#id)")
+  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public TaskDto createTaskForUser(
     @PathVariable(name = "id") @Argument final Long id,
     @Valid @RequestBody @Argument final TaskDto taskDto
@@ -192,7 +233,7 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @MutationMapping(name = "updateUser")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto updateUser(
     @Valid @RequestBody @Argument final UserDto userDto,
     @PathVariable(name = "slug") @Argument final String slug
@@ -227,7 +268,7 @@ public class UserController {
   )
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteUserBySlug")
-  @PreAuthorize("@expressionService.hasRoleAdmin(#slug)")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public void deleteUserBySlug(
     @PathVariable(name = "slug") @Argument final String slug
   ) {

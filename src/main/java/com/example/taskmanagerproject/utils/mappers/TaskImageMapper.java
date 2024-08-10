@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.mappers;
+package com.example.taskmanagerproject.utils.mappers;
 
 import com.example.taskmanagerproject.dtos.TaskImageDto;
 import com.example.taskmanagerproject.entities.TaskImage;
