@@ -34,6 +34,7 @@ public class TaskManagerSecurityConfig {
 
   private static final String[] PUBLIC_ROUTES = {
     "/api/v*/auth/**",
+    "/api/v*/data-initialization/**",
     "/v3/api-docs/**",
     "/swagger-ui/**",
     "/swagger-resources/**",

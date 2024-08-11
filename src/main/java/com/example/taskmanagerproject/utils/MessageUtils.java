@@ -31,12 +31,14 @@ public class MessageUtils {
   public static final String ROLE_HIERARCHY_NOT_FOUND
       = "Role hierarchy not found with higher role %s and lower role %s!";
 
+
   public static final String PROJECT_NOT_FOUND_WITH_NAME
       = "Project not found with name: ";
   public static final String PROJECT_NOT_FOUND_WITH_ID
       = "Project not found with id: ";
   public static final String PROJECT_ALREADY_EXISTS
       = "Project already exists with name: ";
+
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";
@@ -46,4 +48,10 @@ public class MessageUtils {
       = "Image must not be empty and must have a name!";
   public static final String FAILED_TO_UPLOAD_IMAGE
       = "Failed to upload image to Minio: ";
+
+
+  public static final String DATA_INITIALIZATION_SUCCESS_MESSAGE
+      = "Data initialization completed successfully!";
+  public static final String DATA_INITIALIZATION_FAIL_MESSAGE
+      = "Data initialization completed with errors!";
 }

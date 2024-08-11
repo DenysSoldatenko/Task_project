@@ -9,7 +9,6 @@ import com.example.taskmanagerproject.dtos.RoleHierarchyListDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -112,7 +111,7 @@ public class RoleController {
   )
   @GetMapping("/{roleName}")
   public RoleDto getRoleByName(
-      @PathVariable String roleName
+      @PathVariable final String roleName
   ) {
     return roleService.getRoleByName(roleName);
   }
@@ -148,7 +147,7 @@ public class RoleController {
   @PostMapping
   @ResponseStatus(CREATED)
   public RoleDto createRole(
-      @Valid @RequestBody RoleDto roleDto
+      @Valid @RequestBody final RoleDto roleDto
   ) {
     return roleService.createRole(roleDto);
   }
@@ -187,8 +186,8 @@ public class RoleController {
   )
   @PutMapping("/{roleName}")
   public RoleDto updateRole(
-      @PathVariable String roleName,
-      @Valid @RequestBody RoleDto roleDto
+      @PathVariable final String roleName,
+      @Valid @RequestBody final RoleDto roleDto
   ) {
     return roleService.updateRole(roleName, roleDto);
   }
@@ -224,7 +223,7 @@ public class RoleController {
   @DeleteMapping("/{roleName}")
   @ResponseStatus(NO_CONTENT)
   public void deleteRole(
-      @PathVariable String roleName
+      @PathVariable final String roleName
   ) {
     roleService.deleteRole(roleName);
   }
@@ -265,7 +264,7 @@ public class RoleController {
   @PostMapping("/hierarchies")
   @ResponseStatus(CREATED)
   public List<RoleHierarchyDto> createRoleHierarchies(
-      @Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList
+      @Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList
   ) {
     return roleService.createRoleHierarchies(roleHierarchyDtoList);
   }
@@ -301,7 +300,7 @@ public class RoleController {
   @DeleteMapping("/hierarchies")
   @ResponseStatus(NO_CONTENT)
   public void deleteRoleHierarchies(
-      @Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList
+      @Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList
   ) {
     roleService.deleteRoleHierarchies(roleHierarchyDtoList);
   }
@@ -336,7 +335,7 @@ public class RoleController {
   )
   @GetMapping("/{roleName}/hierarchy")
   public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(
-      @PathVariable String roleName
+      @PathVariable final String roleName
   ) {
     return roleService.findRoleWithHierarchy(roleName);
   }

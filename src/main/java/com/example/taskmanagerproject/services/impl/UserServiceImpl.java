@@ -7,10 +7,10 @@ import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_W
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.entities.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
-import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.factories.UserFactory;
+import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.example.taskmanagerproject.utils.validators.UserValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
