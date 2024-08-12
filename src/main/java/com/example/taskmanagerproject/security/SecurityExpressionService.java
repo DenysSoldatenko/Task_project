@@ -29,7 +29,7 @@ public class SecurityExpressionService {
 
   private final UserService userService;
 
-  private static final List<RoleName> PROJECT_CREATION_ALLOWED_ROLES = asList(
+  private static final List<RoleName> CREATION_ALLOWED_ROLES = asList(
       ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD
   );
 
@@ -90,15 +90,48 @@ public class SecurityExpressionService {
   }
 
   /**
+   * Checks if the current user has the necessary permissions to access a team.
+   * The user must either be the creator of the team or have admin privileges.
+   *
+   * @param teamName the name of the team to check access for
+   * @return true if the user has access to the project, false otherwise
+   */
+  public boolean canAccessTeam(final String teamName) {
+    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
+    boolean isProjectCreator = userService.isProjectCreator(teamName, user.getId());
+    log.info(
+        "Checking access for user ID: {} on team name: {} - isAdmin: {}, isTeamCreator: {}",
+        user.getId(), teamName, isAdmin, isProjectCreator
+    );
+    return isAdmin || isProjectCreator;
+  }
+
+  /**
    * Checks if the current user has the necessary permissions to create a project.
    *
    * @return true if the user has the necessary permissions to create a project, false otherwise.
    */
   public boolean canCreateProject() {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasPermission = hasAnyRole(PROJECT_CREATION_ALLOWED_ROLES);
+    boolean hasPermission = hasAnyRole(CREATION_ALLOWED_ROLES);
     log.info(
         "Checking project creation permission for user with username: {} - hasPermission: {}",
+        user.getUsername(), hasPermission
+    );
+    return hasPermission;
+  }
+
+  /**
+   * Checks if the current user has the necessary permissions to create a team.
+   *
+   * @return true if the user has the necessary permissions to create a team, false otherwise.
+   */
+  public boolean canCreateTeam() {
+    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    boolean hasPermission = hasAnyRole(CREATION_ALLOWED_ROLES);
+    log.info(
+        "Checking team creation permission for user with username: {} - hasPermission: {}",
         user.getUsername(), hasPermission
     );
     return hasPermission;

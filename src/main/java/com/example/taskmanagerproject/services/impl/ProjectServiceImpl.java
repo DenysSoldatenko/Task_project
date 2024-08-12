@@ -12,12 +12,11 @@ import com.example.taskmanagerproject.utils.factories.ProjectFactory;
 import com.example.taskmanagerproject.utils.mappers.ProjectMapper;
 import com.example.taskmanagerproject.utils.validators.ProjectValidator;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for handling business logic related to projects in the application.
+ * Implementation of the ProjectService interface.
  */
 @Service
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     Project existingProject = projectRepository.findByName(projectName)
         .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
 
-    projectValidator.validateProjectDto(existingProject, projectDto);
+    projectValidator.validateProjectDto(projectDto, existingProject);
 
     existingProject.setName(projectDto.name());
     existingProject.setDescription(projectDto.description());
@@ -67,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public List<ProjectDto> getProjectsBySlug(String slug) {
-    List<Project> projects = projectRepository.findByCreatorSlug(slug);
-    return projects.stream().map(projectMapper::toDto).collect(Collectors.toList());
+    List<Project> projectDtoList = projectRepository.findByCreatorSlug(slug);
+    return projectDtoList.stream().map(projectMapper::toDto).toList();
   }
 }

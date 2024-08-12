@@ -17,7 +17,9 @@ public class MessageUtils {
   public static final String USER_ALREADY_EXISTS_WITH_USERNAME
       = "User already exists with username: ";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_PROJECT
-      = "The user with username %s does not have the necessary role to create a project!";
+      = "The user does not have the necessary role to create a project! Username: ";
+  public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_TEAM
+      = "The user does not have the necessary role to create a team! Username: ";
   public static final String PASSWORD_MISMATCH
       = "Password and password confirmation do not match!";
   public static final String TASK_NOT_FOUND
@@ -39,6 +41,13 @@ public class MessageUtils {
   public static final String PROJECT_ALREADY_EXISTS
       = "Project already exists with name: ";
 
+
+  public static final String TEAM_NOT_FOUND_WITH_NAME
+      = "Team not found with name: ";
+  public static final String TEAM_NOT_FOUND_WITH_ID
+      = "Team not found with id: ";
+  public static final String TEAM_ALREADY_EXISTS
+      = "Team already exists with name: ";
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

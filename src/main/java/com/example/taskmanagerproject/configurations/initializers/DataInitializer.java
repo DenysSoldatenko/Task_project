@@ -151,7 +151,7 @@ public class DataInitializer {
    */
   private void generateProjectsForUser(User user, int totalProjects) {
     if (!isUserAllowedToCreateProjects(user.getRole())) {
-      log.info("User {} is not authorized to create projects.", user.getUsername());
+      //log.info("User {} is not authorized to create projects.", user.getUsername());
       return;
     }
 
@@ -159,7 +159,7 @@ public class DataInitializer {
         .forEach(i -> {
           Project project = createProject(user);
           projectRepository.save(project);
-          log.info("Created project: {} for user: {}", project.getName(), user.getUsername());
+          //log.info("Created project: {} for user: {}", project.getName(), user.getUsername());
         });
   }
 

@@ -30,7 +30,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for handling business logic related to roles in the application.
+ * Implementation of the RoleService interface.
  */
 @Service
 @RequiredArgsConstructor
@@ -75,7 +75,7 @@ public class RoleServiceImpl implements RoleService {
     Role existingRole = roleRepository.findByName(roleName)
         .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
-    roleValidator.validateRoleDto(existingRole, roleDto);
+    roleValidator.validateRoleDto(roleDto, existingRole);
 
     existingRole.setName(roleDto.name());
     existingRole.setDescription(roleDto.description());

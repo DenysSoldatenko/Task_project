@@ -1,8 +1,6 @@
 package com.example.taskmanagerproject.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +30,6 @@ public class RoleHierarchy {
   private Long id;
 
   @ManyToOne
-  @Enumerated(EnumType.STRING)
   @JoinColumn(name = "higher_role", nullable = false)
   private Role higherRole;
 

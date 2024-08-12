@@ -11,13 +11,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents the association between a user, a team, and the user's role within the team.
+ */
 @Entity
-@Table(name = "users_teams")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "users_teams")
 public class UserTeam {
 
   @Id

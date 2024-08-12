@@ -12,6 +12,7 @@ import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleHierarchyNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
+import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import jakarta.validation.ConstraintViolationException;
@@ -92,6 +93,30 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ProjectNotFoundException.class)
   public ResponseEntity<ErrorDetails> handlePostNotFoundException(
       final ProjectNotFoundException exception,
+      final WebRequest webRequest
+  ) {
+
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
+  }
+
+  /**
+   * Handles the exception when a {@link TeamNotFoundException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(TeamNotFoundException.class)
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
+      final TeamNotFoundException exception,
       final WebRequest webRequest
   ) {
 
