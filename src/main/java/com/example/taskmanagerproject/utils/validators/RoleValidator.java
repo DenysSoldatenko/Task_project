@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.utils.validators;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_ALREADY_EXISTS;
+import static java.util.Arrays.stream;
 
 import com.example.taskmanagerproject.dtos.RoleDto;
 import com.example.taskmanagerproject.entities.Role;
@@ -8,7 +9,6 @@ import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import jakarta.validation.Validator;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.stereotype.Component;
@@ -28,9 +28,7 @@ public class RoleValidator extends BaseValidator<RoleDto> {
    * @param userRepository The repository responsible for accessing user data.
    * @param roleRepository The repository responsible for accessing role data.
    */
-  public RoleValidator(
-      Validator validator, UserRepository userRepository, RoleRepository roleRepository
-  ) {
+  public RoleValidator(Validator validator, UserRepository userRepository, RoleRepository roleRepository) {
     super(validator, userRepository);
     this.roleRepository = roleRepository;
   }
@@ -44,13 +42,15 @@ public class RoleValidator extends BaseValidator<RoleDto> {
   public void validateRoleDto(final RoleDto roleDto, final Role... existingRole) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(roleDto, errorMessages);
-    validateNameTaken(
-        roleDto.name(),
-        Arrays.stream(existingRole).findFirst().map(Role::getName).orElse(null),
-        roleRepository.existsByName(roleDto.name()),
-        errorMessages,
-        ROLE_ALREADY_EXISTS
-    );
+    validateRoleNameUniqueness(roleDto, errorMessages, existingRole);
     throwIfErrorsExist(errorMessages);
+  }
+
+  private void validateRoleNameUniqueness(final RoleDto roleDto, final Set<String> errorMessages, final Role... existingRoles) {
+    String dtoName = roleDto.name();
+    String existingName = stream(existingRoles).findFirst().map(Role::getName).orElse(null);
+    if (!dtoName.equals(existingName) && roleRepository.existsByName(dtoName)) {
+      errorMessages.add(ROLE_ALREADY_EXISTS + roleDto.name());
+    }
   }
 }

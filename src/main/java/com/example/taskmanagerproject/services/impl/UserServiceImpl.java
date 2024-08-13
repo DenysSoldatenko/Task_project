@@ -108,4 +108,9 @@ public class UserServiceImpl implements UserService {
   public boolean isProjectCreator(String projectName, Long userId) {
     return userRepository.isProjectCreator(projectName, userId);
   }
+
+  @Override
+  public boolean isTeamCreator(String teamName, Long userId) {
+    return userRepository.isTeamCreator(teamName, userId);
+  }
 }

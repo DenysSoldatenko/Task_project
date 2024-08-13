@@ -6,11 +6,13 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.example.taskmanagerproject.dtos.ProjectDto;
 import com.example.taskmanagerproject.dtos.TaskDto;
+import com.example.taskmanagerproject.dtos.TeamDto;
 import com.example.taskmanagerproject.dtos.UserDto;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TaskService;
+import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,6 +41,7 @@ public class UserController {
   private final UserService userService;
   private final TaskService taskService;
   private final ProjectService projectService;
+  private final TeamService teamService;
 
   /**
    * Retrieves user information by slug.
@@ -72,9 +75,7 @@ public class UserController {
   @ResponseStatus(OK)
   @QueryMapping(name = "getUserBySlug")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public UserDto getUserBySlug(
-      @PathVariable(name = "slug") @Argument final String slug
-  ) {
+  public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument final String slug) {
     return userService.getUserBySlug(slug);
   }
 
@@ -109,10 +110,43 @@ public class UserController {
           )
       }
   )
-  public List<ProjectDto> getProjectsByUserSlug(
-      @PathVariable(name = "slug") final String slug
-  ) {
+  public List<ProjectDto> getProjectsByUserSlug(@PathVariable(name = "slug") final String slug) {
     return projectService.getProjectsBySlug(slug);
+  }
+
+  /**
+   * Retrieves teams associated with a user based on the user's slug.
+   *
+   * @param slug the unique identifier (slug) of the user
+   * @return a list of teams associated with the specified user
+   * @throws UserNotFoundException if the user is not found
+   */
+  @GetMapping("/{slug}/teams")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  @Operation(
+      summary = "Get projects by user username",
+      description = "Fetches all projects associated with a user identified by the username",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Successfully retrieved projects",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ProjectDto.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  public List<TeamDto> getTeamsByUserSlug(@PathVariable(name = "slug") final String slug) {
+    return teamService.getTeamsBySlug(slug);
   }
 
   /**

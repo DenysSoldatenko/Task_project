@@ -99,12 +99,12 @@ public class SecurityExpressionService {
   public boolean canAccessTeam(final String teamName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
-    boolean isProjectCreator = userService.isProjectCreator(teamName, user.getId());
+    boolean isTeamCreator = userService.isTeamCreator(teamName, user.getId());
     log.info(
         "Checking access for user ID: {} on team name: {} - isAdmin: {}, isTeamCreator: {}",
-        user.getId(), teamName, isAdmin, isProjectCreator
+        user.getId(), teamName, isAdmin, isTeamCreator
     );
-    return isAdmin || isProjectCreator;
+    return isAdmin || isTeamCreator;
   }
 
   /**

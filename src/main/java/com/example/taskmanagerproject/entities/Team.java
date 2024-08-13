@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,21 +11,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Represents a Team entity in the system.
  */
+@Data
 @Entity
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "teams")
 public class Team {
 
@@ -45,6 +38,7 @@ public class Team {
   @OneToMany(mappedBy = "team")
   private List<Task> tasks;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "team")
   private List<UserTeam> userTeams;
 }

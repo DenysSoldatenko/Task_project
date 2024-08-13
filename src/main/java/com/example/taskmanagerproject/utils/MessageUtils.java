@@ -10,6 +10,8 @@ public class MessageUtils {
 
   public static final String USER_NOT_FOUND
       = "User not found!";
+  public static final String USER_NOT_FOUND_WITH_ID
+      = "User not found with id: ";
   public static final String USER_NOT_FOUND_WITH_SLUG
       = "User not found with slug: ";
   public static final String USER_NOT_FOUND_WITH_USERNAME
@@ -28,6 +30,8 @@ public class MessageUtils {
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";
+  public static final String ROLE_NOT_FOUND_WITH_ID
+      = "Role not found with id: ";
   public static final String ROLE_ALREADY_EXISTS
       = "Role already exists with name: ";
   public static final String ROLE_HIERARCHY_NOT_FOUND
@@ -48,6 +52,9 @@ public class MessageUtils {
       = "Team not found with id: ";
   public static final String TEAM_ALREADY_EXISTS
       = "Team already exists with name: ";
+  public static final String USER_ALREADY_IN_TEAM
+      = "User with id '%s' is already a member of the team with id '%s'";
+
 
   public static final String IMAGE_UPLOAD_FAILED
       = "Image upload failed: ";

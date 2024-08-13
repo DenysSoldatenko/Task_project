@@ -110,9 +110,7 @@ public class RoleController {
       }
   )
   @GetMapping("/{roleName}")
-  public RoleDto getRoleByName(
-      @PathVariable final String roleName
-  ) {
+  public RoleDto getRoleByName(@PathVariable final String roleName) {
     return roleService.getRoleByName(roleName);
   }
 
@@ -146,9 +144,7 @@ public class RoleController {
   )
   @PostMapping
   @ResponseStatus(CREATED)
-  public RoleDto createRole(
-      @Valid @RequestBody final RoleDto roleDto
-  ) {
+  public RoleDto createRole(@Valid @RequestBody final RoleDto roleDto) {
     return roleService.createRole(roleDto);
   }
 
@@ -222,9 +218,7 @@ public class RoleController {
   )
   @DeleteMapping("/{roleName}")
   @ResponseStatus(NO_CONTENT)
-  public void deleteRole(
-      @PathVariable final String roleName
-  ) {
+  public void deleteRole(@PathVariable final String roleName) {
     roleService.deleteRole(roleName);
   }
 
@@ -263,9 +257,7 @@ public class RoleController {
   )
   @PostMapping("/hierarchies")
   @ResponseStatus(CREATED)
-  public List<RoleHierarchyDto> createRoleHierarchies(
-      @Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList
-  ) {
+  public List<RoleHierarchyDto> createRoleHierarchies(@Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList) {
     return roleService.createRoleHierarchies(roleHierarchyDtoList);
   }
 
@@ -299,9 +291,7 @@ public class RoleController {
   )
   @DeleteMapping("/hierarchies")
   @ResponseStatus(NO_CONTENT)
-  public void deleteRoleHierarchies(
-      @Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList
-  ) {
+  public void deleteRoleHierarchies(@Valid @RequestBody final List<RoleHierarchyDto> roleHierarchyDtoList) {
     roleService.deleteRoleHierarchies(roleHierarchyDtoList);
   }
 
@@ -334,9 +324,7 @@ public class RoleController {
       }
   )
   @GetMapping("/{roleName}/hierarchy")
-  public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(
-      @PathVariable final String roleName
-  ) {
+  public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(@PathVariable final String roleName) {
     return roleService.findRoleWithHierarchy(roleName);
   }
 }

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Represents a Team DTO for transferring team data.
@@ -26,7 +27,7 @@ public record TeamDto(
     )
     @NotNull(message = "Team name cannot be null")
     @NotBlank(message = "Team name cannot be blank")
-    @Size(min = 3, max = 100, message = "Team name must be between 3 and 100 characters")
+    @Size(min = 3, max = 50, message = "Team name must be between 3 and 100 characters")
     String name,
 
     @Schema(
@@ -39,5 +40,7 @@ public record TeamDto(
     String description,
 
     @JsonProperty(access = WRITE_ONLY)
-    UserDto creator
+    UserDto creator,
+
+    List<UserTeamDto> userTeams
 ) {}

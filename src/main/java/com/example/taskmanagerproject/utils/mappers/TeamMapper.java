@@ -3,11 +3,12 @@ package com.example.taskmanagerproject.utils.mappers;
 import com.example.taskmanagerproject.dtos.TeamDto;
 import com.example.taskmanagerproject.entities.Team;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper interface for converting Team entities to TeamDto objects and vice versa.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserTeamMapper.class)
 public interface TeamMapper {
 
   /**
@@ -16,6 +17,7 @@ public interface TeamMapper {
    * @param team The Team entity to convert.
    * @return The corresponding TeamDto object.
    */
+  @Mapping(source = "userTeams", target = "userTeams")
   TeamDto toDto(Team team);
 
   /**

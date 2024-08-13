@@ -67,4 +67,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
       """)
   boolean isProjectCreator(@Param("projectName") String projectName, @Param("userId") Long userId);
 
+  /**
+   * Checks if a given user is the creator of a specific team.
+   *
+   * @param teamName the name of the team
+   * @param userId the ID of the user
+   * @return true if the user is the creator of the team, false otherwise
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+      FROM Team t
+      WHERE t.name = :teamName AND t.creator.id = :userId
+      """)
+  boolean isTeamCreator(@Param("teamName") String teamName, @Param("userId") Long userId);
 }

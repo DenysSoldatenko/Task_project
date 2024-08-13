@@ -3,11 +3,15 @@ package com.example.taskmanagerproject.services.impl;
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 
 import com.example.taskmanagerproject.dtos.TeamDto;
+import com.example.taskmanagerproject.dtos.UserTeamDto;
 import com.example.taskmanagerproject.entities.Team;
+import com.example.taskmanagerproject.entities.UserTeam;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.repositories.TeamRepository;
+import com.example.taskmanagerproject.repositories.UserTeamRepository;
 import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.utils.factories.TeamFactory;
+import com.example.taskmanagerproject.utils.factories.UserTeamFactory;
 import com.example.taskmanagerproject.utils.mappers.TeamMapper;
 import com.example.taskmanagerproject.utils.validators.TeamValidator;
 import java.util.List;
@@ -25,14 +29,10 @@ public class TeamServiceImpl implements TeamService {
   private final TeamMapper teamMapper;
   private final TeamFactory teamFactory;
   private final TeamValidator teamValidator;
+  private final UserTeamFactory userTeamFactory;
   private final TeamRepository teamRepository;
+  private final UserTeamRepository userTeamRepository;
 
-  /**
-   * Creates a new team.
-   *
-   * @param teamDto the data transfer object containing team details
-   * @return the created team data
-   */
   @Override
   @Transactional
   public TeamDto createTeam(TeamDto teamDto) {
@@ -42,13 +42,6 @@ public class TeamServiceImpl implements TeamService {
     return teamMapper.toDto(newTeam);
   }
 
-  /**
-   * Retrieves a team by its name.
-   *
-   * @param teamName the name of the team
-   * @return the team data if found
-   * @throws TeamNotFoundException if the team with the given name does not exist
-   */
   @Override
   public TeamDto getTeamByName(String teamName) {
     Team team = teamRepository.findByName(teamName)
@@ -56,14 +49,6 @@ public class TeamServiceImpl implements TeamService {
     return teamMapper.toDto(team);
   }
 
-  /**
-   * Updates an existing team.
-   *
-   * @param teamName the name of the team to update
-   * @param teamDto  the data transfer object containing updated team details
-   * @return the updated team data
-   * @throws TeamNotFoundException if the team with the given name does not exist
-   */
   @Override
   @Transactional
   public TeamDto updateTeam(String teamName, TeamDto teamDto) {
@@ -75,16 +60,9 @@ public class TeamServiceImpl implements TeamService {
     existingTeam.setDescription(teamDto.description());
 
     teamRepository.save(existingTeam);
-
     return teamMapper.toDto(existingTeam);
   }
 
-  /**
-   * Deletes a team by its name.
-   *
-   * @param teamName the name of the team to delete
-   * @throws TeamNotFoundException if the team with the given name does not exist
-   */
   @Override
   @Transactional
   public void deleteTeam(String teamName) {
@@ -97,5 +75,13 @@ public class TeamServiceImpl implements TeamService {
   public List<TeamDto> getTeamsBySlug(String slug) {
     List<Team> teamDtoList = teamRepository.findByCreatorSlug(slug);
     return teamDtoList.stream().map(teamMapper::toDto).toList();
+  }
+
+  @Override
+  @Transactional
+  public TeamDto addUsersToTeam(String teamName, List<UserTeamDto> userTeamDtoList) {
+    List<UserTeam> userTeamList = userTeamFactory.createUserTeamAssociations(userTeamDtoList);
+    userTeamRepository.saveAll(userTeamList);
+    return getTeamByName(teamName);
   }
 }

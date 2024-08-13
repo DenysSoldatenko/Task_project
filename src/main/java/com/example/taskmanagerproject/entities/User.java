@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.entities;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -12,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 
@@ -22,7 +22,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -50,6 +50,7 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "user")
   private List<UserTask> userTasks;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "user")
   private List<UserTeam> userTeams;
 }

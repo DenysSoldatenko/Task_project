@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import com.example.taskmanagerproject.dtos.TeamDto;
+import com.example.taskmanagerproject.dtos.UserTeamDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,9 +68,7 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
-  public TeamDto createTeam(
-      @RequestBody @Valid final TeamDto teamDto
-  ) {
+  public TeamDto createTeam(@RequestBody @Valid final TeamDto teamDto) {
     return teamService.createTeam(teamDto);
   }
 
@@ -98,9 +98,7 @@ public class TeamController {
           )
       }
   )
-  public TeamDto getTeamByName(
-      @PathVariable("teamName") final String teamName
-  ) {
+  public TeamDto getTeamByName(@PathVariable("teamName") final String teamName) {
     return teamService.getTeamByName(teamName);
   }
 
@@ -173,9 +171,52 @@ public class TeamController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteTeam(
-      @PathVariable("teamName") final String teamName
-  ) {
+  public void deleteTeam(@PathVariable("teamName") final String teamName) {
     teamService.deleteTeam(teamName);
+  }
+
+  /**
+   * Adds a list of users to a specific team, assigning them roles.
+   *
+   * @param teamName the name of the team to which the users will be added
+   * @param userTeamDtoList the list of user-team-role associations to be added
+   * @return the updated team after the users have been added
+   */
+  @PostMapping("/{teamName}/users")
+  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
+  @Operation(
+      summary = "Add users to a team",
+      description = "Assigns users to a team with a specific role",
+      responses = {
+          @ApiResponse(
+            responseCode = "201",
+            description = "Users added to team successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserTeamDto.class))
+          ),
+          @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(
+            responseCode = "404",
+            description = "User, team, or role not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  @ResponseStatus(CREATED)
+  public TeamDto addUsersToTeam(
+      @PathVariable("teamName") final String teamName,
+      @RequestBody @Valid List<UserTeamDto> userTeamDtoList
+  ) {
+    return teamService.addUsersToTeam(teamName, userTeamDtoList);
   }
 }

@@ -73,4 +73,13 @@ public interface UserService {
    * @return true if the user is the creator of the project, false otherwise
    */
   boolean isProjectCreator(String projectName, Long userId);
+
+  /**
+   * Checks if a user is the creator of a specific team.
+   *
+   * @param teamName the name of the team
+   * @param userId the ID of the user
+   * @return true if the user is the creator of the team, false otherwise
+   */
+  boolean isTeamCreator(String teamName, Long userId);
 }

@@ -62,9 +62,7 @@ public class AuthenticationController {
           schema = @Schema(implementation = ErrorDetails.class))
       )
   })
-  public AuthenticationResponse register(
-      @Valid @RequestBody final UserDto request
-  ) {
+  public AuthenticationResponse register(@Valid @RequestBody final UserDto request) {
     return authenticationService.registerUser(request);
   }
 
@@ -98,9 +96,7 @@ public class AuthenticationController {
           schema = @Schema(implementation = ErrorDetails.class))
       )
   })
-  public AuthenticationResponse authenticate(
-      @Valid @RequestBody final AuthenticationRequest request
-  ) {
+  public AuthenticationResponse authenticate(@Valid @RequestBody final AuthenticationRequest request) {
     return authenticationService.authenticate(request);
   }
 }

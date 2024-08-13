@@ -47,7 +47,7 @@ public final class TeamFactory {
       .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
   }
 
-  private Team buildProjectFromRequest(TeamDto request, User creator) {
+  private Team buildProjectFromRequest(final TeamDto request, final User creator) {
     Team team = new Team();
     team.setName(request.name());
     team.setDescription(request.description());

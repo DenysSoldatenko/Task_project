@@ -70,39 +70,12 @@ public abstract class BaseValidator<T> {
    * @param errorMessages The set where the error message will be added if the role is invalid.
    * @throws ValidationException if the creator's role is not allowed.
    */
-  protected void validateCreatorRole(
-      final UserDto dto,
-      final String errorMessage,
-      final Set<String> errorMessages
-  ) {
+  protected void validateCreatorRole(final UserDto dto, final String errorMessage, Set<String> errorMessages) {
     User creator = userRepository.findByUsername(dto.username())
         .orElseThrow(() -> new ValidationException(USER_NOT_FOUND_WITH_USERNAME + dto.username()));
 
     if (!CREATION_ALLOWED_ROLES.contains(creator.getRole().getName())) {
       errorMessages.add(errorMessage + dto.username());
-    }
-  }
-
-  /**
-   * Validates whether the name provided in the DTO is already taken. If the name is not the same
-   * as the existing name and the name already exists in the repository, an error message is added.
-   *
-   * @param dtoName The name in the DTO to validate.
-   * @param existingName The name of the existing entity in the repository.
-   * @param existsByName A boolean flag indicating
-   *                     whether the name already exists in the repository.
-   * @param errorMessages The collection to hold error messages if validation fails.
-   * @param errorMessagePrefix The prefix to be added to the error message if validation fails.
-   */
-  protected void validateNameTaken(
-      final String dtoName,
-      final String existingName,
-      final boolean existsByName,
-      final Set<String> errorMessages,
-      final String errorMessagePrefix
-  ) {
-    if (!dtoName.equals(existingName) && existsByName) {
-      errorMessages.add(errorMessagePrefix + dtoName);
     }
   }
 }

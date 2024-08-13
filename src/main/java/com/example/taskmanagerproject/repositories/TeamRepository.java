@@ -15,12 +15,19 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
   /**
-   * Finds a team by its name.
+   * Finds a team by its name, eagerly loading related creator and userTeams.
    *
    * @param name the name of the team
    * @return an Optional containing the Team if found, otherwise empty
    */
-  Optional<Team> findByName(String name);
+  @Query("""
+      SELECT t
+      FROM Team t
+      LEFT JOIN FETCH t.creator c
+      LEFT JOIN FETCH t.userTeams ut
+      WHERE t.name = :name
+      """)
+  Optional<Team> findByName(@Param("name") String name);
 
   /**
    * Checks if a team exists by its name.
@@ -31,7 +38,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
   boolean existsByName(String name);
 
   /**
-   * Finds all teams created by a user identified by their slug.
+   * Finds all teams created by a user identified by their slug, eagerly loading related userTeams.
    *
    * @param slug the slug of the user
    * @return a list of teams associated with the specified user
@@ -39,8 +46,25 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
   @Query("""
       SELECT t
       FROM Team t
-      JOIN FETCH t.creator c
-      WHERE c.slug = :slug
+      LEFT JOIN FETCH t.creator c
+      LEFT JOIN FETCH t.userTeams ut
+      WHERE c.slug = :slug OR ut.user.slug = :slug
       """)
   List<Team> findByCreatorSlug(@Param("slug") String slug);
+
+  /**
+   * Checks if a UserTeam exists based on userId and teamId using a native query.
+   *
+   * @param userId The user's ID.
+   * @param teamId The team's ID.
+   * @return True if a UserTeam exists, otherwise False.
+   */
+  @Query(value = """
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+      FROM users_teams ut
+      JOIN users u ON ut.user_id = u.id
+      JOIN teams t ON ut.team_id = t.id
+      WHERE ut.user_id = :userId AND ut.team_id = :teamId
+      """, nativeQuery = true)
+  boolean existsByUserIdAndTeamId(Long userId, Long teamId);
 }

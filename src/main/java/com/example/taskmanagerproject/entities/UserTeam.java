@@ -1,36 +1,34 @@
 package com.example.taskmanagerproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Represents the association between a user, a team, and the user's role within the team.
  */
+@Data
 @Entity
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "users_teams")
 public class UserTeam {
 
-  @Id
+  @EmbeddedId
+  private UserTeamId id;
+
   @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
+  @MapsId("userId")
+  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private User user;
 
-  @Id
   @ManyToOne
-  @JoinColumn(name = "team_id", nullable = false)
+  @MapsId("teamId")
+  @JsonBackReference
+  @JoinColumn(name = "team_id", referencedColumnName = "id", nullable = false)
   private Team team;
 
   @ManyToOne

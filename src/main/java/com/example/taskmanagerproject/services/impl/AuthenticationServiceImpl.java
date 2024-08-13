@@ -49,25 +49,17 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
     authenticateUser(request);
 
     User user = userRepository.findByUsername(request.username())
-        .orElseThrow(
-          () -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + request.username())
-        );
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + request.username()));
 
     return createAuthenticationResponse(user);
   }
 
   private void authenticateUser(final AuthenticationRequest request) {
-    authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(request.username(), request.password())
-    );
+    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
   }
 
   private AuthenticationResponse createAuthenticationResponse(final User user) {
-    String jwtToken = jwtTokenProvider.createAccessToken(
-        user.getId(),
-        user.getUsername(),
-        user.getRole().getName()
-    );
+    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getRole().getName());
     return new AuthenticationResponse(jwtToken);
   }
 }
