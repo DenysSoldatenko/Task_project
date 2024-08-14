@@ -28,7 +28,7 @@ public final class ProjectFactory {
    * @return A {@link Project} entity representing the created project with its associated details.
    * @throws UsernameNotFoundException if the creator's username (slug) is not found.
    */
-  public Project createProjectFromRequest(final ProjectDto request) {
+  public Project createProjectFromRequest(ProjectDto request) {
     User creator = getUserFromRequest(request);
     return buildProjectFromRequest(request, creator);
   }
@@ -40,7 +40,7 @@ public final class ProjectFactory {
    * @return The {@link User} entity corresponding to the creator.
    * @throws UsernameNotFoundException if the user with the specified username is not found.
    */
-  private User getUserFromRequest(final ProjectDto request) {
+  private User getUserFromRequest(ProjectDto request) {
     String username = request.creator().username();
     return userRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
@@ -53,7 +53,7 @@ public final class ProjectFactory {
    * @param creator The {@link User} who created the project.
    * @return A new {@link Project} entity populated with the provided details.
    */
-  private Project buildProjectFromRequest(final ProjectDto request, final User creator) {
+  private Project buildProjectFromRequest(ProjectDto request, User creator) {
     Project project = new Project();
     project.setName(request.name());
     project.setDescription(request.description());

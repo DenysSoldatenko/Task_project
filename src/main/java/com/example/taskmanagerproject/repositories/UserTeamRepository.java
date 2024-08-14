@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
  * Repository interface for managing UserTeam entities.
  */
 @Repository
-public interface UserTeamRepository extends JpaRepository<UserTeam, UserTeamId> {
-}
+public interface UserTeamRepository extends JpaRepository<UserTeam, UserTeamId> {}

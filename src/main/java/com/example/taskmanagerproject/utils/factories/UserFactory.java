@@ -30,7 +30,7 @@ public final class UserFactory {
    * @param request The registration request containing user information.
    * @return A new User instance.
    */
-  public User createUserFromRequest(final UserDto request) {
+  public User createUserFromRequest(UserDto request) {
     Role role = getRoleFromRequest(request);
     return buildUserFromRequest(request, role);
   }
@@ -41,7 +41,7 @@ public final class UserFactory {
    * @param request The registration request containing the role name.
    * @return The Role entity.
    */
-  private Role getRoleFromRequest(final UserDto request) {
+  private Role getRoleFromRequest(UserDto request) {
     return roleRepository.findByName(request.role().name())
       .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + request.role()));
   }
@@ -53,7 +53,7 @@ public final class UserFactory {
    * @param role    The Role entity.
    * @return A new User instance.
    */
-  private User buildUserFromRequest(final UserDto request, final Role role) {
+  private User buildUserFromRequest(UserDto request, Role role) {
     User user = new User();
     user.setFullName(request.fullName());
     user.setUsername(request.username());
@@ -73,7 +73,7 @@ public final class UserFactory {
    * @param fullName The full name to generate the slug for.
    * @return A unique slug consisting of the base slug and a shortened UUID.
    */
-  private String generateSlugFromFullName(final String fullName) {
+  private String generateSlugFromFullName(String fullName) {
     String baseSlug = slugGenerator.slugify(fullName);
     String uniqueSuffix = randomUUID().toString().substring(0, 8);
     return baseSlug + "-" + uniqueSuffix;
@@ -85,7 +85,7 @@ public final class UserFactory {
    * @param password The plain-text password.
    * @return The encoded password.
    */
-  private String encodePassword(final String password) {
+  private String encodePassword(String password) {
     return passwordEncoder.encode(password);
   }
 }

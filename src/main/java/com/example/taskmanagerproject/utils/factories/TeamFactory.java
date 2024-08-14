@@ -29,7 +29,7 @@ public final class TeamFactory {
    * @return A {@link Project} entity representing the created project with its associated details.
    * @throws UsernameNotFoundException if the creator's username (slug) is not found.
    */
-  public Team createProjectFromRequest(final TeamDto request) {
+  public Team createProjectFromRequest(TeamDto request) {
     User creator = getUserFromRequest(request);
     return buildProjectFromRequest(request, creator);
   }
@@ -41,13 +41,13 @@ public final class TeamFactory {
    * @return The {@link User} entity corresponding to the creator.
    * @throws UsernameNotFoundException if the user with the specified username is not found.
    */
-  private User getUserFromRequest(final TeamDto request) {
+  private User getUserFromRequest(TeamDto request) {
     String username = request.creator().username();
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
   }
 
-  private Team buildProjectFromRequest(final TeamDto request, final User creator) {
+  private Team buildProjectFromRequest(TeamDto request, User creator) {
     Team team = new Team();
     team.setName(request.name());
     team.setDescription(request.description());

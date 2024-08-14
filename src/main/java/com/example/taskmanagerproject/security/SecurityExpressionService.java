@@ -23,8 +23,8 @@ import org.springframework.stereotype.Service;
  * Service for security expressions related to user and task access.
  */
 @Slf4j
-@Service("expressionService")
 @RequiredArgsConstructor
+@Service("expressionService")
 public class SecurityExpressionService {
 
   private final UserService userService;
@@ -50,7 +50,7 @@ public class SecurityExpressionService {
    * @param slug The slug of the user to check.
    * @return true if the current user is an admin or matches the user's slug.
    */
-  public boolean canAccessUserDataBySlug(final String slug) {
+  public boolean canAccessUserDataBySlug(String slug) {
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     JwtEntity jwtEntity = (JwtEntity) getContext().getAuthentication().getPrincipal();
     UserDto user = userService.getUserBySlug(slug);
@@ -64,7 +64,7 @@ public class SecurityExpressionService {
    * @param id The ID of the user to check.
    * @return true if the current user is an admin or matches the user's ID.
    */
-  public boolean canAccessUserDataById(final Long id) {
+  public boolean canAccessUserDataById(Long id) {
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     log.info("Checking access for user ID: {} - isAdmin: {}", id, isAdmin);
@@ -78,7 +78,7 @@ public class SecurityExpressionService {
    * @param projectName the name of the project to check access for
    * @return true if the user has access to the project, false otherwise
    */
-  public boolean canAccessProject(final String projectName) {
+  public boolean canAccessProject(String projectName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     boolean isProjectCreator = userService.isProjectCreator(projectName, user.getId());
@@ -91,20 +91,20 @@ public class SecurityExpressionService {
 
   /**
    * Checks if the current user has the necessary permissions to access a team.
-   * The user must either be the creator of the team or have admin privileges.
+   * The user must either be the creator of the team, have admin privileges, or be a member of the team.
    *
    * @param teamName the name of the team to check access for
    * @return true if the user has access to the project, false otherwise
    */
-  public boolean canAccessTeam(final String teamName) {
+  public boolean canAccessTeam(String teamName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
-    boolean isTeamCreator = userService.isTeamCreator(teamName, user.getId());
+    boolean hasTeamAccess = userService.hasTeamAccess(teamName, user.getId());
     log.info(
-        "Checking access for user ID: {} on team name: {} - isAdmin: {}, isTeamCreator: {}",
-        user.getId(), teamName, isAdmin, isTeamCreator
+        "Checking access for user ID: {} on team name: {} - isAdmin: {}, hasTeamAccess: {}",
+        user.getId(), teamName, isAdmin, hasTeamAccess
     );
-    return isAdmin || isTeamCreator;
+    return isAdmin || hasTeamAccess;
   }
 
   /**
@@ -144,14 +144,14 @@ public class SecurityExpressionService {
    * @return true if the current user can access
    *     the specified task's data, false otherwise.
    */
-  public boolean canAccessTask(final Long taskId) {
+  public boolean canAccessTask(Long taskId) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isTaskOwner = userService.isUserTaskOwner(user.getId(), taskId);
     log.info("Checking task access for task id: {} - isTaskOwner: {}", taskId, isTaskOwner);
     return isTaskOwner;
   }
 
-  private boolean hasAnyRole(final List<RoleName> roles) {
+  private boolean hasAnyRole(List<RoleName> roles) {
     Authentication authentication = getContext().getAuthentication();
     boolean hasRole = roles.stream()
         .map(RoleName::name)

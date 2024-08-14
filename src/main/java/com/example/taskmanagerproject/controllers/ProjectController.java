@@ -66,7 +66,7 @@ public class ProjectController {
       }
   )
   @ResponseStatus(CREATED)
-  public ProjectDto createProject(@RequestBody @Valid final ProjectDto projectDto) {
+  public ProjectDto createProject(@RequestBody @Valid ProjectDto projectDto) {
     return projectService.createProject(projectDto);
   }
 
@@ -96,7 +96,7 @@ public class ProjectController {
           )
       }
   )
-  public ProjectDto getProjectByName(@PathVariable("projectName") final String projectName) {
+  public ProjectDto getProjectByName(@PathVariable("projectName") String projectName) {
     return projectService.getProjectByName(projectName);
   }
 
@@ -136,8 +136,8 @@ public class ProjectController {
       }
   )
   public ProjectDto updateProject(
-      @PathVariable("projectName") final String projectName,
-      @RequestBody @Valid final ProjectDto projectDto
+      @PathVariable("projectName") String projectName,
+      @RequestBody @Valid ProjectDto projectDto
   ) {
     return projectService.updateProject(projectName, projectDto);
   }
@@ -169,7 +169,7 @@ public class ProjectController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteProject(@PathVariable("projectName") final String projectName) {
+  public void deleteProject(@PathVariable("projectName") String projectName) {
     projectService.deleteProject(projectName);
   }
 }

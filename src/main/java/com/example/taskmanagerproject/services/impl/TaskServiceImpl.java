@@ -36,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional(readOnly = true)
   @Cacheable(value = "TaskService::getById", key = "#taskId")
-  public TaskDto getTaskById(final Long taskId) {
+  public TaskDto getTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
     return taskMapper.toDto(task);
@@ -44,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> getAllTasksByUserId(final Long userId) {
+  public List<TaskDto> getAllTasksByUserId(Long userId) {
     List<Task> taskList = taskRepository.findAllTasksByUserId(userId);
     return taskList.stream().map(taskMapper::toDto).toList();
   }
@@ -52,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   @CachePut(value = "TaskService::getById", key = "#taskId")
-  public TaskDto updateTask(final TaskDto taskDto, final Long taskId) {
+  public TaskDto updateTask(TaskDto taskDto, Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
 
@@ -67,7 +67,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  public TaskDto createTaskForUser(final TaskDto taskDto, final Long userId) {
+  public TaskDto createTaskForUser(TaskDto taskDto, Long userId) {
     Task task = taskMapper.toEntity(taskDto);
     task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
     task.setImages(taskDto.images());
@@ -80,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
-  public void deleteTaskById(final Long taskId) {
+  public void deleteTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
     taskRepository.delete(task);
@@ -88,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> findAllSoonExpiringTasks(final Duration duration) {
+  public List<TaskDto> findAllSoonExpiringTasks(Duration duration) {
     List<Task> taskList = taskRepository.findAllSoonExpiringTasks(
         valueOf(now()), valueOf(now().plus(duration))
     );
@@ -98,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
-  public void uploadImage(final Long taskId, final TaskImageDto image) {
+  public void uploadImage(Long taskId, TaskImageDto image) {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
 

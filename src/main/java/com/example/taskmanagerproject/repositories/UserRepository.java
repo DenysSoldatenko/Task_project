@@ -49,8 +49,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                           WHERE user_id = :userId
                             AND task_id = :taskId)
             """, nativeQuery = true)
-  boolean isTaskOwner(@Param("userId") Long userId,
-                      @Param("taskId") Long taskId);
+  boolean isTaskOwner(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
 
   /**
@@ -80,4 +79,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
       WHERE t.name = :teamName AND t.creator.id = :userId
       """)
   boolean isTeamCreator(@Param("teamName") String teamName, @Param("userId") Long userId);
+
+  /**
+   * Checks if the given user has one of the specified roles (ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD)
+   * in the context of the given team.
+   *
+   * @param teamName the name of the team to check the user's roles for
+   * @param userId the ID of the user to check
+   * @return true if the user has one of the specified roles in the given team, false otherwise
+   */
+  @Query(value = """
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+      FROM users u
+      JOIN users_teams ut ON u.id = ut.user_id
+      JOIN roles r ON r.id = ut.role_id
+      WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
+      AND u.id = :userId
+      AND ut.team_id = (SELECT t.id FROM teams t WHERE t.name = :teamName)
+      """, nativeQuery = true)
+  boolean isUserInLeadershipPosition(@Param("teamName") String teamName, @Param("userId") Long userId);
 }

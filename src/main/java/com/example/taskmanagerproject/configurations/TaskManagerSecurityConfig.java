@@ -78,9 +78,7 @@ public class TaskManagerSecurityConfig {
    * @throws Exception if an error occurs while retrieving the AuthenticationManager.
    */
   @Bean
-  public AuthenticationManager authenticationManager(
-      final AuthenticationConfiguration config
-  ) throws Exception {
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
 
@@ -93,9 +91,7 @@ public class TaskManagerSecurityConfig {
    *     while configuring the security filter chain.
    */
   @Bean
-  public SecurityFilterChain securityFilterChain(
-      final HttpSecurity http
-  ) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
@@ -108,10 +104,7 @@ public class TaskManagerSecurityConfig {
               .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-        .addFilterBefore(
-          new JwtTokenFilter(tokenProvider),
-          UsernamePasswordAuthenticationFilter.class
-        );
+        .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

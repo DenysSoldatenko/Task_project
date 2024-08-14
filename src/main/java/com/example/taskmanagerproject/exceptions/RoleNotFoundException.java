@@ -15,7 +15,7 @@ public class RoleNotFoundException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public RoleNotFoundException(final String message) {
+  public RoleNotFoundException(String message) {
     super(message);
   }
 }

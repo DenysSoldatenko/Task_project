@@ -75,11 +75,11 @@ public interface UserService {
   boolean isProjectCreator(String projectName, Long userId);
 
   /**
-   * Checks if a user is the creator of a specific team.
+   * Checks if the user has access to a specific team.
    *
-   * @param teamName the name of the team
-   * @param userId the ID of the user
-   * @return true if the user is the creator of the team, false otherwise
+   * @param teamName the name of the team to check access for
+   * @param userId the ID of the user whose access status is being checked
+   * @return true if the user has access to the team, false otherwise
    */
-  boolean isTeamCreator(String teamName, Long userId);
+  boolean hasTeamAccess(String teamName, Long userId);
 }

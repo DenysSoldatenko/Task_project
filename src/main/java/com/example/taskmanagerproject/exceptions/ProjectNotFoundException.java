@@ -15,7 +15,7 @@ public class ProjectNotFoundException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public ProjectNotFoundException(final String message) {
+  public ProjectNotFoundException(String message) {
     super(message);
   }
 }

@@ -127,7 +127,7 @@ public class DataInitializer {
    * @param fullName the full name of the user
    * @return the generated slug
    */
-  private String generateSlugFromFullName(final String fullName) {
+  private String generateSlugFromFullName(String fullName) {
     String baseSlug = slugGenerator.slugify(fullName);
     String uniqueSuffix = randomUUID().toString().substring(0, 8);
     return baseSlug + "-" + uniqueSuffix;

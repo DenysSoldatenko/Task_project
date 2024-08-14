@@ -15,7 +15,7 @@ public class RoleHierarchyNotFoundException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public RoleHierarchyNotFoundException(final String message) {
+  public RoleHierarchyNotFoundException(String message) {
     super(message);
   }
 }

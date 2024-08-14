@@ -54,12 +54,7 @@ public class JwtTokenProvider {
    * @param role     The role assigned to the user.
    * @return The generated access token.
    */
-  public String createAccessToken(
-      final Long userId,
-      final String username,
-      final String role
-  ) {
-
+  public String createAccessToken(Long userId, String username, String role) {
     Claims claims = claims()
         .subject(username)
         .add("id", userId)
@@ -82,7 +77,7 @@ public class JwtTokenProvider {
    * @param token The JWT token to validate.
    * @return true if the token is valid, false otherwise.
    */
-  public boolean validateToken(final String token) {
+  public boolean validateToken(String token) {
     Jws<Claims> claims = parser()
         .verifyWith(key)
         .build()
@@ -90,7 +85,7 @@ public class JwtTokenProvider {
     return claims.getPayload().getExpiration().after(new Date());
   }
 
-  private String getUsername(final String token) {
+  private String getUsername(String token) {
     return parser()
       .verifyWith(key)
       .build()
@@ -105,7 +100,7 @@ public class JwtTokenProvider {
    * @param token The JWT token.
    * @return The authentication information extracted from the token.
    */
-  public Authentication getAuthentication(final String token) {
+  public Authentication getAuthentication(String token) {
     String username = getUsername(token);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

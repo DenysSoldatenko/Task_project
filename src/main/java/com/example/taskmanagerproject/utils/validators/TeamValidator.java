@@ -40,7 +40,7 @@ public class TeamValidator extends BaseValidator<TeamDto> {
    * @param teamDto The TeamDto object to validate.
    * @throws ValidationException If validation fails.
    */
-  public void validateTeamDto(final TeamDto teamDto, final Team... existingTeam) {
+  public void validateTeamDto(TeamDto teamDto, Team... existingTeam) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(teamDto, errorMessages);
     validateTeamNameUniqueness(teamDto, errorMessages, existingTeam);
@@ -48,7 +48,7 @@ public class TeamValidator extends BaseValidator<TeamDto> {
     throwIfErrorsExist(errorMessages);
   }
 
-  private void validateTeamNameUniqueness(final TeamDto teamDto, final Set<String> errorMessages, final Team... existingTeams) {
+  private void validateTeamNameUniqueness(TeamDto teamDto, Set<String> errorMessages, Team... existingTeams) {
     String dtoName = teamDto.name();
     String existingName = stream(existingTeams).findFirst().map(Team::getName).orElse(null);
     if (!dtoName.equals(existingName) && teamRepository.existsByName(dtoName)) {

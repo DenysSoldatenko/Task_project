@@ -34,7 +34,7 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
    * @param request The registration request containing user details.
    * @return AuthenticationResponse containing the JWT token.
    */
-  public AuthenticationResponse registerUser(final UserDto request) {
+  public AuthenticationResponse registerUser(UserDto request) {
     User user = userService.createUser(request);
     return createAuthenticationResponse(user);
   }
@@ -45,7 +45,7 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
    * @param request The authentication request containing user credentials.
    * @return AuthenticationResponse containing the JWT token.
    */
-  public AuthenticationResponse authenticate(final AuthenticationRequest request) {
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
     authenticateUser(request);
 
     User user = userRepository.findByUsername(request.username())
@@ -54,11 +54,11 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
     return createAuthenticationResponse(user);
   }
 
-  private void authenticateUser(final AuthenticationRequest request) {
+  private void authenticateUser(AuthenticationRequest request) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
   }
 
-  private AuthenticationResponse createAuthenticationResponse(final User user) {
+  private AuthenticationResponse createAuthenticationResponse(User user) {
     String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getRole().getName());
     return new AuthenticationResponse(jwtToken);
   }

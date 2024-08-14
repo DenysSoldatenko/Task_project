@@ -15,7 +15,7 @@ public class ImageUploadException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public ImageUploadException(final String message) {
+  public ImageUploadException(String message) {
     super(message);
   }
 }

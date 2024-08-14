@@ -16,7 +16,7 @@ public class RoleFactory {
    * @param request The role request containing role information.
    * @return A new Role instance.
    */
-  public Role createRoleFromRequest(final RoleDto request) {
+  public Role createRoleFromRequest(RoleDto request) {
     Role role = new Role();
     role.setName(request.name().toUpperCase());
     role.setDescription(request.description());

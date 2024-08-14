@@ -43,10 +43,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(TaskNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
-      final TaskNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(TaskNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
@@ -67,10 +64,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(RoleNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
-      final RoleNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(RoleNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
@@ -91,10 +85,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(ProjectNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
-      final ProjectNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(ProjectNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
@@ -115,10 +106,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(TeamNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
-      final TeamNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(TeamNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
@@ -139,10 +127,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(RoleHierarchyNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(
-      final RoleHierarchyNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(RoleHierarchyNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
@@ -163,10 +148,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handleCommentNotFoundException(
-      final UserNotFoundException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleCommentNotFoundException(UserNotFoundException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(NOT_FOUND.value()),
@@ -185,10 +167,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(ValidationException.class)
-  public ResponseEntity<ErrorDetails> handleAuthException(
-      final ValidationException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleAuthException(ValidationException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),
@@ -207,10 +186,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(ImageUploadException.class)
-  public ResponseEntity<ErrorDetails> handleImageUploadException(
-      final ImageUploadException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleImageUploadException(ImageUploadException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),
@@ -229,10 +205,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorDetails> handleGlobalException(
-      final Exception exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleGlobalException(Exception exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(INTERNAL_SERVER_ERROR.value()),
@@ -252,10 +225,7 @@ public class GlobalExceptionHandler {
    * @return a ResponseEntity containing details of the error response.
    */
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorDetails> handleMethodArgumentNotValidException(
-      final MethodArgumentNotValidException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest webRequest) {
 
     String errorMessage = exception.getBindingResult().getFieldErrors().stream()
         .map(FieldError::getDefaultMessage)
@@ -283,10 +253,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(IllegalStateException.class)
   @ResponseStatus(BAD_REQUEST)
-  public ResponseEntity<ErrorDetails> handleIllegalStateException(
-      final IllegalStateException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleIllegalStateException(IllegalStateException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),
@@ -307,10 +274,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(AccessDeniedException.class)
   @ResponseStatus(FORBIDDEN)
-  public ResponseEntity<ErrorDetails> handleAccessDeniedException(
-      final AccessDeniedException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(FORBIDDEN.value()),
@@ -331,10 +295,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(BAD_REQUEST)
-  public ResponseEntity<ErrorDetails> handleConstraintViolationException(
-      final ConstraintViolationException exception,
-      final WebRequest webRequest
-  ) {
+  public ResponseEntity<ErrorDetails> handleConstraintViolationException(ConstraintViolationException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),

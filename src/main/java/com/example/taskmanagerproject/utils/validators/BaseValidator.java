@@ -70,7 +70,7 @@ public abstract class BaseValidator<T> {
    * @param errorMessages The set where the error message will be added if the role is invalid.
    * @throws ValidationException if the creator's role is not allowed.
    */
-  protected void validateCreatorRole(final UserDto dto, final String errorMessage, Set<String> errorMessages) {
+  protected void validateCreatorRole(UserDto dto, String errorMessage, Set<String> errorMessages) {
     User creator = userRepository.findByUsername(dto.username())
         .orElseThrow(() -> new ValidationException(USER_NOT_FOUND_WITH_USERNAME + dto.username()));
 

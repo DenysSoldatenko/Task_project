@@ -40,7 +40,7 @@ public class ProjectValidator extends BaseValidator<ProjectDto> {
    * @param projectDto The ProjectDto object to validate.
    * @throws ValidationException If validation fails.
    */
-  public void validateProjectDto(final ProjectDto projectDto, final Project... existingProject) {
+  public void validateProjectDto(ProjectDto projectDto, Project... existingProject) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(projectDto, errorMessages);
     validateProjectNameUniqueness(projectDto, errorMessages, existingProject);
@@ -48,7 +48,7 @@ public class ProjectValidator extends BaseValidator<ProjectDto> {
     throwIfErrorsExist(errorMessages);
   }
 
-  private void validateProjectNameUniqueness(final ProjectDto projectDto, final Set<String> errorMessages, final Project... existingProjects) {
+  private void validateProjectNameUniqueness(ProjectDto projectDto, Set<String> errorMessages, Project... existingProjects) {
     String dtoName = projectDto.name();
     String existingName = stream(existingProjects).findFirst().map(Project::getName).orElse(null);
     if (!dtoName.equals(existingName) && projectRepository.existsByName(dtoName)) {

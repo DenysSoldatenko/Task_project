@@ -25,7 +25,7 @@ public final class RoleHierarchyFactory {
    * @param roleHierarchyDto The RoleHierarchyDto containing higher and lower roles.
    * @return A new RoleHierarchy entity.
    */
-  public RoleHierarchy createRoleHierarchyFromDto(final RoleHierarchyDto roleHierarchyDto) {
+  public RoleHierarchy createRoleHierarchyFromDto(RoleHierarchyDto roleHierarchyDto) {
     Role higherRole = getRoleFromDto(roleHierarchyDto.higherRole().name());
     Role lowerRole = getRoleFromDto(roleHierarchyDto.lowerRole().name());
 
@@ -38,7 +38,7 @@ public final class RoleHierarchyFactory {
    * @param roleName The name of the role to retrieve.
    * @return The Role entity.
    */
-  private Role getRoleFromDto(final String roleName) {
+  private Role getRoleFromDto(String roleName) {
     return roleRepository.findByName(roleName)
       .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
   }
@@ -50,7 +50,7 @@ public final class RoleHierarchyFactory {
    * @param lowerRole  The lower role in the hierarchy.
    * @return A new RoleHierarchy entity.
    */
-  private RoleHierarchy buildRoleHierarchy(final Role higherRole, final Role lowerRole) {
+  private RoleHierarchy buildRoleHierarchy(Role higherRole, Role lowerRole) {
     RoleHierarchy roleHierarchy = new RoleHierarchy();
     roleHierarchy.setHigherRole(higherRole);
     roleHierarchy.setLowerRole(lowerRole);

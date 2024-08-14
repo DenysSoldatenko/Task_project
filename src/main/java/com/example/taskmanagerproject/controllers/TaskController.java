@@ -73,7 +73,7 @@ public class TaskController {
   @QueryMapping(name = "getTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public TaskDto getTaskById(
-      @PathVariable(name = "id") @Argument final Long id
+      @PathVariable(name = "id") @Argument Long id
   ) {
     return taskService.getTaskById(id);
   }
@@ -116,8 +116,8 @@ public class TaskController {
   @MutationMapping(name = "updateTask")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public TaskDto updateTask(
-      @Valid @RequestBody @Argument final TaskDto taskDto,
-      @PathVariable(name = "id") @Argument final Long id
+      @Valid @RequestBody @Argument TaskDto taskDto,
+      @PathVariable(name = "id") @Argument Long id
   ) {
     return taskService.updateTask(taskDto, id);
   }
@@ -151,7 +151,7 @@ public class TaskController {
   @MutationMapping(name = "deleteTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void deleteTaskById(
-      @PathVariable(name = "id") @Argument final Long id
+      @PathVariable(name = "id") @Argument Long id
   ) {
     taskService.deleteTaskById(id);
   }
@@ -189,8 +189,8 @@ public class TaskController {
   @ResponseStatus(NO_CONTENT)
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void uploadImage(
-      @Valid @ModelAttribute final TaskImageDto imageDto,
-      @PathVariable(name = "id") final Long id
+      @Valid @ModelAttribute TaskImageDto imageDto,
+      @PathVariable(name = "id") Long id
   ) {
     taskService.uploadImage(id, imageDto);
   }

@@ -37,7 +37,7 @@ public class UserValidator extends BaseValidator<UserDto> {
    * @param userDto The UserDto object to validate.
    * @throws ValidationException If validation fails.
    */
-  public void validateUserDto(final UserDto userDto) {
+  public void validateUserDto(UserDto userDto) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(userDto, errorMessages);
     validateUserExists(userDto, errorMessages);
@@ -45,13 +45,13 @@ public class UserValidator extends BaseValidator<UserDto> {
     throwIfErrorsExist(errorMessages);
   }
 
-  private void validatePasswordMatching(final UserDto userDto, final Set<String> errorMessages) {
+  private void validatePasswordMatching(UserDto userDto, Set<String> errorMessages) {
     if (!userDto.password().equals(userDto.confirmPassword())) {
       errorMessages.add(PASSWORD_MISMATCH);
     }
   }
 
-  private void validateUserExists(final UserDto userDto, final Set<String> errorMessages) {
+  private void validateUserExists(UserDto userDto, Set<String> errorMessages) {
     User existingUser = userRepository.findByUsername(userDto.username()).orElse(null);
     if (existingUser != null && !existingUser.getUsername().equals(userDto.username())) {
       errorMessages.add(USER_ALREADY_EXISTS_WITH_USERNAME + userDto.username());

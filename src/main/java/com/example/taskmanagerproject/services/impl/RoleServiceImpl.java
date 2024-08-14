@@ -124,29 +124,17 @@ public class RoleServiceImpl implements RoleService {
   @Transactional
   public void deleteRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList) {
     for (RoleHierarchyDto roleHierarchyDto : roleHierarchyDtoList) {
-      RoleHierarchy roleHierarchy = findByHigherRoleNameAndLowerRoleName(
-          roleHierarchyDto.higherRole().name(),
-          roleHierarchyDto.lowerRole().name()
-      ).orElseThrow(() -> new RoleHierarchyNotFoundException(
-          format(
-            ROLE_HIERARCHY_NOT_FOUND,
-            roleHierarchyDto.higherRole().name(),
-            roleHierarchyDto.lowerRole().name()
-          )
-      ));
-
+      RoleHierarchy roleHierarchy = findByHigherRoleNameAndLowerRoleName(roleHierarchyDto.higherRole().name(), roleHierarchyDto.lowerRole().name())
+          .orElseThrow(() -> new RoleHierarchyNotFoundException(
+            format(ROLE_HIERARCHY_NOT_FOUND, roleHierarchyDto.higherRole().name(), roleHierarchyDto.lowerRole().name())
+          ));
       roleHierarchyRepository.delete(roleHierarchy);
     }
   }
 
-  private Optional<RoleHierarchy> findByHigherRoleNameAndLowerRoleName(
-      String higherRoleName, String lowerRoleName
-  ) {
+  private Optional<RoleHierarchy> findByHigherRoleNameAndLowerRoleName(String higherRoleName, String lowerRoleName) {
     return roleHierarchyRepository.findAll().stream()
-      .filter(
-        rh -> rh.getHigherRole().getName().equals(higherRoleName)
-          && rh.getLowerRole().getName().equals(lowerRoleName)
-      )
+      .filter(rh -> rh.getHigherRole().getName().equals(higherRoleName) && rh.getLowerRole().getName().equals(lowerRoleName))
       .findFirst();
   }
 }

@@ -17,7 +17,7 @@ public final class JwtUserDetailsService implements UserDetailsService {
   private final UserService userService;
 
   @Override
-  public UserDetails loadUserByUsername(final String username) {
+  public UserDetails loadUserByUsername(String username) {
     User user = userService.getUserByUsername(username);
     return JwtEntityFactory.create(user);
   }

@@ -33,7 +33,7 @@ public final class ImageServiceImpl implements ImageService {
   private final TaskImageMapper taskImageMapper;
 
   @Override
-  public String uploadImage(final TaskImageDto taskImageDto) {
+  public String uploadImage(TaskImageDto taskImageDto) {
     TaskImage taskImage = taskImageMapper.toEntity(taskImageDto);
     try {
       createBucketIfNotExists();
@@ -66,13 +66,13 @@ public final class ImageServiceImpl implements ImageService {
     }
   }
 
-  private void validateImage(final MultipartFile file) {
+  private void validateImage(MultipartFile file) {
     if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
       throw new ImageUploadException(IMAGE_MUST_NOT_BE_EMPTY);
     }
   }
 
-  private String generateFileName(final MultipartFile file) {
+  private String generateFileName(MultipartFile file) {
     String originalFilename = file.getOriginalFilename();
     if (originalFilename != null) {
       String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
@@ -82,7 +82,7 @@ public final class ImageServiceImpl implements ImageService {
     }
   }
 
-  private void uploadImageToMinio(final InputStream inputStream, final String fileName) {
+  private void uploadImageToMinio(InputStream inputStream, String fileName) {
     try {
       minioClient.putObject(PutObjectArgs.builder()
           .stream(inputStream, inputStream.available(), -1)

@@ -15,7 +15,7 @@ public class TaskNotFoundException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public TaskNotFoundException(final String message) {
+  public TaskNotFoundException(String message) {
     super(message);
   }
 }

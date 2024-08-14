@@ -20,14 +20,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller class for handling user-related endpoints.
@@ -75,7 +82,7 @@ public class UserController {
   @ResponseStatus(OK)
   @QueryMapping(name = "getUserBySlug")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument final String slug) {
+  public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
     return userService.getUserBySlug(slug);
   }
 
@@ -110,7 +117,7 @@ public class UserController {
           )
       }
   )
-  public List<ProjectDto> getProjectsByUserSlug(@PathVariable(name = "slug") final String slug) {
+  public List<ProjectDto> getProjectsByUserSlug(@PathVariable(name = "slug") String slug) {
     return projectService.getProjectsBySlug(slug);
   }
 
@@ -145,7 +152,7 @@ public class UserController {
           )
       }
   )
-  public List<TeamDto> getTeamsByUserSlug(@PathVariable(name = "slug") final String slug) {
+  public List<TeamDto> getTeamsByUserSlug(@PathVariable(name = "slug") String slug) {
     return teamService.getTeamsBySlug(slug);
   }
 
@@ -182,7 +189,7 @@ public class UserController {
   @QueryMapping(name = "getTasksByUserId")
   @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public List<TaskDto> getTasksByUserId(
-    @PathVariable(name = "id") @Argument final Long id
+    @PathVariable(name = "id") @Argument Long id
   ) {
     return taskService.getAllTasksByUserId(id);
   }
@@ -225,8 +232,8 @@ public class UserController {
   @MutationMapping(name = "createTaskForUser")
   @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public TaskDto createTaskForUser(
-    @PathVariable(name = "id") @Argument final Long id,
-    @Valid @RequestBody @Argument final TaskDto taskDto
+    @PathVariable(name = "id") @Argument Long id,
+    @Valid @RequestBody @Argument TaskDto taskDto
   ) {
     return taskService.createTaskForUser(taskDto, id);
   }
@@ -240,37 +247,37 @@ public class UserController {
    */
   @PutMapping("/{slug}")
   @Operation(
-    summary = "Update user",
-    description = "Update user information by slug",
-    responses = {
-      @ApiResponse(responseCode = "200", description = "User updated successfully",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = UserDto.class))
-      ),
-      @ApiResponse(responseCode = "400", description = "Invalid input data",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "403", description = "Access denied",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "404", description = "User not found",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-    }
+      summary = "Update user",
+      description = "Update user information by slug",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "User updated successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
   )
   @ResponseStatus(OK)
   @MutationMapping(name = "updateUser")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto updateUser(
-    @Valid @RequestBody @Argument final UserDto userDto,
-    @PathVariable(name = "slug") @Argument final String slug
+      @Valid @RequestBody @Argument UserDto userDto,
+      @PathVariable(name = "slug") @Argument String slug
   ) {
     return userService.updateUser(userDto, slug);
   }
@@ -282,30 +289,28 @@ public class UserController {
    */
   @DeleteMapping("/{slug}")
   @Operation(
-    summary = "Delete user by slug",
-    description = "Delete user by slug",
-    responses = {
-      @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-      @ApiResponse(responseCode = "403", description = "Access denied",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "404", description = "User not found",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-    }
+      summary = "Delete user by slug",
+      description = "Delete user by slug",
+      responses = {
+          @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
   )
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteUserBySlug")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void deleteUserBySlug(
-    @PathVariable(name = "slug") @Argument final String slug
-  ) {
+  public void deleteUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
     userService.deleteUserBySlug(slug);
   }
 }

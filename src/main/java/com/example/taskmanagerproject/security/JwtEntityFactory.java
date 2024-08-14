@@ -17,7 +17,7 @@ public final class JwtEntityFactory {
    * @param user The user from which to create the JwtEntity.
    * @return The JwtEntity created from the user.
    */
-  public static JwtEntity create(final User user) {
+  public static JwtEntity create(User user) {
     return new JwtEntity(
       user.getId(),
       user.getUsername(),
@@ -27,7 +27,7 @@ public final class JwtEntityFactory {
     );
   }
 
-  private static List<GrantedAuthority> mapToGrantedAuthorities(final String role) {
+  private static List<GrantedAuthority> mapToGrantedAuthorities(String role) {
     return Collections.singletonList(new SimpleGrantedAuthority(role));
   }
 }

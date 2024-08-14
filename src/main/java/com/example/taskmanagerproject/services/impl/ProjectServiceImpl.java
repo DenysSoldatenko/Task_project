@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ProjectServiceImpl implements ProjectService {
+public final class ProjectServiceImpl implements ProjectService {
 
   private final ProjectMapper projectMapper;
   private final ProjectFactory projectFactory;

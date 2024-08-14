@@ -15,7 +15,7 @@ public class TeamNotFoundException extends RuntimeException {
    *
    * @param message The detail message explaining the error.
    */
-  public TeamNotFoundException(final String message) {
+  public TeamNotFoundException(String message) {
     super(message);
   }
 }

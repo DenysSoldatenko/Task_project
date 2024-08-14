@@ -68,7 +68,7 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
-  public TeamDto createTeam(@RequestBody @Valid final TeamDto teamDto) {
+  public TeamDto createTeam(@RequestBody @Valid TeamDto teamDto) {
     return teamService.createTeam(teamDto);
   }
 
@@ -98,7 +98,7 @@ public class TeamController {
           )
       }
   )
-  public TeamDto getTeamByName(@PathVariable("teamName") final String teamName) {
+  public TeamDto getTeamByName(@PathVariable("teamName") String teamName) {
     return teamService.getTeamByName(teamName);
   }
 
@@ -138,8 +138,8 @@ public class TeamController {
       }
   )
   public TeamDto updateTeam(
-      @PathVariable("teamName") final String teamName,
-      @RequestBody @Valid final TeamDto teamDto
+      @PathVariable("teamName") String teamName,
+      @RequestBody @Valid TeamDto teamDto
   ) {
     return teamService.updateTeam(teamName, teamDto);
   }
@@ -171,7 +171,7 @@ public class TeamController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteTeam(@PathVariable("teamName") final String teamName) {
+  public void deleteTeam(@PathVariable("teamName") String teamName) {
     teamService.deleteTeam(teamName);
   }
 
@@ -214,7 +214,7 @@ public class TeamController {
   )
   @ResponseStatus(CREATED)
   public TeamDto addUsersToTeam(
-      @PathVariable("teamName") final String teamName,
+      @PathVariable("teamName") String teamName,
       @RequestBody @Valid List<UserTeamDto> userTeamDtoList
   ) {
     return teamService.addUsersToTeam(teamName, userTeamDtoList);

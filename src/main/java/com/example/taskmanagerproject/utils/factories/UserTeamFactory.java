@@ -41,7 +41,7 @@ public class UserTeamFactory {
    * @param userTeams The list of UserTeamDto objects to create UserTeam entities.
    * @return A list of {@link UserTeam} entities representing the user-team assignments.
    */
-  public List<UserTeam> createUserTeamAssociations(final List<UserTeamDto> userTeams) {
+  public List<UserTeam> createUserTeamAssociations(List<UserTeamDto> userTeams) {
     List<UserTeam> userTeamAssociations = new ArrayList<>();
 
     for (UserTeamDto userTeamDto : userTeams) {
@@ -62,7 +62,7 @@ public class UserTeamFactory {
    * @return The {@link User} entity corresponding to the userId.
    * @throws UsernameNotFoundException if the user with the specified userId is not found.
    */
-  private User getUserFromRequest(final UserTeamDto userTeamDto) {
+  private User getUserFromRequest(UserTeamDto userTeamDto) {
     return userRepository.findById(userTeamDto.userId())
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_ID + userTeamDto.userId()));
   }
@@ -74,7 +74,7 @@ public class UserTeamFactory {
    * @return The {@link Team} entity corresponding to the teamId.
    * @throws TeamNotFoundException if the team with the specified teamId is not found.
    */
-  private Team getTeamFromRequest(final UserTeamDto userTeamDto) {
+  private Team getTeamFromRequest(UserTeamDto userTeamDto) {
     return teamRepository.findById(userTeamDto.teamId())
         .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_ID + userTeamDto.teamId()));
   }
@@ -85,18 +85,18 @@ public class UserTeamFactory {
    * @param userTeamDto The UserTeamDto containing the roleId.
    * @throws RoleNotFoundException if the role with the specified roleId is not found.
    */
-  private Role getRoleFromRequest(final UserTeamDto userTeamDto) {
+  private Role getRoleFromRequest(UserTeamDto userTeamDto) {
     return roleRepository.findById(userTeamDto.roleId())
         .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_ID + userTeamDto.roleId()));
   }
 
-  private void checkUserAlreadyInTeam(final User user, final Team team) {
+  private void checkUserAlreadyInTeam(User user, Team team) {
     if (teamRepository.existsByUserIdAndTeamId(user.getId(), team.getId())) {
       throw new ValidationException(format(USER_ALREADY_IN_TEAM, user.getId(), team.getId()));
     }
   }
 
-  private UserTeam buildUserTeam(final User user, final Team team, final Role role) {
+  private UserTeam buildUserTeam(User user, Team team, Role role) {
     UserTeam userTeam = new UserTeam();
     userTeam.setId(new UserTeamId(user.getId(), team.getId()));
     userTeam.setUser(user);

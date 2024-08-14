@@ -39,14 +39,14 @@ public class RoleValidator extends BaseValidator<RoleDto> {
    * @param roleDto The RoleDto object to validate.
    * @throws ValidationException If validation fails.
    */
-  public void validateRoleDto(final RoleDto roleDto, final Role... existingRole) {
+  public void validateRoleDto(RoleDto roleDto, Role... existingRole) {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(roleDto, errorMessages);
     validateRoleNameUniqueness(roleDto, errorMessages, existingRole);
     throwIfErrorsExist(errorMessages);
   }
 
-  private void validateRoleNameUniqueness(final RoleDto roleDto, final Set<String> errorMessages, final Role... existingRoles) {
+  private void validateRoleNameUniqueness(RoleDto roleDto, Set<String> errorMessages, Role... existingRoles) {
     String dtoName = roleDto.name();
     String existingName = stream(existingRoles).findFirst().map(Role::getName).orElse(null);
     if (!dtoName.equals(existingName) && roleRepository.existsByName(dtoName)) {
