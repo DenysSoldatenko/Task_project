@@ -4,8 +4,8 @@ import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_SLUG;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.UserService;
@@ -28,11 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
   private final UserMapper userMapper;
   private final UserFactory userFactory;
   private final UserValidator userValidator;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   @Transactional(readOnly = true)
@@ -105,14 +105,14 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean isProjectCreator(String projectName, Long userId) {
-    return userRepository.isProjectCreator(projectName, userId);
+  public boolean isProjectCreator(String projectName, String username) {
+    return userRepository.isProjectCreator(projectName, username);
   }
 
   @Override
-  public boolean hasTeamAccess(String teamName, Long userId) {
-    boolean isCreator = userRepository.isTeamCreator(teamName, userId);
-    boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPosition(teamName, userId);
+  public boolean hasTeamAccess(String teamName, String username) {
+    boolean isCreator = userRepository.isTeamCreator(teamName, username);
+    boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPositionInTeam(teamName, username);
     return isCreator || isUserInLeadershipPosition;
   }
 }

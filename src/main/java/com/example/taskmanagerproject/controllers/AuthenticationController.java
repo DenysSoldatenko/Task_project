@@ -3,9 +3,9 @@ package com.example.taskmanagerproject.controllers;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.example.taskmanagerproject.dtos.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.dtos.security.AuthenticationRequest;
+import com.example.taskmanagerproject.dtos.security.AuthenticationResponse;
+import com.example.taskmanagerproject.dtos.security.UserDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;

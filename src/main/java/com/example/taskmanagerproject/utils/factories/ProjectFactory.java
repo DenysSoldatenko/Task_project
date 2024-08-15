@@ -3,9 +3,9 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 import static java.time.LocalDateTime.now;
 
-import com.example.taskmanagerproject.dtos.ProjectDto;
-import com.example.taskmanagerproject.entities.Project;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.entities.project.Project;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,7 +57,6 @@ public final class ProjectFactory {
     Project project = new Project();
     project.setName(request.name());
     project.setDescription(request.description());
-    project.setTeam(null);
     project.setCreator(creator);
     project.setCreatedAt(now());
     return project;

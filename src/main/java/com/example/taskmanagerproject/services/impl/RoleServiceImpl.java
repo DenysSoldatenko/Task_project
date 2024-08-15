@@ -4,11 +4,11 @@ import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_HIERARCHY_N
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 import static java.lang.String.format;
 
-import com.example.taskmanagerproject.dtos.RoleDto;
-import com.example.taskmanagerproject.dtos.RoleHierarchyDto;
-import com.example.taskmanagerproject.dtos.RoleHierarchyListDto;
-import com.example.taskmanagerproject.entities.Role;
-import com.example.taskmanagerproject.entities.RoleHierarchy;
+import com.example.taskmanagerproject.dtos.security.RoleDto;
+import com.example.taskmanagerproject.dtos.security.RoleHierarchyDto;
+import com.example.taskmanagerproject.dtos.security.RoleHierarchyListDto;
+import com.example.taskmanagerproject.entities.security.Role;
+import com.example.taskmanagerproject.entities.security.RoleHierarchy;
 import com.example.taskmanagerproject.exceptions.RoleHierarchyNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleHierarchyRepository;

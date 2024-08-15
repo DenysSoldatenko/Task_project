@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.security;
 
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.entities.security.User;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;

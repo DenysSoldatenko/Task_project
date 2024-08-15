@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS teams
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-CREATE TABLE IF NOT EXISTS users_teams
+CREATE TABLE IF NOT EXISTS teams_users
 (
     user_id BIGINT NOT NULL,
     team_id BIGINT NOT NULL,
@@ -67,16 +67,13 @@ CREATE TABLE IF NOT EXISTS projects
     id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
     description TEXT         NULL,
-    team_id     BIGINT,
     creator_id  BIGINT       NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_projects_team FOREIGN KEY (team_id) REFERENCES teams (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_projects_creator FOREIGN KEY (creator_id) REFERENCES users (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
-CREATE TABLE IF NOT EXISTS teams_projects
+CREATE TABLE IF NOT EXISTS projects_teams
 (
     team_id    BIGINT NOT NULL,
     project_id BIGINT NOT NULL,

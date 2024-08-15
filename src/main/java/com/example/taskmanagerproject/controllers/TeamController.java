@@ -3,9 +3,12 @@ package com.example.taskmanagerproject.controllers;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.example.taskmanagerproject.dtos.TeamDto;
-import com.example.taskmanagerproject.dtos.UserTeamDto;
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.dtos.team.TeamUserDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
+import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
 
   private final TeamService teamService;
+  private final ProjectService projectService;
 
   /**
    * Creates a new team.
@@ -100,6 +104,72 @@ public class TeamController {
   )
   public TeamDto getTeamByName(@PathVariable("teamName") String teamName) {
     return teamService.getTeamByName(teamName);
+  }
+
+  /**
+   * Retrieves all users and their roles for a specific team.
+   *
+   * @param teamName the name of the team
+   * @return a list of users and their roles in the team, or 404 if the team does not exist
+   */
+  @GetMapping("/{teamName}/users-roles")
+  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
+  @Operation(
+      summary = "Retrieve all users and their roles for a specific team",
+      description = "Fetches a list of users and their roles for the given team",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Users and roles found successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = TeamUserDto.class)
+            )
+          ),
+          @ApiResponse(responseCode = "404", description = "Team not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          )
+      }
+  )
+  public List<TeamUserDto> getUsersWithRolesForTeam(@PathVariable("teamName") String teamName) {
+    return teamService.getUsersWithRolesForTeam(teamName);
+  }
+
+  /**
+   * Retrieves all projects for a specific team.
+   *
+   * @param teamName the name of the team
+   * @return a list of projects associated with the team, or 404 if the team does not exist
+   */
+  @GetMapping("/{teamName}/projects")
+  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
+  @Operation(
+      summary = "Retrieve all projects for a specific team",
+      description = "Fetches a list of projects associated with the given team",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Projects found successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ProjectDto.class)
+            )
+          ),
+          @ApiResponse(responseCode = "404", description = "Team not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          )
+      }
+  )
+  public List<ProjectTeamDto> getProjectsForTeam(@PathVariable("teamName") String teamName) {
+    return projectService.getProjectsForTeam(teamName);
   }
 
   /**
@@ -179,7 +249,7 @@ public class TeamController {
    * Adds a list of users to a specific team, assigning them roles.
    *
    * @param teamName the name of the team to which the users will be added
-   * @param userTeamDtoList the list of user-team-role associations to be added
+   * @param teamUserDtoList the list of user-team-role associations to be added
    * @return the updated team after the users have been added
    */
   @PostMapping("/{teamName}/users")
@@ -192,7 +262,7 @@ public class TeamController {
             responseCode = "201",
             description = "Users added to team successfully",
             content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = UserTeamDto.class))
+              schema = @Schema(implementation = TeamUserDto.class))
           ),
           @ApiResponse(
             responseCode = "400",
@@ -213,10 +283,10 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
-  public TeamDto addUsersToTeam(
+  public List<TeamUserDto> addUsersToTeam(
       @PathVariable("teamName") String teamName,
-      @RequestBody @Valid List<UserTeamDto> userTeamDtoList
+      @RequestBody @Valid List<TeamUserDto> teamUserDtoList
   ) {
-    return teamService.addUsersToTeam(teamName, userTeamDtoList);
+    return teamService.addUsersToTeam(teamName, teamUserDtoList);
   }
 }

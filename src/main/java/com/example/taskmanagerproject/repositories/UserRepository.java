@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.entities.security.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -56,46 +56,62 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * Checks if a given user is the creator of a specific project.
    *
    * @param projectName the name of the project
-   * @param userId the ID of the user
+   * @param username the username of the user
    * @return true if the user is the creator of the project, false otherwise
    */
   @Query("""
       SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END
       FROM Project p
-      WHERE p.name = :projectName AND p.creator.id = :userId
+      WHERE p.name = :projectName AND p.creator.username = :username
       """)
-  boolean isProjectCreator(@Param("projectName") String projectName, @Param("userId") Long userId);
+  boolean isProjectCreator(@Param("projectName") String projectName, @Param("username") String username);
 
   /**
    * Checks if a given user is the creator of a specific team.
    *
    * @param teamName the name of the team
-   * @param userId the ID of the user
+   * @param username the username of the user
    * @return true if the user is the creator of the team, false otherwise
    */
   @Query("""
       SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
       FROM Team t
-      WHERE t.name = :teamName AND t.creator.id = :userId
+      WHERE t.name = :teamName AND t.creator.username = :username
       """)
-  boolean isTeamCreator(@Param("teamName") String teamName, @Param("userId") Long userId);
+  boolean isTeamCreator(@Param("teamName") String teamName, @Param("username") String username);
 
   /**
    * Checks if the given user has one of the specified roles (ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD)
    * in the context of the given team.
    *
    * @param teamName the name of the team to check the user's roles for
-   * @param userId the ID of the user to check
+   * @param username the username of the user to check
    * @return true if the user has one of the specified roles in the given team, false otherwise
    */
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
       FROM users u
-      JOIN users_teams ut ON u.id = ut.user_id
+      JOIN teams_users ut ON u.id = ut.user_id
       JOIN roles r ON r.id = ut.role_id
       WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
-      AND u.id = :userId
+      AND u.username = :username
       AND ut.team_id = (SELECT t.id FROM teams t WHERE t.name = :teamName)
       """, nativeQuery = true)
-  boolean isUserInLeadershipPosition(@Param("teamName") String teamName, @Param("userId") Long userId);
+  boolean isUserInLeadershipPositionInTeam(@Param("teamName") String teamName, @Param("username") String username);
+
+  /**
+   * Checks if the given user has one of the specified roles (ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD).
+   *
+   * @param username the username of the user to check
+   * @return true if the user has one of the specified roles in the given team, false otherwise
+   */
+  @Query(value = """
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+      FROM users u
+               JOIN users_roles ur on u.id = ur.user_id
+               JOIN roles r ON r.id = ur.role_id
+      WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
+      AND u.username = :username
+      """, nativeQuery = true)
+  boolean isUserInLeadershipPosition(@Param("username") String username);
 }

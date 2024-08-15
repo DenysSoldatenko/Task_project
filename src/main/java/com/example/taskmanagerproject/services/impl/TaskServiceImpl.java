@@ -1,13 +1,13 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.TaskStatus.IN_PROGRESS;
+import static com.example.taskmanagerproject.entities.task.TaskStatus.IN_PROGRESS;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND;
 import static java.sql.Timestamp.valueOf;
 import static java.time.LocalDateTime.now;
 
-import com.example.taskmanagerproject.dtos.TaskDto;
-import com.example.taskmanagerproject.dtos.TaskImageDto;
-import com.example.taskmanagerproject.entities.Task;
+import com.example.taskmanagerproject.dtos.task.TaskDto;
+import com.example.taskmanagerproject.dtos.task.TaskImageDto;
+import com.example.taskmanagerproject.entities.task.Task;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;

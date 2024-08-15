@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.Role.ROLE_USER;
+import static com.example.taskmanagerproject.entities.security.Role.ROLE_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,10 +8,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.taskmanagerproject.dtos.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.AuthenticationRequest;
+import com.example.taskmanagerproject.dtos.security.AuthenticationResponse;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.UserService;

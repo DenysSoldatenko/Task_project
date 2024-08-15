@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.TeamDto;
-import com.example.taskmanagerproject.dtos.UserTeamDto;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.dtos.team.TeamUserDto;
 import java.util.List;
 
 /**
@@ -53,9 +53,17 @@ public interface TeamService {
    * Adds users to a specific team based on the team name and a list of UserTeamDto objects.
    *
    * @param teamName the name of the team to which users will be added
-   * @param userTeamDtoList a list of UserTeamDto objects
+   * @param teamUserDtoList a list of UserTeamDto objects
    *                        containing user-role associations for the team
    * @return the updated TeamDto object after the users have been added
    */
-  TeamDto addUsersToTeam(String teamName, List<UserTeamDto> userTeamDtoList);
+  List<TeamUserDto> addUsersToTeam(String teamName, List<TeamUserDto> teamUserDtoList);
+
+  /**
+   * Retrieves a list of users and their roles associated with a specific team.
+   *
+   * @param teamName the name of the team for which to retrieve the users with their roles
+   * @return a list of TeamUsersDto objects containing user-role associations for the team
+   */
+  List<TeamUserDto> getUsersWithRolesForTeam(String teamName);
 }

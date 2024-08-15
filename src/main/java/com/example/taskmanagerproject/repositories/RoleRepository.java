@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.Role;
+import com.example.taskmanagerproject.entities.security.Role;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

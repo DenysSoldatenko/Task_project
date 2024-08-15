@@ -4,10 +4,10 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.example.taskmanagerproject.dtos.ProjectDto;
-import com.example.taskmanagerproject.dtos.TaskDto;
-import com.example.taskmanagerproject.dtos.TeamDto;
-import com.example.taskmanagerproject.dtos.UserDto;
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.task.TaskDto;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.dtos.security.UserDto;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
@@ -131,10 +131,10 @@ public class UserController {
   @GetMapping("/{slug}/teams")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
-      summary = "Get projects by user username",
-      description = "Fetches all projects associated with a user identified by the username",
+      summary = "Get teams by user username",
+      description = "Fetches all teams associated with a user identified by the username",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Successfully retrieved projects",
+          @ApiResponse(responseCode = "200", description = "Successfully retrieved teams",
             content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ProjectDto.class))
           ),

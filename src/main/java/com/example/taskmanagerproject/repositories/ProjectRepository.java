@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.Project;
+import com.example.taskmanagerproject.entities.project.Project;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,14 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
    * @param name the name of the project
    * @return an Optional containing the Project if found, otherwise empty
    */
-  Optional<Project> findByName(String name);
+  @Query("""
+      SELECT p
+      FROM Project p
+      LEFT JOIN FETCH p.creator c
+      LEFT JOIN FETCH p.projectTeams pt
+      WHERE p.name = :name
+      """)
+  Optional<Project> findByName(@Param("name") String name);
 
   /**
    * Checks if a project exists by its name.
@@ -36,11 +43,13 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
    * @param slug the slug of the user
    * @return a list of projects associated with the specified user
    */
-  @Query("""
-      SELECT p
-      FROM Project p
-      JOIN FETCH p.creator c
-      WHERE c.slug = :slug
-      """)
-  List<Project> findByCreatorSlug(@Param("slug") String slug);
+  @Query(value = """
+      SELECT p.*
+      FROM projects p
+      JOIN projects_teams pt ON p.id = pt.project_id
+      JOIN teams_users tu ON pt.team_id = tu.team_id
+      JOIN users u ON u.id = tu.user_id
+      WHERE u.slug = :slug
+      """, nativeQuery = true)
+  List<Project> findByUserSlug(@Param("slug") String slug);
 }

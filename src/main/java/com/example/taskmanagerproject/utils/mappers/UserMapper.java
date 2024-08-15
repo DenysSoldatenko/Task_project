@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.User;
 import org.mapstruct.Mapper;
 
 /**

@@ -2,17 +2,18 @@ package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 
-import com.example.taskmanagerproject.dtos.TeamDto;
-import com.example.taskmanagerproject.dtos.UserTeamDto;
-import com.example.taskmanagerproject.entities.Team;
-import com.example.taskmanagerproject.entities.UserTeam;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.dtos.team.TeamUserDto;
+import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.entities.team.TeamUser;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.repositories.TeamRepository;
-import com.example.taskmanagerproject.repositories.UserTeamRepository;
+import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.utils.factories.TeamFactory;
-import com.example.taskmanagerproject.utils.factories.UserTeamFactory;
+import com.example.taskmanagerproject.utils.factories.TeamUserFactory;
 import com.example.taskmanagerproject.utils.mappers.TeamMapper;
+import com.example.taskmanagerproject.utils.mappers.TeamUserMapper;
 import com.example.taskmanagerproject.utils.validators.TeamValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,11 @@ public class TeamServiceImpl implements TeamService {
   private final TeamMapper teamMapper;
   private final TeamFactory teamFactory;
   private final TeamValidator teamValidator;
-  private final UserTeamFactory userTeamFactory;
   private final TeamRepository teamRepository;
-  private final UserTeamRepository userTeamRepository;
+
+  private final TeamUserMapper teamUserMapper;
+  private final TeamUserFactory teamUserFactory;
+  private final TeamUserRepository teamUserRepository;
 
   @Override
   @Transactional
@@ -47,6 +50,17 @@ public class TeamServiceImpl implements TeamService {
     Team team = teamRepository.findByName(teamName)
         .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
     return teamMapper.toDto(team);
+  }
+
+  @Override
+  public List<TeamDto> getTeamsBySlug(String slug) {
+    List<Team> teamDtoList = teamRepository.findByUserSlug(slug);
+    return teamDtoList.stream().map(teamMapper::toDto).toList();
+  }
+
+  @Override
+  public List<TeamUserDto> getUsersWithRolesForTeam(String teamName) {
+    return teamUserRepository.findAllByTeamName(teamName).stream().map(teamUserMapper::toDto).toList();
   }
 
   @Override
@@ -72,16 +86,10 @@ public class TeamServiceImpl implements TeamService {
   }
 
   @Override
-  public List<TeamDto> getTeamsBySlug(String slug) {
-    List<Team> teamDtoList = teamRepository.findByCreatorSlug(slug);
-    return teamDtoList.stream().map(teamMapper::toDto).toList();
-  }
-
-  @Override
   @Transactional
-  public TeamDto addUsersToTeam(String teamName, List<UserTeamDto> userTeamDtoList) {
-    List<UserTeam> userTeamList = userTeamFactory.createUserTeamAssociations(userTeamDtoList);
-    userTeamRepository.saveAll(userTeamList);
-    return getTeamByName(teamName);
+  public List<TeamUserDto> addUsersToTeam(String teamName, List<TeamUserDto> teamUserDtoList) {
+    List<TeamUser> teamUserList = teamUserFactory.createUserTeamAssociations(teamUserDtoList);
+    teamUserRepository.saveAll(teamUserList);
+    return teamUserList.stream().map(teamUserMapper::toDto).toList();
   }
 }

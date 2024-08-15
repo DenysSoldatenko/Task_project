@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.RoleHierarchyDto;
-import com.example.taskmanagerproject.entities.RoleHierarchy;
+import com.example.taskmanagerproject.dtos.security.RoleHierarchyDto;
+import com.example.taskmanagerproject.entities.security.RoleHierarchy;
 import org.mapstruct.Mapper;
 
 /**

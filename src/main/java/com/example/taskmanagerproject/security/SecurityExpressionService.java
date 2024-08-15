@@ -1,16 +1,16 @@
 package com.example.taskmanagerproject.security;
 
-import static com.example.taskmanagerproject.entities.RoleName.ADMIN;
-import static com.example.taskmanagerproject.entities.RoleName.MANAGER;
-import static com.example.taskmanagerproject.entities.RoleName.PRODUCT_OWNER;
-import static com.example.taskmanagerproject.entities.RoleName.SCRUM_MASTER;
-import static com.example.taskmanagerproject.entities.RoleName.TEAM_LEAD;
+import static com.example.taskmanagerproject.entities.security.RoleName.ADMIN;
+import static com.example.taskmanagerproject.entities.security.RoleName.MANAGER;
+import static com.example.taskmanagerproject.entities.security.RoleName.PRODUCT_OWNER;
+import static com.example.taskmanagerproject.entities.security.RoleName.SCRUM_MASTER;
+import static com.example.taskmanagerproject.entities.security.RoleName.TEAM_LEAD;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.RoleName;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.RoleName;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +81,7 @@ public class SecurityExpressionService {
   public boolean canAccessProject(String projectName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
-    boolean isProjectCreator = userService.isProjectCreator(projectName, user.getId());
+    boolean isProjectCreator = userService.isProjectCreator(projectName, user.getUsername());
     log.info(
         "Checking access for user ID: {} on project name: {} - isAdmin: {}, isProjectCreator: {}",
         user.getId(), projectName, isAdmin, isProjectCreator
@@ -99,7 +99,7 @@ public class SecurityExpressionService {
   public boolean canAccessTeam(String teamName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
     boolean isAdmin = hasAnyRole(singletonList(ADMIN));
-    boolean hasTeamAccess = userService.hasTeamAccess(teamName, user.getId());
+    boolean hasTeamAccess = userService.hasTeamAccess(teamName, user.getUsername());
     log.info(
         "Checking access for user ID: {} on team name: {} - isAdmin: {}, hasTeamAccess: {}",
         user.getId(), teamName, isAdmin, hasTeamAccess

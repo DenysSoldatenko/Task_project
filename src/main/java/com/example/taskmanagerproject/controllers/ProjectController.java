@@ -3,7 +3,8 @@ package com.example.taskmanagerproject.controllers;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.example.taskmanagerproject.dtos.ProjectDto;
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -101,6 +103,39 @@ public class ProjectController {
   }
 
   /**
+   * Retrieves all teams for a specific project.
+   *
+   * @param projectName the name of the project
+   * @return a list of teams associated with the project, or 404 if the project does not exist
+   */
+  @GetMapping("/{projectName}/teams")
+  @PreAuthorize("@expressionService.canAccessProject(#projectName)")
+  @Operation(
+      summary = "Retrieve all teams for a specific project",
+      description = "Fetches a list of teams for the given project",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "Teams found successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ProjectTeamDto.class)
+            )
+          ),
+          @ApiResponse(responseCode = "404", description = "Project not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class)
+            )
+          )
+      }
+  )
+  public List<ProjectTeamDto> getTeamsForProject(@PathVariable("projectName") String projectName) {
+    return projectService.getTeamsForProject(projectName);
+  }
+
+  /**
    * Updates an existing project.
    *
    * @param projectName the name of the project to update
@@ -171,5 +206,50 @@ public class ProjectController {
   @ResponseStatus(NO_CONTENT)
   public void deleteProject(@PathVariable("projectName") String projectName) {
     projectService.deleteProject(projectName);
+  }
+
+  /**
+   * Adds a team to a specific project, assigning roles.
+   *
+   * @param projectName the name of the project to which the team will be added
+   * @param projectTeamDtoList the list of team-project-role associations to be added
+   * @return the updated project after the team has been added
+   */
+  @PostMapping("/{projectName}/teams")
+  @PreAuthorize("@expressionService.canAccessProject(#projectName)")
+  @Operation(
+      summary = "Add team to a project",
+      description = "Assigns teams to a project with a specific role",
+      responses = {
+          @ApiResponse(
+            responseCode = "201",
+            description = "Team added to project successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ProjectTeamDto.class))
+          ),
+          @ApiResponse(
+            responseCode = "400",
+            description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(
+            responseCode = "404",
+            description = "Project or team not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  @ResponseStatus(CREATED)
+  public ProjectDto addTeamToProject(
+      @PathVariable("projectName") String projectName,
+      @RequestBody @Valid List<ProjectTeamDto> projectTeamDtoList
+  ) {
+    return projectService.addTeamToProject(projectName, projectTeamDtoList);
   }
 }

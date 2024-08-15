@@ -1,11 +1,12 @@
 package com.example.taskmanagerproject.utils.validators;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_ALREADY_EXISTS;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_PROJECT;
+import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT;
 import static java.util.Arrays.stream;
 
-import com.example.taskmanagerproject.dtos.ProjectDto;
-import com.example.taskmanagerproject.entities.Project;
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.project.Project;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectValidator extends BaseValidator<ProjectDto> {
 
+  private final UserRepository userRepository;
   private final ProjectRepository projectRepository;
 
   /**
@@ -30,7 +32,8 @@ public class ProjectValidator extends BaseValidator<ProjectDto> {
    * @param projectRepository The repository responsible for accessing project data.
    */
   public ProjectValidator(Validator validator, UserRepository userRepository, ProjectRepository projectRepository) {
-    super(validator, userRepository);
+    super(validator);
+    this.userRepository = userRepository;
     this.projectRepository = projectRepository;
   }
 
@@ -44,7 +47,7 @@ public class ProjectValidator extends BaseValidator<ProjectDto> {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(projectDto, errorMessages);
     validateProjectNameUniqueness(projectDto, errorMessages, existingProject);
-    validateCreatorRole(projectDto.creator(), USER_DOES_NOT_HAVE_ROLE_TO_CREATE_PROJECT, errorMessages);
+    validateProjectCreatorRole(projectDto.creator(), errorMessages, existingProject);
     throwIfErrorsExist(errorMessages);
   }
 
@@ -53,6 +56,15 @@ public class ProjectValidator extends BaseValidator<ProjectDto> {
     String existingName = stream(existingProjects).findFirst().map(Project::getName).orElse(null);
     if (!dtoName.equals(existingName) && projectRepository.existsByName(dtoName)) {
       errorMessages.add(PROJECT_ALREADY_EXISTS + dtoName);
+    }
+  }
+
+  private void validateProjectCreatorRole(UserDto userDto, Set<String> errorMessages, Project... existingProjects) {
+    String existingName = existingProjects.length > 0 ? existingProjects[0].getName() : null;
+    boolean isCreator = userRepository.isProjectCreator(existingName, userDto.username());
+    boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPosition(userDto.username());
+    if ((existingName == null && !isUserInLeadershipPosition) || (existingName != null && !isCreator)) {
+      errorMessages.add(USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT + userDto.username());
     }
   }
 }

@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.Task;
+import com.example.taskmanagerproject.entities.task.Task;
 import java.sql.Timestamp;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

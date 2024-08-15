@@ -3,9 +3,9 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 import static java.util.UUID.randomUUID;
 
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.Role;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.Role;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.github.slugify.Slugify;

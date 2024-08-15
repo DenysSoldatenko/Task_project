@@ -2,10 +2,10 @@ package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
-import com.example.taskmanagerproject.dtos.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.AuthenticationRequest;
+import com.example.taskmanagerproject.dtos.security.AuthenticationResponse;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.AuthenticationService;
@@ -15,13 +15,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of the AuthenticationService interface.
  */
 @Service
 @RequiredArgsConstructor
-public final class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserService userService;
   private final UserRepository userRepository;
@@ -34,6 +35,8 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
    * @param request The registration request containing user details.
    * @return AuthenticationResponse containing the JWT token.
    */
+  @Override
+  @Transactional
   public AuthenticationResponse registerUser(UserDto request) {
     User user = userService.createUser(request);
     return createAuthenticationResponse(user);
@@ -45,12 +48,12 @@ public final class AuthenticationServiceImpl implements AuthenticationService {
    * @param request The authentication request containing user credentials.
    * @return AuthenticationResponse containing the JWT token.
    */
+  @Override
+  @Transactional
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    authenticateUser(request);
-
     User user = userRepository.findByUsername(request.username())
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + request.username()));
-
+    authenticateUser(request);
     return createAuthenticationResponse(user);
   }
 

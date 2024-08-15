@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.security;
 
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

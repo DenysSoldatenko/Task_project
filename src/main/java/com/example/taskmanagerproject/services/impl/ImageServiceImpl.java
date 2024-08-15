@@ -7,8 +7,8 @@ import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_UPLOAD_FAI
 import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.configurations.minio.MinioProperties;
-import com.example.taskmanagerproject.dtos.TaskImageDto;
-import com.example.taskmanagerproject.entities.TaskImage;
+import com.example.taskmanagerproject.dtos.task.TaskImageDto;
+import com.example.taskmanagerproject.entities.task.TaskImage;
 import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.utils.mappers.TaskImageMapper;
@@ -19,6 +19,7 @@ import io.minio.PutObjectArgs;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -26,13 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @RequiredArgsConstructor
-public final class ImageServiceImpl implements ImageService {
+public class ImageServiceImpl implements ImageService {
 
   private final MinioClient minioClient;
   private final MinioProperties minioProperties;
   private final TaskImageMapper taskImageMapper;
 
   @Override
+  @Transactional
   public String uploadImage(TaskImageDto taskImageDto) {
     TaskImage taskImage = taskImageMapper.toEntity(taskImageDto);
     try {

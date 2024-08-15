@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.UserDto;
-import com.example.taskmanagerproject.entities.User;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.entities.security.User;
 
 /**
  * Service interface for managing users.
@@ -69,17 +69,17 @@ public interface UserService {
    * Checks if a user is the creator of a specific project.
    *
    * @param projectName the name of the project
-   * @param userId the ID of the user
+   * @param username the username of the user
    * @return true if the user is the creator of the project, false otherwise
    */
-  boolean isProjectCreator(String projectName, Long userId);
+  boolean isProjectCreator(String projectName, String username);
 
   /**
    * Checks if the user has access to a specific team.
    *
    * @param teamName the name of the team to check access for
-   * @param userId the ID of the user whose access status is being checked
+   * @param username the username of the user whose access status is being checked
    * @return true if the user has access to the team, false otherwise
    */
-  boolean hasTeamAccess(String teamName, Long userId);
+  boolean hasTeamAccess(String teamName, String username);
 }

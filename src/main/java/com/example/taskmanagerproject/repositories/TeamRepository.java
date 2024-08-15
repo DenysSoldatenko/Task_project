@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.Team;
+import com.example.taskmanagerproject.entities.team.Team;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
   /**
-   * Finds a team by its name, eagerly loading related creator and userTeams.
+   * Finds a team by its name, eagerly loading related creator and teamsUsers.
    *
    * @param name the name of the team
    * @return an Optional containing the Team if found, otherwise empty
@@ -24,7 +24,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
       SELECT t
       FROM Team t
       LEFT JOIN FETCH t.creator c
-      LEFT JOIN FETCH t.userTeams ut
+      LEFT JOIN FETCH t.teamUsers ut
       WHERE t.name = :name
       """)
   Optional<Team> findByName(@Param("name") String name);
@@ -38,7 +38,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
   boolean existsByName(String name);
 
   /**
-   * Finds all teams created by a user identified by their slug, eagerly loading related userTeams.
+   * Finds all teams created by a user identified by their slug, eagerly loading related teamsUsers.
    *
    * @param slug the slug of the user
    * @return a list of teams associated with the specified user
@@ -47,13 +47,13 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
       SELECT t
       FROM Team t
       LEFT JOIN FETCH t.creator c
-      LEFT JOIN FETCH t.userTeams ut
+      LEFT JOIN FETCH t.teamUsers ut
       WHERE c.slug = :slug OR ut.user.slug = :slug
       """)
-  List<Team> findByCreatorSlug(@Param("slug") String slug);
+  List<Team> findByUserSlug(@Param("slug") String slug);
 
   /**
-   * Checks if a UserTeam exists based on userId and teamId using a native query.
+   * Checks if a UserTeam exists based on user and team using a native query.
    *
    * @param userId The user's ID.
    * @param teamId The team's ID.
@@ -61,7 +61,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
    */
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-      FROM users_teams ut
+      FROM teams_users ut
       JOIN users u ON ut.user_id = u.id
       JOIN teams t ON ut.team_id = t.id
       WHERE ut.user_id = :userId AND ut.team_id = :teamId

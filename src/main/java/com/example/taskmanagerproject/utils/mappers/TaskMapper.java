@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.TaskDto;
-import com.example.taskmanagerproject.entities.Task;
+import com.example.taskmanagerproject.dtos.task.TaskDto;
+import com.example.taskmanagerproject.entities.task.Task;
 import org.mapstruct.Mapper;
 
 /**

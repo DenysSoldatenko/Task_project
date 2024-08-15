@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.Role;
-import com.example.taskmanagerproject.entities.RoleHierarchy;
+import com.example.taskmanagerproject.entities.security.Role;
+import com.example.taskmanagerproject.entities.security.RoleHierarchy;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;

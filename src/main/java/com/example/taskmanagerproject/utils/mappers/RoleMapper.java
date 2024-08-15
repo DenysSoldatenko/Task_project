@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.RoleDto;
-import com.example.taskmanagerproject.entities.Role;
+import com.example.taskmanagerproject.dtos.security.RoleDto;
+import com.example.taskmanagerproject.entities.security.Role;
 import org.mapstruct.Mapper;
 
 /**
