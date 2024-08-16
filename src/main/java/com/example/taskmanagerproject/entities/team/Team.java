@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.entities.team;
 
 import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.task.Task;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,9 +35,6 @@ public class Team {
   @ManyToOne
   @JoinColumn(name = "creator_id", nullable = false)
   private User creator;
-
-  @OneToMany(mappedBy = "team")
-  private List<Task> tasks;
 
   @JsonManagedReference
   @OneToMany(mappedBy = "team")

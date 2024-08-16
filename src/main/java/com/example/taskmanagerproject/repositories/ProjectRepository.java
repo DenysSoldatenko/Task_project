@@ -44,7 +44,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
    * @return a list of projects associated with the specified user
    */
   @Query(value = """
-      SELECT p.*
+      SELECT DISTINCT p.*
       FROM projects p
       JOIN projects_teams pt ON p.id = pt.project_id
       JOIN teams_users tu ON pt.team_id = tu.team_id

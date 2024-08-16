@@ -58,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
 
     task.setTitle(taskDto.title());
     task.setDescription(taskDto.description());
-    task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
+    //task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
     task.setImages(taskDto.images() != null ? taskDto.images() : task.getImages());
 
     Task updatedTask = taskRepository.save(task);
@@ -69,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
   @Transactional
   public TaskDto createTaskForUser(TaskDto taskDto, Long userId) {
     Task task = taskMapper.toEntity(taskDto);
-    task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
+    //task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
     task.setImages(taskDto.images());
 
     Task createdTask = taskRepository.save(task);

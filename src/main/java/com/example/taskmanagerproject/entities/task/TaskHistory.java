@@ -1,7 +1,10 @@
 package com.example.taskmanagerproject.entities.task;
 
 import com.example.taskmanagerproject.entities.security.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,13 +18,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Tracks changes made to tasks, including status updates and comments.
+ */
 @Entity
-@Table(name = "task_history")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Table(name = "task_history")
 public class TaskHistory {
 
   @Id
@@ -36,11 +42,12 @@ public class TaskHistory {
   @JoinColumn(name = "updated_by", nullable = false)
   private User updatedBy;
 
-  private String updateType;
+  @Enumerated(EnumType.STRING)
+  private TaskStatus previousValue;
 
-  private String previousValue;
+  @Enumerated(EnumType.STRING)
+  private TaskStatus newValue;
 
-  private String newValue;
-
-  private LocalDateTime updatedAt;
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime updatedAt = LocalDateTime.now();
 }

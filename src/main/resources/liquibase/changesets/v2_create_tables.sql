@@ -86,48 +86,25 @@ CREATE TABLE IF NOT EXISTS projects_teams
 
 CREATE TABLE IF NOT EXISTS tasks
 (
-    id             BIGSERIAL PRIMARY KEY,
-    project_id     BIGINT       NOT NULL,
-    parent_task_id BIGINT       NULL,
-    team_id        BIGINT       NOT NULL,
-    title          VARCHAR(255) NOT NULL,
-    description    TEXT         NULL,
-    task_status    VARCHAR(255) NOT NULL DEFAULT 'Assigned',
-    priority       VARCHAR(50)  NOT NULL DEFAULT 'Medium',
-    created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    id              BIGSERIAL PRIMARY KEY,
+    project_id      BIGINT       NOT NULL,
+    team_id         BIGINT       NOT NULL,
+    title           VARCHAR(255) NOT NULL,
+    description     TEXT         NULL,
+    expiration_date TIMESTAMP    NULL,
+    task_status     VARCHAR(50)  NOT NULL DEFAULT 'ASSIGNED',
+    priority        VARCHAR(50)  NOT NULL DEFAULT 'MEDIUM',
+    created_at      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    assigned_to     BIGINT       NULL,
+    assigned_by     BIGINT       NULL,
     CONSTRAINT fk_tasks_project FOREIGN KEY (project_id) REFERENCES projects (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_tasks_parent_task FOREIGN KEY (parent_task_id) REFERENCES tasks (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_tasks_team FOREIGN KEY (team_id) REFERENCES teams (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION
-);
-
-CREATE TABLE IF NOT EXISTS users_tasks
-(
-    user_id       BIGINT   NOT NULL,
-    task_id       BIGINT   NOT NULL,
-    assigned_by   BIGINT   NULL,
-    assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    time_spent    INTERVAL NULL,
-    PRIMARY KEY (user_id, task_id),
-    CONSTRAINT fk_users_tasks_users FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_users_tasks_tasks FOREIGN KEY (task_id) REFERENCES tasks (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_users_tasks_assigned_by FOREIGN KEY (assigned_by) REFERENCES users (id)
+    CONSTRAINT fk_tasks_assigned_to FOREIGN KEY (assigned_to) REFERENCES users (id)
+        ON DELETE SET NULL ON UPDATE NO ACTION,
+    CONSTRAINT fk_tasks_assigned_by FOREIGN KEY (assigned_by) REFERENCES users (id)
         ON DELETE SET NULL ON UPDATE NO ACTION
-);
-
-CREATE TABLE IF NOT EXISTS task_dependencies
-(
-    id           BIGSERIAL PRIMARY KEY,
-    task_id      BIGINT NOT NULL,
-    dependent_on BIGINT NOT NULL,
-    CONSTRAINT fk_task_dependencies_task FOREIGN KEY (task_id) REFERENCES tasks (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_task_dependencies_dependent FOREIGN KEY (dependent_on) REFERENCES tasks (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS tasks_images
@@ -140,14 +117,18 @@ CREATE TABLE IF NOT EXISTS tasks_images
 
 CREATE TABLE IF NOT EXISTS task_comments
 (
-    id         BIGSERIAL PRIMARY KEY,
-    task_id    BIGINT NOT NULL,
-    user_id    BIGINT NOT NULL,
-    comment    TEXT   NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id          BIGSERIAL PRIMARY KEY,
+    task_id     BIGINT NOT NULL,
+    sender_id   BIGINT NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    message     TEXT   NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_resolved BOOLEAN   DEFAULT FALSE,
     CONSTRAINT fk_task_comments_task FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_task_comments_user FOREIGN KEY (user_id) REFERENCES users (id)
+    CONSTRAINT fk_task_comments_sender FOREIGN KEY (sender_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_task_comments_receiver FOREIGN KEY (receiver_id) REFERENCES users (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 

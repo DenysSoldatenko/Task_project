@@ -3,7 +3,6 @@ package com.example.taskmanagerproject.entities.security;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import com.example.taskmanagerproject.entities.task.UserTask;
 import com.example.taskmanagerproject.entities.team.TeamUser;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
@@ -48,9 +47,6 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "role_id")
   )
   private Role role;
-
-  @OneToMany(mappedBy = "user")
-  private List<UserTask> userTasks;
 
   @JsonManagedReference
   @OneToMany(mappedBy = "user")
