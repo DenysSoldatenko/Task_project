@@ -6,6 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -54,4 +55,19 @@ public interface RoleHierarchyRepository extends JpaRepository<RoleHierarchy, Lo
         JOIN FETCH rh.lowerRole
       """)
   List<RoleHierarchy> findAll();
+
+  /**
+   * Checks if a user with the assignedBy role has a higher role than the assignedTo user.
+   *
+   * @param assignedByUserId The ID of the user with the higher role.
+   * @param assignedToUserId The ID of the user with the lower role.
+   * @return true if the role hierarchy exists, false otherwise.
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+      FROM RoleHierarchy rh
+      WHERE rh.higherRole.id = :assignedByUserId
+      AND rh.lowerRole.id = :assignedToUserId
+      """)
+  boolean isHigherRoleAssigned(@Param("assignedByUserId") Long assignedByUserId, @Param("assignedToUserId") Long assignedToUserId);
 }

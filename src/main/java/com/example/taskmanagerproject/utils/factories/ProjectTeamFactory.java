@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 
 import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
@@ -53,7 +54,7 @@ public class ProjectTeamFactory {
    */
   private Project getProjectFromRequest(ProjectTeamDto projectTeamDto) {
     return projectRepository.findByName(projectTeamDto.project().name())
-        .orElseThrow(() -> new RuntimeException(TEAM_NOT_FOUND_WITH_NAME + projectTeamDto.project().name()));
+        .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectTeamDto.project().name()));
   }
 
   /**

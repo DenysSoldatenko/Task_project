@@ -136,13 +136,9 @@ CREATE TABLE IF NOT EXISTS task_history
 (
     id             BIGSERIAL PRIMARY KEY,
     task_id        BIGINT      NOT NULL,
-    updated_by     BIGINT      NOT NULL,
-    update_type    VARCHAR(50) NOT NULL,
     previous_value TEXT,
     new_value      TEXT,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_task_history_task FOREIGN KEY (task_id) REFERENCES tasks (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_task_history_user FOREIGN KEY (updated_by) REFERENCES users (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );

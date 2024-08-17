@@ -140,19 +140,6 @@ class UserServiceImplTest {
   }
 
   @Test
-  @DisplayName("Get Task Author - Success")
-  void getTaskAuthor_Success() {
-    Long taskId = 1L;
-    User user = new User();
-    when(userRepository.findTaskAuthorByTaskId(taskId)).thenReturn(Optional.of(user));
-    when(userMapper.toDto(user)).thenReturn(new UserDto(1L, "Alice Johnson", "alice123@gmail.com", "password123", "password123"));
-
-    UserDto result = userService.getTaskAuthor(taskId);
-
-    assertNotNull(result);
-  }
-
-  @Test
   @DisplayName("Delete User By Id - Success")
   void deleteUserById_Success() {
     Long userId = 1L;

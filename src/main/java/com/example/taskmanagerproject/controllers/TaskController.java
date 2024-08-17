@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.controllers;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -40,6 +41,47 @@ public class TaskController {
 
   private final TaskService taskService;
 
+
+  /**
+   * Creates a new task for the specified user.
+   *
+   * @param taskDto The TaskDto object containing the necessary data for creating the task.
+   *
+   * @return A TaskDto object representing the created task.
+   */
+  @PostMapping()
+  @Operation(
+      summary = "Create a new task for a user",
+      description = "Allows the creation of a new task",
+      responses = {
+          @ApiResponse(responseCode = "201", description = "Task created successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = TaskDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  @ResponseStatus(CREATED)
+  @MutationMapping(name = "createTask")
+  public TaskDto createTask(@Valid @RequestBody @Argument TaskDto taskDto) {
+    return taskService.createTaskForUser(taskDto);
+  }
+
   /**
    * Retrieves a task by its ID.
    *
@@ -72,9 +114,7 @@ public class TaskController {
   @ResponseStatus(OK)
   @QueryMapping(name = "getTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public TaskDto getTaskById(
-      @PathVariable(name = "id") @Argument Long id
-  ) {
+  public TaskDto getTaskById(@PathVariable(name = "id") @Argument Long id) {
     return taskService.getTaskById(id);
   }
 
@@ -150,9 +190,7 @@ public class TaskController {
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void deleteTaskById(
-      @PathVariable(name = "id") @Argument Long id
-  ) {
+  public void deleteTaskById(@PathVariable(name = "id") @Argument Long id) {
     taskService.deleteTaskById(id);
   }
 

@@ -1,13 +1,12 @@
 package com.example.taskmanagerproject.controllers;
 
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.security.UserDto;
 import com.example.taskmanagerproject.dtos.task.TaskDto;
 import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.dtos.security.UserDto;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
@@ -29,7 +28,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,8 +45,8 @@ public class UserController {
 
   private final UserService userService;
   private final TaskService taskService;
-  private final ProjectService projectService;
   private final TeamService teamService;
+  private final ProjectService projectService;
 
   /**
    * Retrieves user information by slug.
@@ -84,6 +82,82 @@ public class UserController {
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
     return userService.getUserBySlug(slug);
+  }
+
+  /**
+   * Updates user information by slug.
+   *
+   * @param userDto The DTO containing the updated user information.
+   * @param slug    The slug of the user to update.
+   * @return ResponseEntity containing the updated user DTO.
+   */
+  @PutMapping("/{slug}")
+  @Operation(
+      summary = "Update user",
+      description = "Update user information by slug",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "User updated successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserDto.class))
+          ),
+          @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  @ResponseStatus(OK)
+  @MutationMapping(name = "updateUser")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public UserDto updateUser(
+      @Valid @RequestBody @Argument UserDto userDto,
+      @PathVariable(name = "slug") @Argument String slug
+  ) {
+    return userService.updateUser(userDto, slug);
+  }
+
+  /**
+   * Deletes a user by slug.
+   *
+   * @param slug The slug of the user to delete.
+   */
+  @DeleteMapping("/{slug}")
+  @Operation(
+      summary = "Delete user by slug",
+      description = "Delete user by slug",
+      responses = {
+          @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "404", description = "User not found",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          ),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = ErrorDetails.class))
+          )
+      }
+  )
+  @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteUserBySlug")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public void deleteUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
+    userService.deleteUserBySlug(slug);
   }
 
   /**
@@ -162,101 +236,14 @@ public class UserController {
    * @param id The ID of the user to retrieve tasks for.
    * @return ResponseEntity containing a list of task DTOs.
    */
-  @GetMapping("/{id}/tasks")
+  @GetMapping("/{id}/tasks/assigned-to")
   @Operation(
-    summary = "Get tasks by user ID",
-    description = "Retrieve tasks assigned to a user by ID",
-    responses = {
-      @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto[].class))
-      ),
-      @ApiResponse(responseCode = "403", description = "Access denied",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "404", description = "User not found",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-    }
-  )
-  @ResponseStatus(OK)
-  @QueryMapping(name = "getTasksByUserId")
-  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
-  public List<TaskDto> getTasksByUserId(
-    @PathVariable(name = "id") @Argument Long id
-  ) {
-    return taskService.getAllTasksByUserId(id);
-  }
-
-  /**
-   * Creates a task assigned to a user by ID.
-   *
-   * @param id      The ID of the user to assign the task to.
-   * @param taskDto The DTO containing the task information.
-   * @return ResponseEntity containing the created task DTO.
-   */
-  @PostMapping("/{id}/tasks")
-  @Operation(
-    summary = "Create task for user",
-    description = "Create a task assigned to a user by ID",
-    responses = {
-      @ApiResponse(responseCode = "201", description = "Task created successfully",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = TaskDto.class))
-      ),
-      @ApiResponse(responseCode = "400", description = "Invalid input data",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "403", description = "Access denied",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "404", description = "User not found",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-    }
-  )
-  @ResponseStatus(CREATED)
-  @MutationMapping(name = "createTaskForUser")
-  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
-  public TaskDto createTaskForUser(
-    @PathVariable(name = "id") @Argument Long id,
-    @Valid @RequestBody @Argument TaskDto taskDto
-  ) {
-    return taskService.createTaskForUser(taskDto, id);
-  }
-
-  /**
-   * Updates user information by slug.
-   *
-   * @param userDto The DTO containing the updated user information.
-   * @param slug    The slug of the user to update.
-   * @return ResponseEntity containing the updated user DTO.
-   */
-  @PutMapping("/{slug}")
-  @Operation(
-      summary = "Update user",
-      description = "Update user information by slug",
+      summary = "Get tasks assigned to a user",
+      description = "Retrieve tasks assigned to a user by ID",
       responses = {
-          @ApiResponse(responseCode = "200", description = "User updated successfully",
+          @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
             content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = UserDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
+              schema = @Schema(implementation = TaskDto[].class))
           ),
           @ApiResponse(responseCode = "403", description = "Access denied",
             content = @Content(mediaType = "application/json",
@@ -273,26 +260,27 @@ public class UserController {
       }
   )
   @ResponseStatus(OK)
-  @MutationMapping(name = "updateUser")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public UserDto updateUser(
-      @Valid @RequestBody @Argument UserDto userDto,
-      @PathVariable(name = "slug") @Argument String slug
-  ) {
-    return userService.updateUser(userDto, slug);
+  @QueryMapping(name = "getTasksAssignedToUser")
+  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
+  public List<TaskDto> getTasksAssignedToUser(@PathVariable(name = "id") @Argument Long id) {
+    return taskService.getAllTasksAssignedToUser(id);
   }
 
   /**
-   * Deletes a user by slug.
+   * Retrieves tasks assigned by a user by ID.
    *
-   * @param slug The slug of the user to delete.
+   * @param id The ID of the user to retrieve tasks for.
+   * @return ResponseEntity containing a list of task DTOs.
    */
-  @DeleteMapping("/{slug}")
+  @GetMapping("/{id}/tasks/assigned-by")
   @Operation(
-      summary = "Delete user by slug",
-      description = "Delete user by slug",
+      summary = "Get tasks assigned by a user",
+      description = "Retrieve tasks assigned by a user by ID",
       responses = {
-          @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+          @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
+            content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = TaskDto[].class))
+          ),
           @ApiResponse(responseCode = "403", description = "Access denied",
             content = @Content(mediaType = "application/json",
               schema = @Schema(implementation = ErrorDetails.class))
@@ -307,10 +295,10 @@ public class UserController {
           )
       }
   )
-  @ResponseStatus(NO_CONTENT)
-  @MutationMapping(name = "deleteUserBySlug")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void deleteUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
-    userService.deleteUserBySlug(slug);
+  @ResponseStatus(OK)
+  @QueryMapping(name = "getTasksAssignedByUser")
+  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
+  public List<TaskDto> getTasksAssignedByUser(@PathVariable(name = "id") @Argument Long id) {
+    return taskService.getAllTasksAssignedByUser(id);
   }
 }

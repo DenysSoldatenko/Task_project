@@ -51,14 +51,6 @@ public interface UserService {
   boolean isUserTaskOwner(Long userId, Long taskId);
 
   /**
-   * Retrieves the UserDto of the author of a given task.
-   *
-   * @param taskId the ID of the task
-   * @return the UserDto of the task author
-   */
-  UserDto getTaskAuthor(Long taskId);
-
-  /**
    * Deletes a user by their slug.
    *
    * @param slug the slug of the user to delete
@@ -82,4 +74,13 @@ public interface UserService {
    * @return true if the user has access to the team, false otherwise
    */
   boolean hasTeamAccess(String teamName, String username);
+
+  /**
+   * Checks if the user is assigned to a specific task.
+   *
+   * @param id the ID of the user whose assignment status is being checked
+   * @param taskId the ID of the task to check the user's assignment for
+   * @return true if the user is assigned to the task, false otherwise
+   */
+  boolean isUserAssignedToTask(Long id, Long taskId);
 }

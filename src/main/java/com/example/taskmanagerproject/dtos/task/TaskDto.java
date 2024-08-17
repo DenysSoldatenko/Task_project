@@ -2,14 +2,16 @@ package com.example.taskmanagerproject.dtos.task;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
+import com.example.taskmanagerproject.dtos.project.ProjectDto;
+import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.entities.task.TaskPriority;
 import com.example.taskmanagerproject.entities.task.TaskStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,58 +27,82 @@ public record TaskDto(
     )
     Long id,
 
+    @NotNull(message = "Project cannot be null!")
+    @Schema(
+      description = "The project associated with the task",
+      implementation = ProjectDto.class
+    )
+    ProjectDto project,
+
+    @NotNull(message = "Team cannot be null!")
+    @Schema(
+      description = "The team associated with the task",
+      implementation = TeamDto.class
+    )
+    TeamDto team,
+
     @NotNull(message = "Title cannot be null!")
     @NotBlank(message = "Title cannot be blank!")
-    @Size(
-      min = MIN_TITLE_LENGTH,
-      max = MAX_TITLE_LENGTH,
-      message = "Title must be between 2 and 100 characters long!"
-    )
+    @Size(max = 255, message = "Title cannot exceed 255 characters!")
     @Schema(
       description = "The title of the task",
-      example = "Buy groceries",
-      maxLength = MAX_TITLE_LENGTH
+      example = "Fix the bug in the login module"
     )
     String title,
 
-    @NotNull(message = "Description cannot be null!")
-    @NotBlank(message = "Description cannot be blank!")
-    @Size(
-      min = MIN_DESCRIPTION_LENGTH,
-      max = MAX_DESCRIPTION_LENGTH,
-      message = "Description must be between 2 and 255 characters long!"
-    )
+    @Size(max = 2000, message = "Description cannot exceed 2000 characters!")
     @Schema(
-      description = "The description of the task",
-      example = "Get milk, bread, and eggs",
-      maxLength = MAX_DESCRIPTION_LENGTH
+      description = "The detailed description of the task",
+      example = "Fix the bug that causes login to fail for users with special characters in their password"
     )
     String description,
+
+    @NotNull(message = "Expiration date cannot be null!")
+    @Schema(
+      description = "The expiration date for the task",
+      example = "2025-09-16 15:00:00"
+    )
+    LocalDateTime expirationDate,
 
     @NotNull(message = "Task status cannot be null!")
     @Schema(
       description = "The status of the task",
-      example = "NOT_STARTED"
+      implementation = TaskStatus.class
     )
     TaskStatus taskStatus,
 
-    @NotNull(message = "Expiration date and time cannot be null!")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS")
+    @NotNull(message = "Priority cannot be null!")
     @Schema(
-      description = "The expiration date and time of the task",
-      example = "2024-01-19 13:00:00.000000"
+      description = "The priority of the task",
+      implementation = TaskPriority.class
     )
-    LocalDateTime expirationDate,
+    TaskPriority priority,
 
+    @NotNull(message = "Assigned user cannot be null!")
+    @Schema(
+      description = "The user assigned to the task",
+      implementation = UserDto.class
+    )
+    UserDto assignedTo,
+
+    @NotNull(message = "Assigned by user cannot be null!")
+    @Schema(
+      description = "The user who assigned the task",
+      implementation = UserDto.class
+    )
+    UserDto assignedBy,
+
+    @JsonProperty(access = READ_ONLY)
     @Schema(
       description = "List of images associated with the entity",
-      example = "image.png"
+      example = "[\"image1.png\", \"image2.png\"]"
     )
+    List<String> images,
+
     @JsonProperty(access = READ_ONLY)
-    List<String> images
-) implements Serializable {
-  private static final int MIN_TITLE_LENGTH = 2;
-  private static final int MAX_TITLE_LENGTH = 100;
-  private static final int MIN_DESCRIPTION_LENGTH = 2;
-  private static final int MAX_DESCRIPTION_LENGTH = 255;
-}
+    @Schema(
+      description = "The date and time when the task was created",
+      example = "2025-01-31 15:00:00"
+    )
+    LocalDateTime createdAt
+) {}

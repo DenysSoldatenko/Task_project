@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.task.TaskStatus.IN_PROGRESS;
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
 import static java.sql.Timestamp.valueOf;
 import static java.time.LocalDateTime.now;
 
@@ -12,7 +11,9 @@ import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.TaskService;
+import com.example.taskmanagerproject.utils.factories.TaskFactory;
 import com.example.taskmanagerproject.utils.mappers.TaskMapper;
+import com.example.taskmanagerproject.utils.validators.TaskValidator;
 import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,37 +30,34 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-  private final TaskRepository taskRepository;
   private final TaskMapper taskMapper;
   private final ImageService imageService;
+  private final TaskFactory taskFactory;
+  private final TaskValidator taskValidator;
+  private final TaskRepository taskRepository;
 
   @Override
   @Transactional(readOnly = true)
   @Cacheable(value = "TaskService::getById", key = "#taskId")
   public TaskDto getTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
+        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
     return taskMapper.toDto(task);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<TaskDto> getAllTasksByUserId(Long userId) {
-    List<Task> taskList = taskRepository.findAllTasksByUserId(userId);
-    return taskList.stream().map(taskMapper::toDto).toList();
   }
 
   @Override
   @Transactional
   @CachePut(value = "TaskService::getById", key = "#taskId")
   public TaskDto updateTask(TaskDto taskDto, Long taskId) {
+    taskValidator.validateTaskDto(taskDto);
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
+        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
 
     task.setTitle(taskDto.title());
     task.setDescription(taskDto.description());
-    //task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
-    task.setImages(taskDto.images() != null ? taskDto.images() : task.getImages());
+    task.setExpirationDate(taskDto.expirationDate());
+    task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus() : task.getTaskStatus());
+    task.setPriority(taskDto.priority() != null ? taskDto.priority() : task.getPriority());
 
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);
@@ -67,13 +65,10 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
-  public TaskDto createTaskForUser(TaskDto taskDto, Long userId) {
-    Task task = taskMapper.toEntity(taskDto);
-    //task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus().name() : IN_PROGRESS.name());
-    task.setImages(taskDto.images());
-
-    Task createdTask = taskRepository.save(task);
-    taskRepository.assignTaskToUser(userId, task.getId());
+  public TaskDto createTaskForUser(TaskDto taskDto) {
+    taskValidator.validateTaskDto(taskDto);
+    Task createdTask = taskFactory.createTaskFromDto(taskDto);
+    taskRepository.save(createdTask);
     return taskMapper.toDto(createdTask);
   }
 
@@ -82,16 +77,14 @@ public class TaskServiceImpl implements TaskService {
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void deleteTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
+        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
     taskRepository.delete(task);
   }
 
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> findAllSoonExpiringTasks(Duration duration) {
-    List<Task> taskList = taskRepository.findAllSoonExpiringTasks(
-        valueOf(now()), valueOf(now().plus(duration))
-    );
+    List<Task> taskList = taskRepository.findAllSoonExpiringTasks(valueOf(now()), valueOf(now().plus(duration)));
     return taskList.stream().map(taskMapper::toDto).toList();
   }
 
@@ -100,10 +93,24 @@ public class TaskServiceImpl implements TaskService {
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void uploadImage(Long taskId, TaskImageDto image) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND));
+        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
 
     String fileName = imageService.uploadImage(image);
     task.getImages().add(fileName);
     taskRepository.save(task);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<TaskDto> getAllTasksAssignedToUser(Long userId) {
+    List<Task> taskList = taskRepository.findAllTasksAssignedToUser(userId);
+    return taskList.stream().map(taskMapper::toDto).toList();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<TaskDto> getAllTasksAssignedByUser(Long userId) {
+    List<Task> taskList = taskRepository.findAllTasksAssignedByUser(userId);
+    return taskList.stream().map(taskMapper::toDto).toList();
   }
 }

@@ -146,9 +146,14 @@ public class SecurityExpressionService {
    */
   public boolean canAccessTask(Long taskId) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     boolean isTaskOwner = userService.isUserTaskOwner(user.getId(), taskId);
-    log.info("Checking task access for task id: {} - isTaskOwner: {}", taskId, isTaskOwner);
-    return isTaskOwner;
+    boolean isTaskAssignedToUser = userService.isUserAssignedToTask(user.getId(), taskId);
+    log.info(
+        "Checking task access for task id: {} - isAdmin: {}, isTaskOwner: {}, isTaskAssignedToUser: {}",
+        taskId, isAdmin, isTaskOwner, isTaskAssignedToUser
+    );
+    return isAdmin || isTaskOwner || isTaskAssignedToUser;
   }
 
   private boolean hasAnyRole(List<RoleName> roles) {

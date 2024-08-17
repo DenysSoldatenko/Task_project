@@ -62,8 +62,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
       FROM teams_users ut
-      JOIN users u ON ut.user_id = u.id
-      JOIN teams t ON ut.team_id = t.id
       WHERE ut.user_id = :userId AND ut.team_id = :teamId
       """, nativeQuery = true)
   boolean existsByUserIdAndTeamId(Long userId, Long teamId);

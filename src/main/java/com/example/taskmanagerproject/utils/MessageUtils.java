@@ -16,14 +16,24 @@ public class MessageUtils {
       = "User not found with username: ";
   public static final String USER_ALREADY_EXISTS_WITH_USERNAME
       = "User already exists with username: ";
+  public static final String USER_ALREADY_IN_TEAM
+      = "User with id '%s' is already a member of the team with id '%s'";
+  public static final String USERS_NOT_IN_SAME_TEAM
+      = "Users '%s' and '%s' must belong to the same team '%s' to assign tasks";
+  public static final String USERS_NOT_IN_SAME_PROJECT
+      = "Users '%s' and '%s' must belong to the same project '%s' to assign tasks";
+  public static final String USERS_DO_NOT_HAVE_ROLES_IN_TEAM
+      = "One or both users do not have roles in the specified team.";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT
       = "The user does not have the necessary role to create or update a project! Username: ";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM
       = "The user does not have the necessary role to create or update a team! Username: ";
   public static final String PASSWORD_MISMATCH
       = "Password and password confirmation do not match!";
-  public static final String TASK_NOT_FOUND
-      = "Task not found!";
+
+
+  public static final String TASK_NOT_FOUND_WITH_ID
+      = "Task not found with id: ";
 
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
@@ -32,6 +42,8 @@ public class MessageUtils {
       = "Role already exists with name: ";
   public static final String ROLE_HIERARCHY_NOT_FOUND
       = "Role hierarchy not found with higher role %s and lower role %s!";
+  public static final String ROLE_DISCREPANCY_FOUND
+      = "Discrepancy found between roles: the higher role %s cannot be assigned to the lower role %s!";
 
 
   public static final String PROJECT_NOT_FOUND_WITH_NAME
@@ -44,8 +56,6 @@ public class MessageUtils {
       = "Team not found with name: ";
   public static final String TEAM_ALREADY_EXISTS
       = "Team already exists with name: ";
-  public static final String USER_ALREADY_IN_TEAM
-      = "User with id '%s' is already a member of the team with id '%s'";
 
 
   public static final String IMAGE_UPLOAD_FAILED

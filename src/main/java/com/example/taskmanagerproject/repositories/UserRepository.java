@@ -31,26 +31,35 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query("SELECT u FROM User u LEFT JOIN FETCH u.role WHERE u.slug = :slug")
   Optional<User> findBySlug(String slug);
 
-  @Query(value = """
-            SELECT u.id,
-                   u.full_name,
-                   u.username,
-                   u.password,
-                   u.confirm_password
-            FROM users_tasks ut
-                     JOIN users u ON ut.user_id = u.id
-            WHERE ut.task_id = :taskId
-            """, nativeQuery = true)
-  Optional<User> findTaskAuthorByTaskId(@Param("taskId") Long taskId);
-
-  @Query(value = """
-            SELECT exists(SELECT 1
-                          FROM users_tasks
-                          WHERE user_id = :userId
-                            AND task_id = :taskId)
-            """, nativeQuery = true)
+  /**
+   * Checks if the given user is the owner (assigned by) of the specified task.
+   *
+   * @param userId The ID of the user to check.
+   * @param taskId The ID of the task to check.
+   * @return true if the user is the owner of the task, false otherwise.
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+      FROM Task t
+      WHERE t.assignedBy.id = :userId
+      AND t.id = :taskId
+      """)
   boolean isTaskOwner(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
+  /**
+   * Checks if the given user is assigned to the specified task.
+   *
+   * @param userId The ID of the user to check.
+   * @param taskId The ID of the task to check.
+   * @return true if the user is assigned to the task, false otherwise.
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+      FROM Task t
+      WHERE t.assignedTo.id = :userId
+      AND t.id = :taskId
+      """)
+  boolean isUserAssignedToTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
   /**
    * Checks if a given user is the creator of a specific project.

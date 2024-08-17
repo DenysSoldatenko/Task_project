@@ -1,12 +1,10 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_SLUG;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
 import com.example.taskmanagerproject.dtos.security.UserDto;
 import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.factories.UserFactory;
@@ -79,20 +77,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(
-      value = "UserService::isTaskOwner",
-      key = "#userId + '.' + #taskId"
-  )
+  @Cacheable(value = "UserService::isTaskOwner", key = "#userId + '.' + #taskId")
   public boolean isUserTaskOwner(Long userId, Long taskId) {
     return userRepository.isTaskOwner(userId, taskId);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public UserDto getTaskAuthor(Long taskId) {
-    User user = userRepository.findTaskAuthorByTaskId(taskId)
-        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-    return userMapper.toDto(user);
   }
 
   @Override
@@ -114,5 +101,12 @@ public class UserServiceImpl implements UserService {
     boolean isCreator = userRepository.isTeamCreator(teamName, username);
     boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPositionInTeam(teamName, username);
     return isCreator || isUserInLeadershipPosition;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  @Cacheable(value = "UserService::isUserAssignedToTask", key = "#userId + '.' + #taskId")
+  public boolean isUserAssignedToTask(Long userId, Long taskId) {
+    return userRepository.isUserAssignedToTask(userId, taskId);
   }
 }
