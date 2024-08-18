@@ -23,7 +23,7 @@ public record TaskDto(
 
     @Schema(
       description = "The unique identifier of the task",
-      hidden = true
+      example = "1"
     )
     Long id,
 

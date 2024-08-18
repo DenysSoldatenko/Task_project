@@ -11,6 +11,7 @@ import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleHierarchyNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
+import com.example.taskmanagerproject.exceptions.TaskCommentNotFoundException;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
@@ -128,6 +129,27 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(RoleHierarchyNotFoundException.class)
   public ResponseEntity<ErrorDetails> handlePostNotFoundException(RoleHierarchyNotFoundException exception, WebRequest webRequest) {
+
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
+  }
+
+  /**
+   * Handles the exception when a {@link TaskCommentNotFoundException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(TaskCommentNotFoundException.class)
+  public ResponseEntity<ErrorDetails> handleTaskCommentNotFoundException(TaskCommentNotFoundException exception, WebRequest webRequest) {
 
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),

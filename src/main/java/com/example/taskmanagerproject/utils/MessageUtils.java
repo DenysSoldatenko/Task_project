@@ -8,8 +8,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MessageUtils {
 
-  public static final String USER_NOT_FOUND
-      = "User not found!";
   public static final String USER_NOT_FOUND_WITH_SLUG
       = "User not found with slug: ";
   public static final String USER_NOT_FOUND_WITH_USERNAME
@@ -19,7 +17,7 @@ public class MessageUtils {
   public static final String USER_ALREADY_IN_TEAM
       = "User with id '%s' is already a member of the team with id '%s'";
   public static final String USERS_NOT_IN_SAME_TEAM
-      = "Users '%s' and '%s' must belong to the same team '%s' to assign tasks";
+      = "Users '%s' and '%s' must belong to the same team to assign tasks";
   public static final String USERS_NOT_IN_SAME_PROJECT
       = "Users '%s' and '%s' must belong to the same project '%s' to assign tasks";
   public static final String USERS_DO_NOT_HAVE_ROLES_IN_TEAM
@@ -34,7 +32,10 @@ public class MessageUtils {
 
   public static final String TASK_NOT_FOUND_WITH_ID
       = "Task not found with id: ";
-
+  public static final String TASK_COMMENT_INVALID_SENDER_RECEIVER
+      = "Sender and receiver combination is invalid";
+  public static final String TASK_COMMENT_FOUND_WITH_ID
+      = "Task comment not found with id: ";
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";

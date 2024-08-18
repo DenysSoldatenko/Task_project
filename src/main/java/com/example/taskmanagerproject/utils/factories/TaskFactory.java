@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class TaskFactory {
+public final class TaskFactory {
 
   private final ProjectRepository projectRepository;
   private final TeamRepository teamRepository;

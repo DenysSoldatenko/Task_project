@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class ProjectTeamFactory {
+public final class ProjectTeamFactory {
 
   private final TeamRepository teamRepository;
   private final ProjectRepository projectRepository;
