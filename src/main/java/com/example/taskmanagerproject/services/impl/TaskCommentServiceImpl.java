@@ -39,14 +39,6 @@ public class TaskCommentServiceImpl implements TaskCommentService {
 
   @Override
   @Transactional
-  public TaskCommentDto getTaskCommentById(Long id) {
-    TaskComment taskComment = taskCommentRepository.findById(id)
-        .orElseThrow(() -> new TaskCommentNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
-    return taskCommentMapper.toDto(taskComment);
-  }
-
-  @Override
-  @Transactional
   public TaskCommentDto updateTaskComment(TaskCommentDto taskCommentDto, Long id) {
     TaskComment existingComment = taskCommentRepository.findById(id)
         .orElseThrow(() -> new TaskCommentNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
@@ -68,8 +60,8 @@ public class TaskCommentServiceImpl implements TaskCommentService {
 
   @Override
   @Transactional
-  public List<TaskCommentDto> getCommentsByTaskId(Long taskId) {
-    List<TaskComment> taskComments = taskCommentRepository.findByTaskId(taskId);
+  public List<TaskCommentDto> getCommentsByTaskSlug(String slug) {
+    List<TaskComment> taskComments = taskCommentRepository.findAllBySlug(slug);
     return taskComments.stream().map(taskCommentMapper::toDto).toList();
   }
 }

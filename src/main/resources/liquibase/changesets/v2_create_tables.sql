@@ -94,7 +94,6 @@ CREATE TABLE IF NOT EXISTS tasks
     expiration_date TIMESTAMP    NULL,
     task_status     VARCHAR(50)  NOT NULL DEFAULT 'ASSIGNED',
     priority        VARCHAR(50)  NOT NULL DEFAULT 'MEDIUM',
-    created_at      TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
     assigned_to     BIGINT       NULL,
     assigned_by     BIGINT       NULL,
     CONSTRAINT fk_tasks_project FOREIGN KEY (project_id) REFERENCES projects (id)
@@ -118,10 +117,11 @@ CREATE TABLE IF NOT EXISTS tasks_images
 CREATE TABLE IF NOT EXISTS task_comments
 (
     id          BIGSERIAL PRIMARY KEY,
-    task_id     BIGINT NOT NULL,
-    sender_id   BIGINT NOT NULL,
-    receiver_id BIGINT NOT NULL,
-    message     TEXT   NOT NULL,
+    slug        VARCHAR(255) NOT NULL,
+    task_id     BIGINT       NOT NULL,
+    sender_id   BIGINT       NOT NULL,
+    receiver_id BIGINT       NOT NULL,
+    message     TEXT         NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_resolved BOOLEAN   DEFAULT FALSE,
     CONSTRAINT fk_task_comments_task FOREIGN KEY (task_id) REFERENCES tasks (id)
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS task_comments
 CREATE TABLE IF NOT EXISTS task_history
 (
     id             BIGSERIAL PRIMARY KEY,
-    task_id        BIGINT      NOT NULL,
+    task_id        BIGINT NOT NULL,
     previous_value TEXT,
     new_value      TEXT,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

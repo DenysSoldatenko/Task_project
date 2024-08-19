@@ -17,14 +17,6 @@ public interface TaskCommentService {
   TaskCommentDto createComment(TaskCommentDto taskCommentDto);
 
   /**
-   * Retrieves a task comment by its ID.
-   *
-   * @param id The ID of the task comment to retrieve.
-   * @return The TaskCommentDto corresponding to the given ID.
-   */
-  TaskCommentDto getTaskCommentById(Long id);
-
-  /**
    * Updates an existing task comment.
    *
    * @param taskCommentDto The DTO containing the updated comment data.
@@ -41,10 +33,10 @@ public interface TaskCommentService {
   void deleteTaskComment(Long id);
 
   /**
-   * Retrieves all comments for a specific task.
+   * Retrieves all comments associated with a specific task using the task's slug.
    *
-   * @param taskId The ID of the task for which to retrieve the comments.
-   * @return A list of TaskCommentDto objects for the specified task.
+   * @param slug The unique slug of the task whose comments are to be retrieved.
+   * @return A list of TaskCommentDto objects corresponding to the specified task.
    */
-  List<TaskCommentDto> getCommentsByTaskId(Long taskId);
+  List<TaskCommentDto> getCommentsByTaskSlug(String slug);
 }

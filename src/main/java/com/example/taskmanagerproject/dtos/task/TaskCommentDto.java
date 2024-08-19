@@ -42,6 +42,13 @@ public record TaskCommentDto(
     )
     UserDto receiver,
 
+    @JsonProperty(access = READ_ONLY)
+    @Schema(
+      description = "The unique identifier or slug for the comment",
+      example = "task-1234-review"
+    )
+    String slug,
+
     @NotNull(message = "Message cannot be null")
     @Size(max = 500, message = "Message cannot exceed 500 characters")
     @Schema(

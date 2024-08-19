@@ -3,7 +3,6 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
-import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.task.TaskDto;
 import com.example.taskmanagerproject.entities.project.Project;
@@ -99,7 +98,6 @@ public final class TaskFactory {
       .assignedBy(assignedBy)
       .project(project)
       .team(team)
-      .createdAt(now())
       .build();
   }
 }

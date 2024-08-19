@@ -36,7 +36,7 @@ public record UserDto(
     @Size(min = 10, max = 55, message = "Username must be between 10 and 55 characters long!")
     @Schema(
       description = "The username of the user",
-      example = "alice123@gmail.com"
+      example = "alice12345@gmail.com"
     )
     String username,
 

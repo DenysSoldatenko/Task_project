@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class TaskCommentController {
    * @param taskCommentDto The TaskCommentDto object containing the necessary data to create the comment.
    * @return The created TaskCommentDto object.
    */
-  @PostMapping()
+  @PostMapping({"", "/{slug}"})
   @Operation(
       summary = "Create a new comment on a task",
       description = "Allows the creation of a new comment on a specific task",
@@ -61,32 +62,6 @@ public class TaskCommentController {
   @ResponseStatus(CREATED)
   public TaskCommentDto createTaskComment(@Valid @RequestBody TaskCommentDto taskCommentDto) {
     return taskCommentService.createComment(taskCommentDto);
-  }
-
-  /**
-   * Retrieves a task comment by its ID.
-   *
-   * @param id The ID of the task comment to retrieve.
-   * @return The TaskCommentDto object corresponding to the given ID.
-   */
-  @GetMapping("/{id}")
-  @Operation(
-      summary = "Get a task comment by ID",
-      description = "Retrieve a task comment by its ID",
-      responses = {
-          @ApiResponse(responseCode = "200", description = "Task comment retrieved successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "404", description = "Task comment not found",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
-      }
-  )
-  @ResponseStatus(OK)
-  public TaskCommentDto getTaskCommentById(@PathVariable Long id) {
-    return taskCommentService.getTaskCommentById(id);
   }
 
   /**
@@ -140,5 +115,31 @@ public class TaskCommentController {
   @ResponseStatus(NO_CONTENT)
   public void deleteTaskComment(@PathVariable Long id) {
     taskCommentService.deleteTaskComment(id);
+  }
+
+  /**
+   * Retrieves task comments by their slug.
+   *
+   * @param slug The slug of the task comments to retrieve.
+   * @return A list of TaskCommentDto objects corresponding to the given slug.
+   */
+  @GetMapping("/{slug}")
+  @Operation(
+      summary = "Get task comments by slug",
+      description = "Retrieve task comments by their unique slug",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Task comments retrieved successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task comments not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @ResponseStatus(OK)
+  public List<TaskCommentDto> getTaskCommentsBySlug(@PathVariable String slug) {
+    return taskCommentService.getCommentsByTaskSlug(slug);
   }
 }

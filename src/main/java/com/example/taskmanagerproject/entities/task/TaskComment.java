@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.entities.task;
 
+import static java.time.LocalDateTime.now;
+
 import com.example.taskmanagerproject.entities.security.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,11 +47,14 @@ public class TaskComment {
   @JoinColumn(name = "receiver_id", nullable = false)
   private User receiver;
 
+  @Column(nullable = false)
+  private String slug;
+
   @Column(nullable = false, columnDefinition = "TEXT")
   private String message;
 
   @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt = LocalDateTime.now();
+  private LocalDateTime createdAt = now();
 
   @Column(nullable = false)
   private Boolean isResolved = false;

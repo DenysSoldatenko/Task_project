@@ -78,7 +78,4 @@ public class Task {
   @Column(name = "image")
   @CollectionTable(name = "tasks_images")
   private List<String> images;
-
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt = LocalDateTime.now();
 }
