@@ -10,6 +10,8 @@ import com.example.taskmanagerproject.entities.project.ProjectTeam;
 import com.example.taskmanagerproject.entities.project.ProjectTeamId;
 import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.repositories.ProjectRepository;
+import com.example.taskmanagerproject.repositories.ProjectTeamRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 public class ProjectGeneratorService {
 
   private final Faker faker = new Faker();
+  private final ProjectRepository projectRepository;
+  private final ProjectTeamRepository projectTeamRepository;
 
   /**
    * Generates projects for a user, ensuring that only users with allowed roles can create projects.
@@ -32,18 +36,18 @@ public class ProjectGeneratorService {
    * @param totalProjects the number of projects to create
    */
   public List<Project> generateProjects(User user, int totalProjects) {
-    return range(0, totalProjects).mapToObj(i -> createProject(user)).toList();
+    return projectRepository.saveAll(range(0, totalProjects).mapToObj(i -> createProject(user)).toList());
   }
 
   /**
-   * Generates a list of ProjectTeam associations for a given project and a list of teams.
+   * Generates a new project-team association and saves it to the repository.
    *
-   * @param teams   the list of teams that will be associated with the project.
-   * @param project the project to associate with the provided teams.
-   * @return a list of ProjectTeam associations between the provided teams and the given project.
+   * @param team the {@link Team} to be associated with the project.
+   * @param project the {@link Project} to be associated with the team.
+   * @return the saved {@link ProjectTeam} entity representing the association between the team and the project.
    */
-  public List<ProjectTeam> generateProjectTeam(List<Team> teams, Project project) {
-    return teams.stream().map(team -> createProjectTeam(team, project)).toList();
+  public ProjectTeam generateProjectTeam(Team team, Project project) {
+    return projectTeamRepository.save(createProjectTeam(team, project));
   }
 
   private ProjectTeam createProjectTeam(Team team, Project project) {

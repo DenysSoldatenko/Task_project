@@ -7,6 +7,7 @@ import com.example.taskmanagerproject.entities.security.Role;
 import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
+import com.example.taskmanagerproject.repositories.UserRepository;
 import com.github.slugify.Slugify;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class UserGeneratorService {
 
   private final Slugify slugGenerator;
   private final RoleRepository roleRepository;
+  private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
   /**
@@ -35,21 +37,9 @@ public class UserGeneratorService {
    * @return a list of users
    */
   public List<User> generateUserBatch(int batchSize) {
-    return range(0, batchSize)
-        .mapToObj(i -> createUser())
-        .toList();
-  }
-
-  private User createUser() {
-    String fullName = faker.name().fullName();
-    User user = new User();
-    user.setFullName(fullName);
-    user.setUsername(faker.internet().emailAddress());
-    user.setSlug(generateSlugFromFullName(fullName));
-    user.setPassword(passwordEncoder.encode("password123"));
-    user.setConfirmPassword(passwordEncoder.encode("password123"));
-    user.setRole(getRandomRole());
-    return user;
+    return userRepository.saveAll(range(0, batchSize)
+      .mapToObj(i -> createUser())
+      .toList());
   }
 
   /**
@@ -65,7 +55,19 @@ public class UserGeneratorService {
     globalAdminUser.setPassword(passwordEncoder.encode("password123"));
     globalAdminUser.setConfirmPassword(passwordEncoder.encode("password123"));
     globalAdminUser.setRole(getAdminRole());
-    return globalAdminUser;
+    return userRepository.save(globalAdminUser);
+  }
+
+  private User createUser() {
+    String fullName = faker.name().fullName();
+    User user = new User();
+    user.setFullName(fullName);
+    user.setUsername(faker.internet().emailAddress());
+    user.setSlug(generateSlugFromFullName(fullName));
+    user.setPassword(passwordEncoder.encode("password123"));
+    user.setConfirmPassword(passwordEncoder.encode("password123"));
+    user.setRole(getRandomRole());
+    return user;
   }
 
   private String generateSlugFromFullName(String fullName) {
@@ -75,12 +77,13 @@ public class UserGeneratorService {
   }
 
   private Role getRandomRole() {
-    List<Role> roles = roleRepository.findAll();
-    return roles.get(faker.number().numberBetween(0, roles.size()));
+    return roleRepository.findAll().get(faker.number().numberBetween(0, roleRepository.findAll().size()));
   }
 
   private Role getAdminRole() {
-    return roleRepository.findByName("ADMIN")
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
+    return roleRepository.findAll().stream()
+      .filter(role -> "ADMIN".equals(role.getName()))
+      .findFirst()
+      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
   }
 }
