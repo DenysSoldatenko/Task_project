@@ -97,12 +97,5 @@ public record TaskDto(
       description = "List of images associated with the entity",
       example = "[\"image1.png\", \"image2.png\"]"
     )
-    List<String> images,
-
-    @JsonProperty(access = READ_ONLY)
-    @Schema(
-      description = "The date and time when the task was created",
-      example = "2025-01-31 15:00:00"
-    )
-    LocalDateTime createdAt
+    List<String> images
 ) {}

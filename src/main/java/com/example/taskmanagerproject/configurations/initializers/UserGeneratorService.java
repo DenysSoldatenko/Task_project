@@ -37,9 +37,7 @@ public class UserGeneratorService {
    * @return a list of users
    */
   public List<User> generateUserBatch(int batchSize) {
-    return userRepository.saveAll(range(0, batchSize)
-      .mapToObj(i -> createUser())
-      .toList());
+    return userRepository.saveAll(range(0, batchSize).mapToObj(i -> createUser()).toList());
   }
 
   /**

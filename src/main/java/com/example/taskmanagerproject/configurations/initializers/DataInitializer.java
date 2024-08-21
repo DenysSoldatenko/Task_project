@@ -62,6 +62,9 @@ public class DataInitializer {
               var tasks = taskGeneratorService.generateTasks(project, teamUsers);
               log.info("Generated and saved {} Task associations for project {}.", tasks.size(), project.getId());
 
+              var totalComments = tasks.stream().mapToInt(task -> taskGeneratorService.generateTaskComment(task).size()).sum();
+              log.info("Generated and saved {} Task comments for tasks.", totalComments);
+
             } catch (Exception e) {
               log.error("Error in user batch {}: {}", batchIndex, e.getMessage(), e);
               hasErrors.set(true);

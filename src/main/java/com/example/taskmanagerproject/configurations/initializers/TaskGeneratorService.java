@@ -1,19 +1,25 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
+import static com.example.taskmanagerproject.entities.task.TaskStatus.APPROVED;
+import static com.example.taskmanagerproject.entities.task.TaskStatus.ASSIGNED;
+import static com.example.taskmanagerproject.entities.task.TaskStatus.IN_PROGRESS;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.IntStream.range;
 
 import com.example.taskmanagerproject.entities.project.Project;
 import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.entities.task.Task;
+import com.example.taskmanagerproject.entities.task.TaskComment;
 import com.example.taskmanagerproject.entities.task.TaskPriority;
 import com.example.taskmanagerproject.entities.task.TaskStatus;
 import com.example.taskmanagerproject.entities.team.Team;
 import com.example.taskmanagerproject.entities.team.TeamUser;
+import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import java.time.LocalDateTime;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,11 +41,12 @@ public class TaskGeneratorService {
   private final TaskRepository taskRepository;
   private final UserRepository userRepository;
   private final TeamUserRepository teamUserRepository;
+  private final TaskCommentRepository taskCommentRepository;
 
   /**
    * Generates a list of tasks for the specified project and team users.
    *
-   * @param project the project to associate with the tasks
+   * @param project   the project to associate with the tasks
    * @param teamUsers the list of users in the team
    * @return a list of generated tasks
    */
@@ -56,6 +63,47 @@ public class TaskGeneratorService {
         })
         .toList()
     );
+  }
+
+  /**
+   * Generates a conversation between the assigned by and assigned to users.
+   *
+   * @param task the task for which the comments are generated
+   * @return a list of generated task comments
+   */
+  public List<TaskComment> generateTaskComment(Task task) {
+    return Optional.of(task)
+      .filter(t -> !EnumSet.of(ASSIGNED, IN_PROGRESS, APPROVED).contains(t.getTaskStatus()))
+      .map(t -> {
+        int totalMessages = RANDOM.nextInt(11) + 5; // Generate between 5 to 15 messages
+        return range(0, totalMessages)
+          .mapToObj(i -> createTaskComment(t, t.getAssignedBy(), t.getAssignedTo(), i, totalMessages))
+          .toList();
+      })
+      .map(taskCommentRepository::saveAll)
+      .orElseGet(List::of);
+  }
+
+  private TaskComment createTaskComment(Task task, User assignedBy, User assignedTo, int messageIndex, int totalMessages) {
+    User sender = messageIndex % 2 == 0 ? assignedBy : assignedTo;
+    User receiver = sender.equals(assignedBy) ? assignedTo : assignedBy;
+    String message = generateRandomMessage(messageIndex);
+    String slug = "task-" + task.getId();
+    boolean isResolved = messageIndex == totalMessages - 1 && RANDOM.nextBoolean();
+
+    return TaskComment.builder()
+      .task(task)
+      .sender(sender)
+      .receiver(receiver)
+      .slug(slug)
+      .message(message)
+      .createdAt(now())
+      .isResolved(isResolved)
+      .build();
+  }
+
+  private String generateRandomMessage(int messageIndex) {
+    return faker.lorem().sentence(10) + " (Message #" + (messageIndex + 1) + ")";
   }
 
   private Task createTaskFromTeamUser(TeamUser teamUser, Project project) {
