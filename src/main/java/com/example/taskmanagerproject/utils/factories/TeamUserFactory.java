@@ -17,6 +17,7 @@ import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
+import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public final class TeamUserFactory {
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;
   private final RoleRepository roleRepository;
+  private final TeamUserRepository teamUserRepository;
 
   /**
    * Creates a list of UserTeam entities from the provided list of UserTeamDto objects.
@@ -91,7 +93,7 @@ public final class TeamUserFactory {
   }
 
   private void checkUserAlreadyInTeam(User user, Team team) {
-    if (teamRepository.existsByUserIdAndTeamId(user.getId(), team.getId())) {
+    if (teamUserRepository.existsByUserIdAndTeamId(user.getId(), team.getId())) {
       throw new ValidationException(format(USER_ALREADY_IN_TEAM, user.getId(), team.getId()));
     }
   }

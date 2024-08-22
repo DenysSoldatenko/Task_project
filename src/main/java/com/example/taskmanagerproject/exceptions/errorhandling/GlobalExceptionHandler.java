@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.example.taskmanagerproject.exceptions.ImageUploadException;
+import com.example.taskmanagerproject.exceptions.PdfGenerationException;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleHierarchyNotFoundException;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
@@ -209,6 +210,25 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(ImageUploadException.class)
   public ResponseEntity<ErrorDetails> handleImageUploadException(ImageUploadException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link PdfGenerationException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(PdfGenerationException.class)
+  public ResponseEntity<ErrorDetails> handlePdfGenerationException(PdfGenerationException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),

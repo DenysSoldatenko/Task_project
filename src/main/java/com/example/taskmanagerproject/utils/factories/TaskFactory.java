@@ -1,8 +1,10 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.ERROR_EXPIRATION_IN_PAST;
 import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.task.TaskDto;
 import com.example.taskmanagerproject.entities.project.Project;
@@ -12,9 +14,11 @@ import com.example.taskmanagerproject.entities.team.Team;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
+import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +29,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public final class TaskFactory {
 
-  private final ProjectRepository projectRepository;
   private final TeamRepository teamRepository;
   private final UserRepository userRepository;
+  private final ProjectRepository projectRepository;
 
   /**
    * Creates a new Task entity from a TaskDto.
@@ -78,6 +82,21 @@ public final class TaskFactory {
   }
 
   /**
+   * Returns a valid expiration date or throws an exception if it is in the past.
+   *
+   * @param taskDto Task details.
+   * @return Valid expiration date.
+   * @throws ValidationException If the expiration date is in the past.
+   */
+  private LocalDateTime ensureValidExpiration(TaskDto taskDto) {
+    if (taskDto.expirationDate().isBefore(now())) {
+      throw new ValidationException(ERROR_EXPIRATION_IN_PAST);
+    }
+
+    return taskDto.expirationDate();
+  }
+
+  /**
    * Builds a Task entity from the provided details.
    *
    * @param taskDto       The TaskDto containing task details.
@@ -91,7 +110,8 @@ public final class TaskFactory {
     return Task.builder()
       .title(taskDto.title())
       .description(taskDto.description())
-      .expirationDate(taskDto.expirationDate())
+      .createdAt(now())
+      .expirationDate(ensureValidExpiration(taskDto))
       .taskStatus(taskDto.taskStatus())
       .priority(taskDto.priority())
       .assignedTo(assignedTo)

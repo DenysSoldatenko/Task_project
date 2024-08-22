@@ -30,4 +30,19 @@ public interface ProjectTeamRepository extends JpaRepository<ProjectTeam, Projec
    */
   @Query("SELECT pt FROM ProjectTeam pt WHERE pt.team.name = :teamName")
   List<ProjectTeam> findAllByTeamName(String teamName);
+
+  /**
+   * Checks if a ProjectTeam exists based on the project name and team name.
+   *
+   * @param projectName the name of the project.
+   * @param teamName the name of the team.
+   * @return true if a ProjectTeam exists for the specified project and team, false otherwise.
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(pt) > 0 THEN true ELSE false END
+      FROM ProjectTeam pt
+      WHERE pt.project.name = :projectName
+      AND pt.team.name = :teamName
+      """)
+  boolean existsByProjectNameAndTeamName(String projectName, String teamName);
 }

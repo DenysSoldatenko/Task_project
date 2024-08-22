@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333333;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333333;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            padding-top: 10px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-top: 30px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .report-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .metrics {
+            margin: 20px 0;
+        }
+
+        .metrics .metric {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        .metrics .metric strong {
+            color: #333333;
+            width: 250px;
+        }
+
+        .metrics .metric img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .user-description {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        /* New Style for Achievements & Badges Section */
+        .achievements-section {
+            background-color: #f1c40f;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .achievement img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .achievement-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .achievement-description {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .badges-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            background-color: #34495e;
+            padding: 30px;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .badge {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .badge:hover {
+            background-color: #c0392b;
+            transform: translateY(-5px);
+        }
+
+        .badge i {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .badge .badge-title {
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            background-color: #ddd;
+            border-radius: 25px;
+            width: 100%;
+            height: 20px;
+            margin: 15px 0;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            border-radius: 25px;
+            background-color: #3498db;
+        }
+
+        .level {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #2c3e50;
+        }
+
+        .level .level-progress {
+            font-size: 16px;
+            color: #2980b9;
+        }
+
+        .star-rating {
+            color: #f39c12;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="report-container">
+    <div class="report-header">
+        <h1>
+            Performance Report <br>
+            <span style="font-size: 18px; color: #7f8c8d;">({startDate} – {endDate})</span>
+        </h1>
+    </div>
+
+
+    <!-- User Description -->
+    <div class="user-description">
+        <h2>User Overview</h2>
+        <p><strong>Username:</strong> {username}</p>
+        <p><strong>Role:</strong> {role}</p>
+        <p><strong>Team Name:</strong> {teamName}</p>
+        <p><strong>Team Objective:</strong> {teamObjective}</p>
+    </div>
+
+
+    <!-- Individual Performance Metrics Section -->
+    <h2>Individual Performance Metrics</h2>
+    <div class="metrics">
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/task-completed.png" alt="Tasks Completed Icon"/>
+            <strong>Tasks Completed:</strong> <span>{tasksCompleted}</span>
+        </div>
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/thumbs-up-down.png" alt="Task Completion Rate Icon"/>
+            <strong>Task Completion Rate:</strong> <span>{taskCompletionRate}%</span>
+        </div>
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/time.png" alt="On-Time Task Completion"/>
+            <strong>On-Time Task Completion:</strong> <span>{onTimeTasks}</span>
+        </div>
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/hourglass.png" alt="Average Task Duration Icon"/>
+            <strong>Average Task Duration:</strong> <span>{averageTaskDuration}</span>
+        </div>
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/bug.png" alt="Bug Fixes & Issues Resolved Icon"/>
+            <strong>Bug Fixes & Issues Resolved:</strong> <span>{bugFixesResolved}</span>
+        </div>
+        <div class="metric">
+            <img src="https://img.icons8.com/ios/452/task.png" alt="Critical Tasks Solved"/>
+            <strong>Critical Tasks Solved:</strong> <span>{criticalTasksSolved}</span>
+        </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <h2>Achievements</h2>
+    <div class="achievements-section">
+        <div class="achievement">
+            <img src="https://img.icons8.com/ios/452/trophy.png" alt="Achievement Icon"/>
+            <div>
+                <div class="achievement-title">Task Master</div>
+                <div class="achievement-description">Successfully completed 100+ tasks in a month.</div>
+            </div>
+        </div>
+        <div class="achievement">
+            <img src="https://img.icons8.com/ios/452/badge.png" alt="Achievement Icon"/>
+            <div>
+                <div class="achievement-title">Bug Slayer</div>
+                <div class="achievement-description">Resolved over 50 critical bugs in one sprint.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badges Section -->
+    <h2>Badges</h2>
+    <div class="badges-section">
+        <div class="badge">
+            <i class="fa fa-trophy"></i>
+            <div class="badge-title">Task Master</div>
+        </div>
+        <div class="badge">
+            <i class="fa fa-bug"></i>
+            <div class="badge-title">Bug Slayer</div>
+        </div>
+        <div class="badge">
+            <i class="fa fa-code"></i>
+            <div class="badge-title">Code Quality Champion</div>
+        </div>
+        <div class="badge">
+            <i class="fa fa-lightbulb"></i>
+            <div class="badge-title">Efficiency Expert</div>
+        </div>
+        <div class="badge">
+            <i class="fa fa-users"></i>
+            <div class="badge-title">Team Player</div>
+        </div>
+        <div class="badge">
+            <i class="fa fa-leaf"></i>
+            <div class="badge-title">Innovation Leader</div>
+        </div>
+    </div>
+
+    <!-- Progress Bars -->
+    <h2>Performance Progress</h2>
+    <div class="metric">
+        <strong>Task Completion Progress:</strong>
+        <div class="progress-bar">
+            <div class="progress" style="width: 50%"></div>
+        </div>
+    </div>
+    <div class="metric">
+        <strong>Code Quality Progress:</strong>
+        <div class="progress-bar">
+            <div class="progress" style="width: {codeQualityScore}%"></div>
+        </div>
+    </div>
+    <div class="metric">
+        <strong>Bugfix Progress:</strong>
+        <div class="progress-bar">
+            <div class="progress" style="width: 60%"></div>
+        </div>
+    </div>
+    <div class="metric">
+        <strong>Efficiency Progress:</strong>
+        <div class="progress-bar">
+            <div class="progress" style="width: 80%"></div>
+        </div>
+    </div>
+
+    <!-- Leveling Up -->
+    <div class="level">
+        <strong>Level:</strong> Level 3: Advanced Developer
+        <p class="level-progress">Progress towards next level: {levelProgress}%</p>
+    </div>
+
+    <!-- Performance Score -->
+    <h2>Overall Performance Score</h2>
+    <div class="star-rating">
+        <strong>Performance Rating:</strong>
+        <span id="performance-rating"></span>
+    </div>
+
+    <div class="footer">
+        <p>Generated by the system</p>
+        <p>&copy; 2025 Task Management System</p>
+    </div>
+</div>
+
+<script>
+    function generateStars(rating) {
+        let stars = "";
+        for (let i = 1; i <= 5; i++) {
+            stars += i <= rating ? "&#9733;" : "&#9734;"; // ★ for filled, ☆ for empty
+        }
+        return stars;
+    }
+
+    let performanceScore = {performanceRating};
+    document.getElementById("performance-rating").innerHTML = generateStars(performanceScore);
+</script>
+
+</body>
+</html>

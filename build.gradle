@@ -40,6 +40,9 @@ dependencies {
 	implementation "com.graphql-java-kickstart:graphql-java-servlet:${graphqlJavaServletVersion}"
 	implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
+	implementation "org.jsoup:jsoup:${jsoupVersion}"
+	implementation "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}"
+
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}") {
 		exclude group: "io.swagger.core.v3", module: "swagger-annotations"
 	}

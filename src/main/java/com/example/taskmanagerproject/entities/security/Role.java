@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.entities.security;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +20,9 @@ public class Role {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "name")
   private String name;
 
+  @Column(name = "description")
   private String description;
 }

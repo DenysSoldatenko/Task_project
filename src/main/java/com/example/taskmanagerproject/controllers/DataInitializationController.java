@@ -1,6 +1,9 @@
 package com.example.taskmanagerproject.controllers;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_FAIL_MESSAGE;
+import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_SUCCESS_MESSAGE;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import com.example.taskmanagerproject.configurations.initializers.DataInitializer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +44,14 @@ public class DataInitializationController {
     @ApiResponse(responseCode = "201", description = "Data initialized successfully"),
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
-  public ResponseEntity<String> initializeDatabaseData() {
-    return new ResponseEntity<>(dataInitializer.initData(), CREATED);
+  public ResponseEntity<String> initializeDatabase() {
+    try {
+      dataInitializer.initializeTasks();
+      dataInitializer.updateTaskStatuses();
+      dataInitializer.updateTaskHistoryDates();
+      return ResponseEntity.status(CREATED).body(DATA_INITIALIZATION_SUCCESS_MESSAGE);
+    } catch (Exception e) {
+      return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(DATA_INITIALIZATION_FAIL_MESSAGE);
+    }
   }
 }

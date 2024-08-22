@@ -56,7 +56,14 @@ public class Task {
   @Column(columnDefinition = "TEXT")
   private String description;
 
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @Column(name = "expiration_date")
   private LocalDateTime expirationDate;
+
+  @Column(name = "approved_at")
+  private LocalDateTime approvedAt;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "task_status", nullable = false)

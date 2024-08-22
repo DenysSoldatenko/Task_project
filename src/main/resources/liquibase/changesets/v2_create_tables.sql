@@ -91,11 +91,13 @@ CREATE TABLE IF NOT EXISTS tasks
     team_id         BIGINT       NOT NULL,
     title           VARCHAR(255) NOT NULL,
     description     TEXT         NULL,
-    expiration_date TIMESTAMP    NULL,
     task_status     VARCHAR(50)  NOT NULL DEFAULT 'ASSIGNED',
     priority        VARCHAR(50)  NOT NULL DEFAULT 'MEDIUM',
     assigned_to     BIGINT       NULL,
     assigned_by     BIGINT       NULL,
+    created_at      TIMESTAMP    NOT NULL,
+    expiration_date TIMESTAMP    NULL,
+    approved_at     TIMESTAMP    NULL,
     CONSTRAINT fk_tasks_project FOREIGN KEY (project_id) REFERENCES projects (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_tasks_team FOREIGN KEY (team_id) REFERENCES teams (id)

@@ -21,7 +21,7 @@ public class MessageUtils {
   public static final String USERS_NOT_IN_SAME_PROJECT
       = "Users '%s' and '%s' must belong to the same project '%s' to assign tasks";
   public static final String USERS_DO_NOT_HAVE_ROLES_IN_TEAM
-      = "One or both users do not have roles in the specified team.";
+      = "One or both users do not have roles in the specified team";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT
       = "The user does not have the necessary role to create or update a project! Username: ";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM
@@ -36,6 +36,18 @@ public class MessageUtils {
       = "Sender and receiver combination is invalid";
   public static final String TASK_COMMENT_FOUND_WITH_ID
       = "Task comment not found with id: ";
+  public static final String ERROR_EXPIRATION_IN_PAST
+      = "Expiration date cannot be in the past";
+
+  public static final String USER_NOT_IN_TEAM
+      = "User is not part of the specified team";
+  public static final String TEAM_NOT_IN_PROJECT
+      = "Team is not part of the specified project";
+  public static final String DATE_RANGE_REQUIRED
+      = "Start date and end date must be provided";
+  public static final String INVALID_DATE_RANGE
+      = "Invalid date range: Start date must be before end date";
+
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";

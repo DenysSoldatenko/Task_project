@@ -10,7 +10,12 @@ import static java.util.Collections.singletonList;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.dtos.team.TeamDto;
+import com.example.taskmanagerproject.entities.security.Role;
 import com.example.taskmanagerproject.entities.security.RoleName;
+import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.services.TeamService;
+import com.example.taskmanagerproject.services.TeamUserService;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +33,10 @@ import org.springframework.stereotype.Service;
 public class SecurityExpressionService {
 
   private final UserService userService;
+  private final TeamService teamService;
+  private final TeamUserService teamUserService;
 
-  private static final List<RoleName> CREATION_ALLOWED_ROLES = asList(
+  private static final List<RoleName> ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS = asList(
       ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD
   );
 
@@ -108,36 +115,6 @@ public class SecurityExpressionService {
   }
 
   /**
-   * Checks if the current user has the necessary permissions to create a project.
-   *
-   * @return true if the user has the necessary permissions to create a project, false otherwise.
-   */
-  public boolean canCreateProject() {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasPermission = hasAnyRole(CREATION_ALLOWED_ROLES);
-    log.info(
-        "Checking project creation permission for user with username: {} - hasPermission: {}",
-        user.getUsername(), hasPermission
-    );
-    return hasPermission;
-  }
-
-  /**
-   * Checks if the current user has the necessary permissions to create a team.
-   *
-   * @return true if the user has the necessary permissions to create a team, false otherwise.
-   */
-  public boolean canCreateTeam() {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasPermission = hasAnyRole(CREATION_ALLOWED_ROLES);
-    log.info(
-        "Checking team creation permission for user with username: {} - hasPermission: {}",
-        user.getUsername(), hasPermission
-    );
-    return hasPermission;
-  }
-
-  /**
    * Checks if the current user can access the specified task's data.
    *
    * @param taskId The ID of the task to check access for.
@@ -154,6 +131,68 @@ public class SecurityExpressionService {
         taskId, isAdmin, isTaskOwner, isTaskAssignedToUser
     );
     return isAdmin || isTaskOwner || isTaskAssignedToUser;
+  }
+
+  /**
+   * Checks if the current user can access the specified report.
+   *
+   * @param username The username of the user requesting the report.
+   * @param teamName The associated team name.
+   * @return true if the user has access, false otherwise.
+   */
+  public boolean canAccessReport(String username, String teamName) {
+    JwtEntity jwt = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    User user = userService.getUserByUsername(username);
+    TeamDto team = teamService.getTeamByName(teamName);
+    Role userRole = teamUserService.getRoleByTeamNameAndUsername(team.name(), jwt.getUsername());
+
+    boolean hasPermission = ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS.stream()
+        .anyMatch(roleName -> roleName.name().equals(userRole.getName()));
+    boolean isUserInTeam = teamUserService.existsByUserIdAndTeamId(jwt.getId(), team.id());
+    boolean canAccess = (jwt.getId().equals(user.getId()) || hasPermission) && isUserInTeam;
+
+    log.info(
+        "Access check for report - Team: {}, User has permission: {}, In team: {}, Access granted: {}",
+        teamName, hasPermission, isUserInTeam, canAccess
+    );
+
+    return canAccess;
+  }
+
+
+
+
+
+
+
+  /**
+   * Checks if the current user has the necessary permissions to create a project.
+   *
+   * @return true if the user has the necessary permissions to create a project, false otherwise.
+   */
+  public boolean canCreateProject() {
+    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    boolean hasPermission = hasAnyRole(ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS);
+    log.info(
+        "Checking project creation permission for user with username: {} - hasPermission: {}",
+        user.getUsername(), hasPermission
+    );
+    return hasPermission;
+  }
+
+  /**
+   * Checks if the current user has the necessary permissions to create a team.
+   *
+   * @return true if the user has the necessary permissions to create a team, false otherwise.
+   */
+  public boolean canCreateTeam() {
+    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    boolean hasPermission = hasAnyRole(ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS);
+    log.info(
+        "Checking team creation permission for user with username: {} - hasPermission: {}",
+        user.getUsername(), hasPermission
+    );
+    return hasPermission;
   }
 
   private boolean hasAnyRole(List<RoleName> roles) {

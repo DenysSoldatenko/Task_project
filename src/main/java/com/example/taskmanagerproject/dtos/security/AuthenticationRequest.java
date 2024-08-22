@@ -10,7 +10,7 @@ public record AuthenticationRequest(
 
     @Schema(
       description = "Username for authentication",
-      example = "alice123@gmail.com"
+      example = "alice12345@gmail.com"
     )
     String username,
 

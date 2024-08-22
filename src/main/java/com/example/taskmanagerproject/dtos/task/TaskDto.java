@@ -57,12 +57,26 @@ public record TaskDto(
     )
     String description,
 
+    @JsonProperty(access = READ_ONLY)
+    @Schema(
+      description = "The start date for the task",
+      example = "2025-09-01 09:00:00"
+    )
+    LocalDateTime createdAt,
+
     @NotNull(message = "Expiration date cannot be null!")
     @Schema(
       description = "The expiration date for the task",
       example = "2025-09-16 15:00:00"
     )
     LocalDateTime expirationDate,
+
+    @JsonProperty(access = READ_ONLY)
+    @Schema(
+      description = "The date when the task was approved",
+      example = "2025-09-16 12:00:00"
+    )
+    LocalDateTime approvedAt,
 
     @NotNull(message = "Task status cannot be null!")
     @Schema(

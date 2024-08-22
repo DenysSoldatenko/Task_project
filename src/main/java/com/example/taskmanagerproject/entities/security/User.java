@@ -5,6 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.example.taskmanagerproject.entities.team.TeamUser;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -29,15 +30,20 @@ public class User {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
+  @Column(name = "full_name")
   private String fullName;
 
   @Email
+  @Column(name = "username")
   private String username;
 
+  @Column(name = "slug")
   private String slug;
 
+  @Column(name = "password")
   private String password;
 
+  @Column(name = "confirm_password")
   private String confirmPassword;
 
   @ManyToOne(fetch = EAGER)

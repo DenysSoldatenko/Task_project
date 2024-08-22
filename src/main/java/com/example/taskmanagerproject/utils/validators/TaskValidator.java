@@ -22,6 +22,7 @@ import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.RoleHierarchyRepository;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
+import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import jakarta.validation.Validator;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ public class TaskValidator extends BaseValidator<TaskDto> {
   private final TeamRepository teamRepository;
   private final RoleRepository roleRepository;
   private final ProjectRepository projectRepository;
+  private final TeamUserRepository teamUserRepository;
   private final RoleHierarchyRepository roleHierarchyRepository;
 
   /**
@@ -52,7 +54,7 @@ public class TaskValidator extends BaseValidator<TaskDto> {
   public TaskValidator(
       Validator validator, UserRepository userRepository, TeamRepository teamRepository,
       RoleHierarchyRepository roleHierarchyRepository, ProjectRepository projectRepository,
-      RoleRepository roleRepository
+      RoleRepository roleRepository, TeamUserRepository teamUserRepository
   ) {
     super(validator);
     this.userRepository = userRepository;
@@ -60,6 +62,7 @@ public class TaskValidator extends BaseValidator<TaskDto> {
     this.roleHierarchyRepository = roleHierarchyRepository;
     this.projectRepository = projectRepository;
     this.roleRepository = roleRepository;
+    this.teamUserRepository = teamUserRepository;
   }
 
   /**
@@ -101,9 +104,9 @@ public class TaskValidator extends BaseValidator<TaskDto> {
   }
 
   private void validateUsersInSameTeam(User assignedByUser, User assignedToUser, Team team, Set<String> errorMessages) {
-    if (!(teamRepository.existsByUserIdAndTeamId(assignedByUser.getId(), team.getId())
-        && teamRepository.existsByUserIdAndTeamId(assignedToUser.getId(), team.getId()))) {
-      errorMessages.add(format(USERS_NOT_IN_SAME_TEAM, assignedByUser.getUsername(), assignedToUser.getUsername(), team.getName()));
+    if (!(teamUserRepository.existsByUserIdAndTeamId(assignedByUser.getId(), team.getId())
+        && teamUserRepository.existsByUserIdAndTeamId(assignedToUser.getId(), team.getId()))) {
+      errorMessages.add(format(USERS_NOT_IN_SAME_TEAM, assignedByUser.getUsername(), assignedToUser.getUsername()));
     }
   }
 

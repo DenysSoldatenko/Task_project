@@ -2,7 +2,6 @@ package com.example.taskmanagerproject.configurations.initializers;
 
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
-import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.IntStream.range;
 
 import com.example.taskmanagerproject.entities.project.Project;
@@ -12,7 +11,6 @@ import com.example.taskmanagerproject.entities.security.User;
 import com.example.taskmanagerproject.entities.team.Team;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.ProjectTeamRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
@@ -42,12 +40,11 @@ public class ProjectGeneratorService {
   /**
    * Generates a new project-team association and saves it to the repository.
    *
-   * @param team the {@link Team} to be associated with the project.
+   * @param team    the {@link Team} to be associated with the project.
    * @param project the {@link Project} to be associated with the team.
-   * @return the saved {@link ProjectTeam} entity representing the association between the team and the project.
    */
-  public ProjectTeam generateProjectTeam(Team team, Project project) {
-    return projectTeamRepository.save(createProjectTeam(team, project));
+  public void generateProjectTeam(Team team, Project project) {
+    projectTeamRepository.save(createProjectTeam(team, project));
   }
 
   private ProjectTeam createProjectTeam(Team team, Project project) {
@@ -63,12 +60,7 @@ public class ProjectGeneratorService {
     project.setName(faker.company().name() + randomUUID().toString().substring(0, 4));
     project.setDescription(faker.lorem().sentence());
     project.setCreator(user);
-    project.setCreatedAt(generateRandomDateTime());
+    project.setCreatedAt(now());
     return project;
-  }
-
-  private LocalDateTime generateRandomDateTime() {
-    long daysAgo = current().nextLong(0, 365);
-    return now().minusDays(daysAgo);
   }
 }

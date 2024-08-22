@@ -51,18 +51,4 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
       WHERE c.slug = :slug OR ut.user.slug = :slug
       """)
   List<Team> findByUserSlug(@Param("slug") String slug);
-
-  /**
-   * Checks if a UserTeam exists based on user and team using a native query.
-   *
-   * @param userId The user's ID.
-   * @param teamId The team's ID.
-   * @return True if a UserTeam exists, otherwise False.
-   */
-  @Query(value = """
-      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-      FROM teams_users ut
-      WHERE ut.user_id = :userId AND ut.team_id = :teamId
-      """, nativeQuery = true)
-  boolean existsByUserIdAndTeamId(Long userId, Long teamId);
 }

@@ -1,10 +1,9 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_FAIL_MESSAGE;
-import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_SUCCESS_MESSAGE;
 import static java.util.stream.IntStream.range;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.example.taskmanagerproject.entities.project.Project;
+import com.example.taskmanagerproject.entities.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,69 +17,71 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DataInitializer {
 
+  private static final int USER_BATCH_SIZE = 10;
+  private static final int TOTAL_USERS = 20;
+  private static final int TOTAL_PROJECTS = 2;
+  private static final int TOTAL_TEAMS = 2;
+
   private final UserGeneratorService userGeneratorService;
   private final TeamGeneratorService teamGeneratorService;
   private final TaskGeneratorService taskGeneratorService;
   private final ProjectGeneratorService projectGeneratorService;
 
   /**
-   * Initializes role, user, and project data in the database.
+   * Updates task statuses for all users.
+   * This method uses the taskGeneratorService to change task statuses.
    */
   @Transactional
-  public String initData() {
-    int userBatchSize = 10;
-    int totalUsers = 50;
-    int totalProjects = 5;
-    int totalTeams = 5;
+  public void updateTaskStatuses() {
+    int updatedStatusCount = taskGeneratorService.changeTaskStatusForAllUsers();
+    log.info("Updated status for {} tasks.", updatedStatusCount);
+  }
 
-    AtomicBoolean hasErrors = new AtomicBoolean(false);
-    log.info("Starting data initialization...");
+  /**
+   * Updates task history dates for all users.
+   * This method uses the taskGeneratorService to update the task history's updated_at date.
+   */
+  @Transactional
+  public void updateTaskHistoryDates() {
+    int updatedDatesCount = taskGeneratorService.updateTaskHistoryUpdatedAtForAllUsers();
+    log.info("Updated dates for {} tasks.", updatedDatesCount);
+    log.info("Data initialization completed successfully...");
+  }
 
+  /**
+   * Initializes roles, users, teams, and projects, then generates tasks.
+   */
+  @Transactional
+  public void initializeTasks() {
     try {
-      var globalAdmin = userGeneratorService.createGlobalAdminUser();
+      log.info("Starting data initialization...");
 
-      var projectBatch = projectGeneratorService.generateProjects(globalAdmin, totalProjects);
-      log.info("Generated and saved {} projects for global admin.", projectBatch.size());
+      var admin = userGeneratorService.createGlobalAdminUser();
+      var projects = projectGeneratorService.generateProjects(admin, TOTAL_PROJECTS);
+      var teams = teamGeneratorService.generateTeams(admin, TOTAL_TEAMS);
 
-      var teamBatch = teamGeneratorService.generateTeams(globalAdmin, totalTeams);
-      log.info("Generated and saved {} teams for global admin.", teamBatch.size());
+      log.info("Generated {} projects and {} teams for global admin.", projects.size(), teams.size());
+      range(0, TOTAL_USERS / USER_BATCH_SIZE).forEach(i -> processUserBatch(i, teams.get(i % TOTAL_TEAMS), projects.get(i % TOTAL_PROJECTS)));
 
-      range(0, totalUsers / userBatchSize)
-          .forEach(batchIndex -> {
-            try {
-              var userBatch = userGeneratorService.generateUserBatch(userBatchSize);
-              log.info("User batch {} inserted successfully. Saved {} users.", batchIndex, userBatch.size());
-
-              var team = teamBatch.get(batchIndex);
-              var teamUsers = teamGeneratorService.generateTeamUsers(userBatch, team);
-              log.info("Generated and saved {} TeamUser associations for team {}.", teamUsers.size(), team.getId());
-
-              var project = projectBatch.get(batchIndex);
-              var projectTeam = projectGeneratorService.generateProjectTeam(team, project);
-              log.info("Generated and saved {} ProjectTeam associations for project {}.", 1, project.getId());
-
-              var tasks = taskGeneratorService.generateTasks(project, teamUsers);
-              log.info("Generated and saved {} Task associations for project {}.", tasks.size(), project.getId());
-
-              var totalComments = tasks.stream().mapToInt(task -> taskGeneratorService.generateTaskComment(task).size()).sum();
-              log.info("Generated and saved {} Task comments for tasks.", totalComments);
-
-            } catch (Exception e) {
-              log.error("Error in user batch {}: {}", batchIndex, e.getMessage(), e);
-              hasErrors.set(true);
-            }
-          });
     } catch (Exception e) {
-      log.error("Error during data initialization: {}", e.getMessage(), e);
-      hasErrors.set(true);
+      log.error("Data initialization failed: {}", e.getMessage(), e);
     }
+  }
 
-    if (hasErrors.get()) {
-      log.warn("Data initialization completed with errors.");
-      return DATA_INITIALIZATION_FAIL_MESSAGE;
-    } else {
-      log.info("Data initialization completed successfully.");
-      return DATA_INITIALIZATION_SUCCESS_MESSAGE;
+  private void processUserBatch(int batchIndex, Team team, Project project) {
+    try {
+      var users = userGeneratorService.generateUserBatch(USER_BATCH_SIZE);
+      log.info("Inserted user batch {} ({} users).", batchIndex, users.size());
+
+      var teamUsers = teamGeneratorService.generateTeamUsers(users, team);
+      projectGeneratorService.generateProjectTeam(team, project);
+
+      var tasks = taskGeneratorService.generateTasks(project, teamUsers);
+      var commentsCount = tasks.stream().mapToInt(task -> taskGeneratorService.generateTaskComment(task).size()).sum();
+      log.info("Created {} tasks and {} comments for project {}.", tasks.size(), commentsCount, project.getId());
+
+    } catch (Exception e) {
+      log.error("Error in batch {}: {}", batchIndex, e.getMessage(), e);
     }
   }
 }

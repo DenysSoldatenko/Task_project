@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.entities.task.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
-import static java.sql.Timestamp.valueOf;
 import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.task.TaskDto;
@@ -55,9 +55,10 @@ public class TaskServiceImpl implements TaskService {
 
     task.setTitle(taskDto.title());
     task.setDescription(taskDto.description());
-    task.setExpirationDate(taskDto.expirationDate());
     task.setTaskStatus(taskDto.taskStatus() != null ? taskDto.taskStatus() : task.getTaskStatus());
     task.setPriority(taskDto.priority() != null ? taskDto.priority() : task.getPriority());
+    task.setExpirationDate(taskDto.expirationDate());
+    task.setApprovedAt(taskDto.taskStatus() == APPROVED ? now() : null);
 
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);
@@ -84,8 +85,9 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> findAllSoonExpiringTasks(Duration duration) {
-    List<Task> taskList = taskRepository.findAllSoonExpiringTasks(valueOf(now()), valueOf(now().plus(duration)));
-    return taskList.stream().map(taskMapper::toDto).toList();
+//    List<Task> taskList = taskRepository.findExpiringTasksBetween(valueOf(now()), valueOf(now().plus(duration)));
+//    return taskList.stream().map(taskMapper::toDto).toList();
+    return null;
   }
 
   @Override
@@ -103,14 +105,14 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> getAllTasksAssignedToUser(Long userId) {
-    List<Task> taskList = taskRepository.findAllTasksAssignedToUser(userId);
+    List<Task> taskList = taskRepository.findTasksAssignedTo(userId);
     return taskList.stream().map(taskMapper::toDto).toList();
   }
 
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> getAllTasksAssignedByUser(Long userId) {
-    List<Task> taskList = taskRepository.findAllTasksAssignedByUser(userId);
+    List<Task> taskList = taskRepository.findTasksAssignedBy(userId);
     return taskList.stream().map(taskMapper::toDto).toList();
   }
 }

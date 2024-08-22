@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.entities.task;
 
-import com.example.taskmanagerproject.entities.security.User;
+import static java.time.LocalDateTime.now;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,16 +39,14 @@ public class TaskHistory {
   @JoinColumn(name = "task_id", nullable = false)
   private Task task;
 
-  @ManyToOne
-  @JoinColumn(name = "updated_by", nullable = false)
-  private User updatedBy;
-
   @Enumerated(EnumType.STRING)
+  @Column(name = "previous_value")
   private TaskStatus previousValue;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "new_value")
   private TaskStatus newValue;
 
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime updatedAt = LocalDateTime.now();
+  @Column(name = "updated_at", nullable = false)
+  private LocalDateTime updatedAt = now();
 }
