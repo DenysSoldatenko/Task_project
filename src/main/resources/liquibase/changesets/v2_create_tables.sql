@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS users_roles
     role_id BIGINT NOT NULL,
     PRIMARY KEY (user_id, role_id),
     CONSTRAINT fk_users_roles_users FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_users_roles_roles FOREIGN KEY (role_id) REFERENCES roles (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
@@ -142,5 +144,24 @@ CREATE TABLE IF NOT EXISTS task_history
     new_value      TEXT,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_task_history_task FOREIGN KEY (task_id) REFERENCES tasks (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS achievements
+(
+    id          BIGSERIAL PRIMARY KEY,
+    title       VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT         NOT NULL,
+    image_url   VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users_achievements
+(
+    user_id        BIGINT NOT NULL,
+    achievement_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, achievement_id),
+    CONSTRAINT fk_users_achievements_users FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_users_achievements_achievements FOREIGN KEY (achievement_id) REFERENCES achievements (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );

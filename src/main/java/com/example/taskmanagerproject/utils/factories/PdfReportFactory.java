@@ -11,9 +11,9 @@ import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,35 +37,36 @@ public class PdfReportFactory {
 
   public byte[] generateReport(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
     String htmlTemplate = loadTemplate(USER_TEMPLATE_PATH);
-
-    if (htmlTemplate.isEmpty()) {
-      throw new PdfGenerationException("Failed to load the HTML template from " + USER_TEMPLATE_PATH);
-    }
-
-    String userName = user.getFullName();
-    String teamName = team.getName();
-    String projectName = project.getName();
-    String teamObjective = team.getDescription();
-    String role = teamUserRepository.findRoleByTeamNameAndUsername(teamName, user.getUsername()).getName();
+    String role = teamUserRepository.findRoleByTeamNameAndUsername(team.getName(), user.getUsername()).getName();
     role = role.substring(0, 1).toUpperCase() + role.substring(1).toLowerCase();
 
-    String allTasks = taskRepository.countAllTasksForUser(user.getId(), startDate, endDate, projectName, teamName).toString();
-    String tasksCompleted = taskRepository.countCompletedTasksForUser(user.getId(), startDate, endDate, projectName, teamName).toString();
-    String taskCompletionRate = taskRepository.calculateTaskCompletionRateForUser(user.getId(), startDate, endDate, projectName, teamName).toString();
-    String onTimeTasks = taskRepository.countCompletedOnTimeTasks(user.getId(), startDate, endDate, projectName, teamName).toString();
-    String allBugs = taskRepository.countTasksWithCommentsByUser(user.getId(), false, false, startDate, endDate, projectName, teamName).toString();
-    String bugFixesResolved = taskRepository.countTasksWithCommentsByUser(user.getId(), true, true, startDate, endDate, projectName, teamName).toString();
-    String allCriticalTasks = taskRepository.countCriticalTasks(user.getId(), false, startDate, endDate, projectName, teamName).toString();
-    String criticalTasksSolved = taskRepository.countCriticalTasks(user.getId(), true, startDate, endDate, projectName, teamName).toString();
-    String averageTaskDuration = convertMinutesToHoursMinutes(taskRepository.calculateAverageMinutesSpent(user.getId(), startDate, endDate, project.getId(), team.getId()));
+    List<Object[]> taskMetricsList = taskRepository.getTaskMetricsByAssignedUser(user.getId(), startDate, endDate, project.getName(), team.getName());
+
+    if (taskMetricsList.isEmpty()) {
+      throw new PdfGenerationException("No task metrics found for user " + user.getUsername() + " in project " + project.getName());
+    }
+
+    Object[] taskMetrics = taskMetricsList.get(0);
+    String allTasks = taskMetrics[2].toString(); // allTasks
+    String tasksCompleted = taskMetrics[3].toString(); // tasksCompleted
+    String taskCompletionRate = taskMetrics[4].toString(); // taskCompletionRate
+    String onTimeTasks = taskMetrics[5].toString(); // onTimeTasks
+    String allBugs = taskMetrics[6].toString(); // allBugs
+    String bugFixesResolved = taskMetrics[7].toString(); // bugFixesResolved
+    String allCriticalTasks = taskMetrics[8].toString(); // allCriticalTasks
+    String criticalTasksSolved = taskMetrics[9].toString(); // criticalTasksSolved
+    String averageTaskDuration = convertMinutesToHoursMinutes(Double.parseDouble(taskMetrics[10].toString())); // averageTaskDuration
 
     String populatedHtml = htmlTemplate
       .replace("{startDate}", startDate.format(DATE_TIME_FORMATTER))
       .replace("{endDate}", endDate.format(DATE_TIME_FORMATTER))
-      .replace("{username}", userName)
+      .replace("{fullName}", user.getFullName())
+      .replace("{email}", user.getUsername())
       .replace("{role}", role)
-      .replace("{teamName}", teamName)
-      .replace("{teamObjective}", teamObjective)
+      .replace("{teamName}", team.getName())
+      .replace("{teamObjective}", team.getDescription())
+      .replace("{projectName}", project.getName())
+      .replace("{projectDescription}", project.getDescription())
       .replace("{tasksCompleted}", tasksCompleted + "/" + allTasks)
       .replace("{taskCompletionRate}", taskCompletionRate)
       .replace("{onTimeTasks}", onTimeTasks + "/" + tasksCompleted)

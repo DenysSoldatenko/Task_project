@@ -48,6 +48,10 @@ public class MessageUtils {
   public static final String INVALID_DATE_RANGE
       = "Invalid date range: Start date must be before end date";
 
+  public static final String TEMPLATE_LOAD_ERROR
+      = "Failed to load HTML template from file: ";
+  public static final String PDF_GENERATION_ERROR
+      = "Failed to generate PDF.";
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";

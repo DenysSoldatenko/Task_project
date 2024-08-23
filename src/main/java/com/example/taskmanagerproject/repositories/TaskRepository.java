@@ -14,121 +14,60 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-  @Query("""
-      SELECT COUNT(t)
-      FROM Task t
-      WHERE t.assignedTo.id = :userId
-        AND t.createdAt BETWEEN :startDate AND :endDate
-        AND t.project.name = :projectName
-        AND t.team.name = :teamName
-      """)
-  Long countAllTasksForUser(@Param("userId") Long userId,
-                            @Param("startDate") LocalDateTime startDate,
-                            @Param("endDate") LocalDateTime endDate,
-                            @Param("projectName") String projectName,
-                            @Param("teamName") String teamName);
-
-  @Query("""
-      SELECT COUNT(t)
-      FROM Task t
-      WHERE t.taskStatus = 'APPROVED'
-        AND t.assignedTo.id = :userId
-        AND t.createdAt BETWEEN :startDate AND :endDate
-        AND t.project.name = :projectName
-        AND t.team.name = :teamName
-      """)
-  Long countCompletedTasksForUser(@Param("userId") Long userId,
-                                  @Param("startDate") LocalDateTime startDate,
-                                  @Param("endDate") LocalDateTime endDate,
-                                  @Param("projectName") String projectName,
-                                  @Param("teamName") String teamName);
-
-  @Query("""
-      SELECT ROUND(
-          (CASE
-              WHEN COUNT(t1) > 0 THEN (COUNT(CASE WHEN t1.taskStatus = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t1)
-              ELSE 0
-          END), 2)
-      FROM Task t1
-      WHERE t1.assignedTo.id = :userId
-        AND t1.createdAt BETWEEN :startDate AND :endDate
-        AND t1.project.name = :projectName
-        AND t1.team.name = :teamName
-      """)
-  Double calculateTaskCompletionRateForUser(@Param("userId") Long userId,
-                                            @Param("startDate") LocalDateTime startDate,
-                                            @Param("endDate") LocalDateTime endDate,
-                                            @Param("projectName") String projectName,
-                                            @Param("teamName") String teamName);
-
   @Query(value = """
-      SELECT ROUND(COALESCE(AVG(EXTRACT(EPOCH FROM (t.approved_at - t.created_at)) / 60), 0), 0) AS average_minutes_spent
+      SELECT
+          t.project_id,
+  
+          t.team_id,
+  
+          COUNT(t.id) AS allTasks,
+  
+          COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) AS tasksCompleted,
+  
+          ROUND(
+              CASE
+                  WHEN COUNT(t.id) > 0 THEN (COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t.id)
+                  ELSE 0
+              END, 2) AS taskCompletionRate,
+          COUNT(CASE WHEN t.task_status = 'APPROVED' AND t.expiration_date >= t.approved_at THEN 1 END) AS onTimeTasks,
+  
+          (SELECT COUNT(DISTINCT tc.task_id)
+           FROM task_comments tc
+           JOIN tasks t2 ON tc.task_id = t2.id
+           WHERE t2.assigned_to = :assignedTo
+             AND t2.created_at BETWEEN :startDate AND :endDate
+             AND t2.project_id = t.project_id
+             AND t2.team_id = t.team_id) AS allBugs,
+  
+          (SELECT COUNT(DISTINCT tc.task_id)
+           FROM task_comments tc
+           JOIN tasks t2 ON tc.task_id = t2.id
+           WHERE t2.assigned_to = :assignedTo
+             AND t2.created_at BETWEEN :startDate AND :endDate
+             AND t2.project_id = t.project_id
+             AND t2.team_id = t.team_id
+             AND tc.is_resolved = true
+             AND t2.task_status = 'APPROVED') AS bugFixesResolved,
+  
+          COUNT(CASE WHEN t.priority = 'CRITICAL' THEN 1 END) AS allCriticalTasks,
+  
+          COUNT(CASE WHEN t.priority = 'CRITICAL' AND t.task_status = 'APPROVED' THEN 1 END) AS criticalTasksSolved,
+  
+          ROUND(COALESCE(AVG(EXTRACT(EPOCH FROM (t.approved_at - t.created_at)) / 60), 0), 0) AS averageTaskDuration
       FROM tasks t
-      WHERE t.task_status = 'APPROVED'
-        AND t.assigned_to = :userId
-        AND t.approved_at IS NOT NULL
-        AND t.created_at IS NOT NULL
+      JOIN projects p ON p.id = t.project_id
+      JOIN teams tm ON tm.id = t.team_id
+      WHERE t.assigned_to = :assignedTo
         AND t.created_at BETWEEN :startDate AND :endDate
-        AND t.project_id = :projectId
-        AND t.team_id = :teamId
+        AND p.name = :projectName
+        AND tm.name = :teamName
+      GROUP BY t.project_id, t.team_id
       """, nativeQuery = true)
-  Double calculateAverageMinutesSpent(@Param("userId") Long userId,
-                                      @Param("startDate") LocalDateTime startDate,
-                                      @Param("endDate") LocalDateTime endDate,
-                                      @Param("projectId") Long projectId,
-                                      @Param("teamId") Long teamId);
-
-  @Query("""
-      SELECT COUNT(t)
-      FROM Task t
-      WHERE t.assignedTo.id = :userId
-        AND t.taskStatus = 'APPROVED'
-        AND t.expirationDate >= t.approvedAt
-        AND t.createdAt BETWEEN :startDate AND :endDate
-        AND t.project.name = :projectName
-        AND t.team.name = :teamName
-      """)
-  Long countCompletedOnTimeTasks(@Param("userId") Long userId,
-                                 @Param("startDate") LocalDateTime startDate,
-                                 @Param("endDate") LocalDateTime endDate,
-                                 @Param("projectName") String projectName,
-                                 @Param("teamName") String teamName);
-
-  @Query("""
-      SELECT COUNT(DISTINCT t)
-      FROM TaskComment tc
-      JOIN Task t ON t.id = tc.task.id
-      WHERE t.assignedTo.id = :userId
-        AND (:includeResolved = false OR tc.isResolved = true)
-        AND (:includeApproved = false OR t.taskStatus = 'APPROVED')
-        AND t.createdAt BETWEEN :startDate AND :endDate
-        AND t.project.name = :projectName
-        AND t.team.name = :teamName
-      """)
-  Long countTasksWithCommentsByUser(@Param("userId") Long userId,
-                                    @Param("includeResolved") boolean includeResolved,
-                                    @Param("includeApproved") boolean includeApproved,
-                                    @Param("startDate") LocalDateTime startDate,
-                                    @Param("endDate") LocalDateTime endDate,
-                                    @Param("projectName") String projectName,
-                                    @Param("teamName") String teamName);
-
-  @Query("""
-      SELECT COUNT(t)
-      FROM Task t
-      WHERE t.assignedTo.id = :userId
-        AND t.priority = 'CRITICAL'
-        AND (:includeSolved = false OR t.taskStatus = 'APPROVED')
-        AND t.createdAt BETWEEN :startDate AND :endDate
-        AND t.project.name = :projectName
-        AND t.team.name = :teamName
-      """)
-  Long countCriticalTasks(@Param("userId") Long userId,
-                          @Param("includeSolved") boolean includeSolved,
-                          @Param("startDate") LocalDateTime startDate,
-                          @Param("endDate") LocalDateTime endDate,
-                          @Param("projectName") String projectName,
-                          @Param("teamName") String teamName);
+  List<Object[]> getTaskMetricsByAssignedUser(@Param("assignedTo") Long assignedTo,
+                                              @Param("startDate") LocalDateTime startDate,
+                                              @Param("endDate") LocalDateTime endDate,
+                                              @Param("projectName") String projectName,
+                                              @Param("teamName") String teamName);
 
   @Query("FROM Task t WHERE t.assignedBy.id = :userId")
   List<Task> findTasksAssignedBy(@Param("userId") Long userId);
@@ -143,12 +82,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   List<Task> findTasksAssignedTo(@Param("userId") Long userId, @Param("projectName") String projectName, @Param("teamName") String teamName);
 
   @Query(value = """
-      SELECT * FROM tasks
-      WHERE expiration_date IS NOT NULL
-        AND expiration_date BETWEEN :start AND :end
-        AND project_name = :projectName
-        AND team_name = :teamName
-      """, nativeQuery = true)
+    SELECT * FROM tasks
+    WHERE expiration_date IS NOT NULL
+      AND expiration_date BETWEEN :start AND :end
+      AND project_name = :projectName
+      AND team_name = :teamName
+    """, nativeQuery = true)
   List<Task> findExpiringTasksBetween(@Param("start") LocalDateTime start,
                                       @Param("end") LocalDateTime end,
                                       @Param("projectName") String projectName,

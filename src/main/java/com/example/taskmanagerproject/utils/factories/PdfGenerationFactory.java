@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.PDF_GENERATION_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtils.TEMPLATE_LOAD_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readString;
 import static org.jsoup.nodes.Document.OutputSettings.Syntax.xml;
@@ -38,7 +40,7 @@ public class PdfGenerationFactory {
       return readString(new File(filePath).toPath(), UTF_8);
     } catch (IOException e) {
       log.error("Error loading HTML template from file: {}", filePath, e);
-      throw new PdfGenerationException("Failed to load HTML template from file: " + filePath);
+      throw new PdfGenerationException(TEMPLATE_LOAD_ERROR + filePath);
     }
   }
 
@@ -65,7 +67,7 @@ public class PdfGenerationFactory {
       return outputStream.toByteArray();
     } catch (IOException | DocumentException e) {
       log.error("Error occurred while generating PDF", e);
-      throw new PdfGenerationException("Failed to generate PDF.");
+      throw new PdfGenerationException(PDF_GENERATION_ERROR);
     }
   }
 }

@@ -32,6 +32,15 @@
             padding-bottom: 5px;
         }
 
+        h3 {
+            font-size: 18px;
+            color: #34495e; /* Slightly darker shade for distinction */
+            margin-top: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 4px;
+            font-weight: bold;
+        }
+
         p {
             font-size: 16px;
             line-height: 1.6;
@@ -55,6 +64,7 @@
 
         .metrics {
             margin: 20px 0;
+            page-break-after: always;
         }
 
         .metrics .metric {
@@ -106,6 +116,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: #2c3e50;
             margin-bottom: 30px;
+            page-break-after: always; /* Forces a new page before this section */
         }
 
         .achievement {
@@ -198,6 +209,11 @@
             color: #f39c12;
         }
 
+        /* Ensuring no content breaks within sections */
+        .report-container, .metrics, .badges-section, .level {
+            page-break-inside: avoid;
+        }
+
     </style>
 </head>
 <body>
@@ -210,14 +226,22 @@
         </h1>
     </div>
 
-
     <!-- User Description -->
     <div class="user-description">
         <h2>User Overview</h2>
-        <p><strong>Username:</strong> {username}</p>
+        <p><strong>Full name:</strong> {fullName}</p>
+        <p><strong>Email:</strong> {email}</p>
         <p><strong>Role:</strong> {role}</p>
+
+        <!-- Team Info -->
+        <h3>Team Information</h3>
         <p><strong>Team Name:</strong> {teamName}</p>
         <p><strong>Team Objective:</strong> {teamObjective}</p>
+
+        <!-- Project Info -->
+        <h3>Project Information</h3>
+        <p><strong>Project Name:</strong> {projectName}</p>
+        <p><strong>Project Description:</strong> {projectDescription}</p>
     </div>
 
 
