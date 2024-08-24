@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
-import com.example.taskmanagerproject.dtos.report.ReportData;
+import com.example.taskmanagerproject.dtos.reports.ReportData;
 import com.example.taskmanagerproject.services.ReportService;
 import com.example.taskmanagerproject.utils.factories.PdfReportFactory;
 import com.example.taskmanagerproject.utils.validators.ReportValidator;

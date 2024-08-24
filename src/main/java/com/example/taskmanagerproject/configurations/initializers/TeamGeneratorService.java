@@ -4,11 +4,11 @@ import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.IntStream.range;
 
-import com.example.taskmanagerproject.entities.security.Role;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.team.Team;
-import com.example.taskmanagerproject.entities.team.TeamUser;
-import com.example.taskmanagerproject.entities.team.TeamUserId;
+import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.teams.TeamUser;
+import com.example.taskmanagerproject.entities.teams.TeamUserId;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;

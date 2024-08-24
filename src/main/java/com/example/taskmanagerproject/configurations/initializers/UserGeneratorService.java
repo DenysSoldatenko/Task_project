@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.configurations.initializers;
 import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 import static java.util.stream.IntStream.range;
 
-import com.example.taskmanagerproject.entities.security.Role;
-import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;

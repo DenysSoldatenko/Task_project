@@ -4,8 +4,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.example.taskmanagerproject.dtos.task.TaskDto;
-import com.example.taskmanagerproject.dtos.task.TaskImageDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;

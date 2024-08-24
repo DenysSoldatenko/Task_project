@@ -9,8 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;

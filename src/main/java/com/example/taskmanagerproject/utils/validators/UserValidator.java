@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.utils.validators;
 import static com.example.taskmanagerproject.utils.MessageUtils.PASSWORD_MISMATCH;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_EXISTS_WITH_USERNAME;
 
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import jakarta.validation.Validator;

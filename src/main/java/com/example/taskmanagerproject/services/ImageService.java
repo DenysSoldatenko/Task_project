@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.task.TaskImageDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 
 /**
  * Service interface for managing images.

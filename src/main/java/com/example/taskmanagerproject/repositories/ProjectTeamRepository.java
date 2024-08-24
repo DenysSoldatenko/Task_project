@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.project.ProjectTeam;
-import com.example.taskmanagerproject.entities.project.ProjectTeamId;
+import com.example.taskmanagerproject.entities.projects.ProjectTeam;
+import com.example.taskmanagerproject.entities.projects.ProjectTeamId;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.services.impl;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_SLUG;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.factories.UserFactory;

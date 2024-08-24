@@ -24,17 +24,34 @@ spring:
   jpa:
     open-in-view: false
 #    show-sql: true
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVER:localhost:29092}
+    topic:
+      name: "achievement-topic"
+    consumer:
+      group-id: achievement_group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+
 
 jwt:
  token:
   secret: ${JWT_TOKEN_SECRET}
   expired: ${JWT_TOKEN_EXPIRED}
 
+
 minio:
   bucket: ${MINIO_BUCKET}
   url: ${MINIO_URL}
   accessKey: ${MINIO_ACCESS_KEY}
   secretKey: ${MINIO_SECRET_KEY}
+
 
 springdoc:
   override-with-generic-response: false

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.task.TaskHistory;
-import com.example.taskmanagerproject.entities.task.TaskStatus;
+import com.example.taskmanagerproject.entities.tasks.TaskHistory;
+import com.example.taskmanagerproject.entities.tasks.TaskStatus;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.task.TaskCommentDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import java.util.List;
 
 /**

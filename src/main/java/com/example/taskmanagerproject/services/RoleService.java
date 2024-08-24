@@ -1,8 +1,8 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.security.RoleDto;
-import com.example.taskmanagerproject.dtos.security.RoleHierarchyDto;
-import com.example.taskmanagerproject.dtos.security.RoleHierarchyListDto;
+import com.example.taskmanagerproject.dtos.users.RoleDto;
+import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
+import com.example.taskmanagerproject.dtos.users.RoleHierarchyListDto;
 import java.util.List;
 
 /**

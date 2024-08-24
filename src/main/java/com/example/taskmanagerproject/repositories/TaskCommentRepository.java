@@ -1,8 +1,8 @@
 package com.example.taskmanagerproject.repositories;
 
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.task.Task;
-import com.example.taskmanagerproject.entities.task.TaskComment;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.tasks.Task;
+import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

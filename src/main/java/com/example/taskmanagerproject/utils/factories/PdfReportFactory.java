@@ -3,9 +3,9 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.generatePdfFromHtml;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.loadTemplate;
 
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;

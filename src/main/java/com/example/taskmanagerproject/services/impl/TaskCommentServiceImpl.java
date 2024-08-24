@@ -2,8 +2,8 @@ package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_COMMENT_FOUND_WITH_ID;
 
-import com.example.taskmanagerproject.dtos.task.TaskCommentDto;
-import com.example.taskmanagerproject.entities.task.TaskComment;
+import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
+import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import com.example.taskmanagerproject.exceptions.TaskCommentNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.services.TaskCommentService;

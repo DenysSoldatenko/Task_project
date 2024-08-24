@@ -7,8 +7,8 @@ import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_UPLOAD_FAI
 import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.configurations.minio.MinioProperties;
-import com.example.taskmanagerproject.dtos.task.TaskImageDto;
-import com.example.taskmanagerproject.entities.task.TaskImage;
+import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
+import com.example.taskmanagerproject.entities.tasks.TaskImage;
 import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.utils.mappers.TaskImageMapper;

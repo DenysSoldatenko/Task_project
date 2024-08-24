@@ -4,7 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.example.taskmanagerproject.dtos.task.TaskCommentDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TaskCommentService;
 import io.swagger.v3.oas.annotations.Operation;

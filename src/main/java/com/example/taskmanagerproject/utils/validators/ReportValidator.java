@@ -8,10 +8,10 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_IN_PROJ
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_IN_TEAM;
 
-import com.example.taskmanagerproject.dtos.report.ReportData;
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.reports.ReportData;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.ProjectTeamRepository;

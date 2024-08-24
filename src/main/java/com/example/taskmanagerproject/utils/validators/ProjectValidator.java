@@ -4,9 +4,9 @@ import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_ALREADY_
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT;
 import static java.util.Arrays.stream;
 
-import com.example.taskmanagerproject.dtos.project.ProjectDto;
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.entities.project.Project;
+import com.example.taskmanagerproject.dtos.projects.ProjectDto;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;

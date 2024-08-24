@@ -1,8 +1,8 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.security.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.security.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.security.UserDto;
+import com.example.taskmanagerproject.dtos.users.AuthenticationRequest;
+import com.example.taskmanagerproject.dtos.users.AuthenticationResponse;
+import com.example.taskmanagerproject.dtos.users.UserDto;
 
 /**
  * Service class for handling user authentication and registration.

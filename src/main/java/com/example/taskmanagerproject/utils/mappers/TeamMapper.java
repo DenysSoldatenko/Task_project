@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.entities.teams.Team;
 import org.mapstruct.Mapper;
 
 /**

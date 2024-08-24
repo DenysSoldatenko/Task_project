@@ -1,20 +1,20 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
-import static com.example.taskmanagerproject.entities.task.TaskStatus.APPROVED;
-import static com.example.taskmanagerproject.entities.task.TaskStatus.ASSIGNED;
-import static com.example.taskmanagerproject.entities.task.TaskStatus.IN_PROGRESS;
+import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
+import static com.example.taskmanagerproject.entities.tasks.TaskStatus.ASSIGNED;
+import static com.example.taskmanagerproject.entities.tasks.TaskStatus.IN_PROGRESS;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.IntStream.range;
 
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.task.Task;
-import com.example.taskmanagerproject.entities.task.TaskComment;
-import com.example.taskmanagerproject.entities.task.TaskHistory;
-import com.example.taskmanagerproject.entities.task.TaskPriority;
-import com.example.taskmanagerproject.entities.task.TaskStatus;
-import com.example.taskmanagerproject.entities.team.Team;
-import com.example.taskmanagerproject.entities.team.TeamUser;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.tasks.Task;
+import com.example.taskmanagerproject.entities.tasks.TaskComment;
+import com.example.taskmanagerproject.entities.tasks.TaskHistory;
+import com.example.taskmanagerproject.entities.tasks.TaskPriority;
+import com.example.taskmanagerproject.entities.tasks.TaskStatus;
+import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskHistoryRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;

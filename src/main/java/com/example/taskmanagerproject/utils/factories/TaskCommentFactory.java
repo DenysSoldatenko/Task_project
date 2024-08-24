@@ -5,10 +5,10 @@ import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_W
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 
-import com.example.taskmanagerproject.dtos.task.TaskCommentDto;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.task.Task;
-import com.example.taskmanagerproject.entities.task.TaskComment;
+import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.tasks.Task;
+import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;

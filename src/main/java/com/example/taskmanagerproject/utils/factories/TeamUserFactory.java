@@ -6,12 +6,12 @@ import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_IN_
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 import static java.lang.String.format;
 
-import com.example.taskmanagerproject.dtos.team.TeamUserDto;
-import com.example.taskmanagerproject.entities.security.Role;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.team.Team;
-import com.example.taskmanagerproject.entities.team.TeamUser;
-import com.example.taskmanagerproject.entities.team.TeamUserId;
+import com.example.taskmanagerproject.dtos.teams.TeamUserDto;
+import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.teams.TeamUser;
+import com.example.taskmanagerproject.entities.teams.TeamUserId;
 import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;

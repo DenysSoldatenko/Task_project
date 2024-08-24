@@ -2,10 +2,10 @@ package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
-import com.example.taskmanagerproject.dtos.security.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.security.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.entities.security.User;
+import com.example.taskmanagerproject.dtos.users.AuthenticationRequest;
+import com.example.taskmanagerproject.dtos.users.AuthenticationResponse;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.AuthenticationService;

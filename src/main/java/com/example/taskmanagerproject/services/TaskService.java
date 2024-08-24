@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.task.TaskDto;
-import com.example.taskmanagerproject.dtos.task.TaskImageDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import java.time.Duration;
 import java.util.List;
 

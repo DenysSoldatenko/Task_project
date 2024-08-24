@@ -159,9 +159,16 @@ CREATE TABLE IF NOT EXISTS users_achievements
 (
     user_id        BIGINT NOT NULL,
     achievement_id BIGINT NOT NULL,
+    team_id        BIGINT NOT NULL,
+    project_id     BIGINT NOT NULL,
     PRIMARY KEY (user_id, achievement_id),
     CONSTRAINT fk_users_achievements_users FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_users_achievements_achievements FOREIGN KEY (achievement_id) REFERENCES achievements (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_users_achievements_teams FOREIGN KEY (team_id) REFERENCES teams (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT fk_users_achievements_projects FOREIGN KEY (project_id) REFERENCES projects (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
+

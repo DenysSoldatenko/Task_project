@@ -1,12 +1,12 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.task.TaskStatus.APPROVED;
+import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
 
-import com.example.taskmanagerproject.dtos.task.TaskDto;
-import com.example.taskmanagerproject.dtos.task.TaskImageDto;
-import com.example.taskmanagerproject.entities.task.Task;
+import com.example.taskmanagerproject.dtos.tasks.TaskDto;
+import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
+import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;

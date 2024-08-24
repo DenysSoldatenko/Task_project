@@ -2,10 +2,10 @@ package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 
-import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.dtos.team.TeamUserDto;
-import com.example.taskmanagerproject.entities.team.Team;
-import com.example.taskmanagerproject.entities.team.TeamUser;
+import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.dtos.teams.TeamUserDto;
+import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;

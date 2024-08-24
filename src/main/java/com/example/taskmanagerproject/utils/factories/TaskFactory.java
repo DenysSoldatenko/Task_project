@@ -6,11 +6,11 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_W
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 import static java.time.LocalDateTime.now;
 
-import com.example.taskmanagerproject.dtos.task.TaskDto;
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.task.Task;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.tasks.TaskDto;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.tasks.Task;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;

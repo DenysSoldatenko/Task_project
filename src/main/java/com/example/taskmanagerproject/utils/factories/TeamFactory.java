@@ -3,10 +3,10 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 import static java.time.LocalDateTime.now;
 
-import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.security.User;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

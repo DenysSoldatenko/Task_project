@@ -2,8 +2,8 @@ package com.example.taskmanagerproject.configurations.initializers;
 
 import static java.util.stream.IntStream.range;
 
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.teams.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.mappers;
 
-import com.example.taskmanagerproject.dtos.task.TaskCommentDto;
-import com.example.taskmanagerproject.entities.task.TaskComment;
+import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
+import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import org.mapstruct.Mapper;
 
 /**

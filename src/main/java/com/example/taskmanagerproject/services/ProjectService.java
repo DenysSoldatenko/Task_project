@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.project.ProjectDto;
-import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
+import com.example.taskmanagerproject.dtos.projects.ProjectDto;
+import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import java.util.List;
 
 /**

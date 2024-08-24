@@ -4,9 +4,9 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_ALREADY_EXI
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM;
 import static java.util.Arrays.stream;
 
-import com.example.taskmanagerproject.dtos.security.UserDto;
-import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;

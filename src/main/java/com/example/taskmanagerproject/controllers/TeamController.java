@@ -3,10 +3,10 @@ package com.example.taskmanagerproject.controllers;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.example.taskmanagerproject.dtos.project.ProjectDto;
-import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
-import com.example.taskmanagerproject.dtos.team.TeamDto;
-import com.example.taskmanagerproject.dtos.team.TeamUserDto;
+import com.example.taskmanagerproject.dtos.projects.ProjectDto;
+import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
+import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.dtos.teams.TeamUserDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TeamService;

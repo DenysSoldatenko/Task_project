@@ -3,9 +3,9 @@ package com.example.taskmanagerproject.controllers;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import com.example.taskmanagerproject.dtos.security.RoleDto;
-import com.example.taskmanagerproject.dtos.security.RoleHierarchyDto;
-import com.example.taskmanagerproject.dtos.security.RoleHierarchyListDto;
+import com.example.taskmanagerproject.dtos.users.RoleDto;
+import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
+import com.example.taskmanagerproject.dtos.users.RoleHierarchyListDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.RoleService;
 import io.swagger.v3.oas.annotations.Operation;

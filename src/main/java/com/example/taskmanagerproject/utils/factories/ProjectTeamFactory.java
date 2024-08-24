@@ -3,11 +3,11 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
 import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
 
-import com.example.taskmanagerproject.dtos.project.ProjectTeamDto;
-import com.example.taskmanagerproject.entities.project.Project;
-import com.example.taskmanagerproject.entities.project.ProjectTeam;
-import com.example.taskmanagerproject.entities.project.ProjectTeamId;
-import com.example.taskmanagerproject.entities.team.Team;
+import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
+import com.example.taskmanagerproject.entities.projects.Project;
+import com.example.taskmanagerproject.entities.projects.ProjectTeam;
+import com.example.taskmanagerproject.entities.projects.ProjectTeamId;
+import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
