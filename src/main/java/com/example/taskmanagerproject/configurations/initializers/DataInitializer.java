@@ -26,6 +26,7 @@ public class DataInitializer {
   private final TeamGeneratorService teamGeneratorService;
   private final TaskGeneratorService taskGeneratorService;
   private final ProjectGeneratorService projectGeneratorService;
+  private final TaskStatusGeneratorService taskStatusGeneratorService;
 
   /**
    * Updates task statuses for all users.
@@ -33,17 +34,20 @@ public class DataInitializer {
    */
   @Transactional
   public void updateTaskStatuses() {
-    int updatedStatusCount = taskGeneratorService.changeTaskStatusForAllUsers();
+    int updatedStatusCount = taskStatusGeneratorService.changeTaskStatusForAllUsers();
     log.info("Updated status for {} tasks.", updatedStatusCount);
   }
 
   /**
    * Updates task history dates for all users.
-   * This method uses the taskGeneratorService to update the task history's updated_at date.
+   * This method uses the taskGeneratorService
+   * to update the task history's updated_at date and generate achievements for users.
    */
   @Transactional
   public void updateTaskHistoryDates() {
-    int updatedDatesCount = taskGeneratorService.updateTaskHistoryUpdatedAtForAllUsers();
+    int achievementsGenerated = taskStatusGeneratorService.generateAchievementsForUser();
+    log.info("Generated achievements for {} users.", achievementsGenerated);
+    int updatedDatesCount = taskStatusGeneratorService.updateTaskHistoryUpdatedAtForAllUsers();
     log.info("Updated dates for {} tasks.", updatedDatesCount);
     log.info("Data initialization completed successfully...");
   }

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
+import com.example.taskmanagerproject.entities.users.Role;
 import java.util.List;
 import java.util.Optional;
 

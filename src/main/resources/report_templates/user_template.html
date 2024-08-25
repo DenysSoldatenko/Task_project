@@ -108,7 +108,7 @@
             margin-bottom: 30px;
         }
 
-        /* New Style for Achievements & Badges Section */
+        /* New Style for Achievements Section */
         .achievements-section {
             background-color: #f1c40f;
             padding: 20px;
@@ -145,39 +145,15 @@
             color: #7f8c8d;
         }
 
-        .badges-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-            background-color: #34495e;
-            padding: 30px;
-            border-radius: 8px;
-            color: #fff;
-        }
-
-        .badge {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 20px;
-            border-radius: 12px;
+        .no-achievements {
             text-align: center;
-            font-weight: bold;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .badge:hover {
-            background-color: #c0392b;
-            transform: translateY(-5px);
+            font-style: italic;
+            color: #777;
         }
 
         .badge i {
             font-size: 30px;
             margin-bottom: 10px;
-        }
-
-        .badge .badge-title {
-            font-size: 16px;
         }
 
         .progress-bar {
@@ -210,7 +186,7 @@
         }
 
         /* Ensuring no content breaks within sections */
-        .report-container, .metrics, .badges-section, .level {
+        .report-container, .metrics, .level {
             page-break-inside: avoid;
         }
 
@@ -244,7 +220,6 @@
         <p><strong>Project Description:</strong> {projectDescription}</p>
     </div>
 
-
     <!-- Individual Performance Metrics Section -->
     <h2>Individual Performance Metrics</h2>
     <div class="metrics">
@@ -277,49 +252,7 @@
     <!-- Achievements Section -->
     <h2>Achievements</h2>
     <div class="achievements-section">
-        <div class="achievement">
-            <img src="https://img.icons8.com/ios/452/trophy.png" alt="Achievement Icon"/>
-            <div>
-                <div class="achievement-title">Task Master</div>
-                <div class="achievement-description">Successfully completed 100+ tasks in a month.</div>
-            </div>
-        </div>
-        <div class="achievement">
-            <img src="https://img.icons8.com/ios/452/badge.png" alt="Achievement Icon"/>
-            <div>
-                <div class="achievement-title">Bug Slayer</div>
-                <div class="achievement-description">Resolved over 50 critical bugs in one sprint.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Badges Section -->
-    <h2>Badges</h2>
-    <div class="badges-section">
-        <div class="badge">
-            <i class="fa fa-trophy"></i>
-            <div class="badge-title">Task Master</div>
-        </div>
-        <div class="badge">
-            <i class="fa fa-bug"></i>
-            <div class="badge-title">Bug Slayer</div>
-        </div>
-        <div class="badge">
-            <i class="fa fa-code"></i>
-            <div class="badge-title">Code Quality Champion</div>
-        </div>
-        <div class="badge">
-            <i class="fa fa-lightbulb"></i>
-            <div class="badge-title">Efficiency Expert</div>
-        </div>
-        <div class="badge">
-            <i class="fa fa-users"></i>
-            <div class="badge-title">Team Player</div>
-        </div>
-        <div class="badge">
-            <i class="fa fa-leaf"></i>
-            <div class="badge-title">Innovation Leader</div>
-        </div>
+        {achievements}
     </div>
 
     <!-- Progress Bars -->

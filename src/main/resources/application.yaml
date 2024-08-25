@@ -25,9 +25,12 @@ spring:
     open-in-view: false
 #    show-sql: true
   kafka:
-    bootstrap-servers: ${BOOTSTRAP_SERVER:localhost:29092}
+    bootstrap-servers: ${BOOTSTRAP_SERVER}
     topic:
       name: "achievement-topic"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: achievement_group
       auto-offset-reset: earliest

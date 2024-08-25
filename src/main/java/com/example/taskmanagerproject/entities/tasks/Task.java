@@ -4,8 +4,8 @@ import static com.example.taskmanagerproject.entities.tasks.TaskPriority.MEDIUM;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.ASSIGNED;
 
 import com.example.taskmanagerproject.entities.projects.Project;
-import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.users.User;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

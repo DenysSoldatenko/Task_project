@@ -23,7 +23,7 @@ public interface AchievementRepository extends JpaRepository<Achievement, Long> 
   @Query(value = """
       SELECT a.*
       FROM achievements a
-      JOIN users_achievements ua ON ua.achievement_id = a.id
+      JOIN achievements_users ua ON ua.achievement_id = a.id
       JOIN users u ON ua.user_id = u.id
       JOIN teams t ON ua.team_id = t.id
       JOIN projects p ON ua.project_id = p.id

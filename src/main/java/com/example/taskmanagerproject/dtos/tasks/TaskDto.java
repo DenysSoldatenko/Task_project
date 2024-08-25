@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.dtos.tasks;
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;
-import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.tasks.TaskPriority;
 import com.example.taskmanagerproject.entities.tasks.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;

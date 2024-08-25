@@ -9,8 +9,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
-import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.RoleName;
 import com.example.taskmanagerproject.entities.users.User;

@@ -3,18 +3,18 @@ package com.example.taskmanagerproject.utils.factories;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.generatePdfFromHtml;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.loadTemplate;
 
+import com.example.taskmanagerproject.entities.achievements.Achievement;
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
-import com.example.taskmanagerproject.repositories.TaskRepository;
-import com.example.taskmanagerproject.repositories.TeamRepository;
-import com.example.taskmanagerproject.repositories.TeamUserRepository;
-import com.example.taskmanagerproject.repositories.UserRepository;
+import com.example.taskmanagerproject.repositories.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,6 +34,7 @@ public class PdfReportFactory {
   private final TeamRepository teamRepository;
   private final TaskRepository taskRepository;
   private final TeamUserRepository teamUserRepository;
+  private final AchievementRepository achievementRepository;
 
   public byte[] generateReport(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
     String htmlTemplate = loadTemplate(USER_TEMPLATE_PATH);
@@ -56,6 +57,7 @@ public class PdfReportFactory {
     String allCriticalTasks = taskMetrics[8].toString(); // allCriticalTasks
     String criticalTasksSolved = taskMetrics[9].toString(); // criticalTasksSolved
     String averageTaskDuration = convertMinutesToHoursMinutes(Double.parseDouble(taskMetrics[10].toString())); // averageTaskDuration
+    List<Achievement> achievementList = achievementRepository.findAchievementsByUserTeamAndProject(user.getId(), team.getId(), project.getId());
 
     String populatedHtml = htmlTemplate
       .replace("{startDate}", startDate.format(DATE_TIME_FORMATTER))
@@ -72,10 +74,31 @@ public class PdfReportFactory {
       .replace("{onTimeTasks}", onTimeTasks + "/" + tasksCompleted)
       .replace("{averageTaskDuration}", averageTaskDuration)
       .replace("{bugFixesResolved}", bugFixesResolved + "/" + allBugs)
-      .replace("{criticalTasksSolved}", criticalTasksSolved + "/" + allCriticalTasks);
+      .replace("{criticalTasksSolved}", criticalTasksSolved + "/" + allCriticalTasks)
+      .replace("{achievements}", generateAchievementsHtml(achievementList));
 
     return generatePdfFromHtml(populatedHtml);
   }
+
+  private String generateAchievementsHtml(List<Achievement> achievements) {
+    if (achievements.isEmpty()) {
+      return "<div class=\"no-achievements\">There are no achievements yet.</div>";
+    }
+
+    StringBuilder achievementsHtml = new StringBuilder();
+    for (Achievement achievement : achievements) {
+      achievementsHtml.append("<div class=\"achievement\">")
+        .append("<img src=\"").append(achievement.getImageUrl()).append("\" alt=\"Achievement Icon\"/>")
+          .append("<div>")
+            .append("<div class=\"achievement-title\">").append(achievement.getTitle()).append("</div>")
+            .append("<div class=\"achievement-description\">").append(achievement.getDescription()).append("</div>")
+          .append("</div>")
+        .append("</div>");
+    }
+
+    return achievementsHtml.toString();
+  }
+
 
   private String convertMinutesToHoursMinutes(double averageTaskDuration) {
     double hours = averageTaskDuration / 60.0;

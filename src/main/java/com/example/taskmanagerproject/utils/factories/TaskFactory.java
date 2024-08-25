@@ -8,9 +8,9 @@ import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.entities.projects.Project;
-import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
 import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;

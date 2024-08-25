@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS achievements
     image_url   VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS users_achievements
+CREATE TABLE IF NOT EXISTS achievements_users
 (
     user_id        BIGINT NOT NULL,
     achievement_id BIGINT NOT NULL,

@@ -1,8 +1,8 @@
 package com.example.taskmanagerproject.dtos.reports;
 
 import com.example.taskmanagerproject.entities.projects.Project;
-import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.users.User;
 import java.time.LocalDateTime;
 
 /**

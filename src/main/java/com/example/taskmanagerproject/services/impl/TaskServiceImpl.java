@@ -4,6 +4,7 @@ import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
 
+import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
+
+  private final KafkaTemplate<String, KafkaTaskCompletionDto> kafkaTemplate;
+  private static final String ACHIEVEMENT_TOPIC = "achievement-topic";
 
   private final TaskMapper taskMapper;
   private final ImageService imageService;
@@ -60,6 +65,16 @@ public class TaskServiceImpl implements TaskService {
     task.setExpirationDate(taskDto.expirationDate());
     task.setApprovedAt(taskDto.taskStatus() == APPROVED ? now() : null);
 
+    if (task.getTaskStatus().equals(APPROVED)) {
+      KafkaTaskCompletionDto event = new KafkaTaskCompletionDto(
+          task.getId(),
+          task.getAssignedTo().getId(),
+          task.getTeam().getId(),
+          task.getProject().getId()
+      );
+      kafkaTemplate.send(ACHIEVEMENT_TOPIC, event);
+    }
+
     Task updatedTask = taskRepository.save(task);
     return taskMapper.toDto(updatedTask);
   }
@@ -85,6 +100,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   @Transactional(readOnly = true)
   public List<TaskDto> findAllSoonExpiringTasks(Duration duration) {
+    // TODO
 //    List<Task> taskList = taskRepository.findExpiringTasksBetween(valueOf(now()), valueOf(now().plus(duration)));
 //    return taskList.stream().map(taskMapper::toDto).toList();
     return null;

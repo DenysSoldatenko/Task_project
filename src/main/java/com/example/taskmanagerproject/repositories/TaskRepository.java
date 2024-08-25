@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.repositories;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -80,6 +81,35 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
   @Query("FROM Task t WHERE t.assignedTo.id = :userId AND t.project.name = :projectName AND t.team.name = :teamName")
   List<Task> findTasksAssignedTo(@Param("userId") Long userId, @Param("projectName") String projectName, @Param("teamName") String teamName);
+
+  @Query("""
+      SELECT t
+      FROM Task t
+      WHERE t.taskStatus = 'APPROVED'
+        AND t.assignedTo.id = :userId
+        AND t.project.id = :projectId
+        AND t.team.id = :teamId
+      """)
+  List<Task> findAllCompletedTasksForUser(@Param("userId") Long userId,
+                                  @Param("projectId") Long projectId,
+                                  @Param("teamId") Long teamId);
+
+  @Query(value = """
+      WITH RankedTasks AS (
+          SELECT t.*,
+                 ROW_NUMBER() OVER (PARTITION BY t.assigned_to, t.team_id, t.project_id ORDER BY RANDOM()) AS rn
+          FROM tasks t
+                   JOIN users u ON t.assigned_to = u.id
+                   JOIN teams tm ON t.team_id = tm.id
+                   JOIN projects p ON t.project_id = p.id
+          WHERE t.task_status = 'APPROVED'
+      )
+      SELECT *
+      FROM RankedTasks
+      WHERE rn = 1
+      ORDER BY team_id, project_id
+      """, nativeQuery = true)
+  List<Task> findRandomApprovedTasksForUserByTeamAndProject();
 
   @Query(value = """
     SELECT * FROM tasks

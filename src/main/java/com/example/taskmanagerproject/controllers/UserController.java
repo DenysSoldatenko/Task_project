@@ -4,9 +4,9 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;
-import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
+import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
