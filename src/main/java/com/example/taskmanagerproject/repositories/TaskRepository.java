@@ -3,7 +3,6 @@ package com.example.taskmanagerproject.repositories;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -76,6 +75,18 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   @Query("FROM Task t WHERE t.assignedTo.id = :userId")
   List<Task> findTasksAssignedTo(@Param("userId") Long userId);
 
+  /**
+   * Finds tasks where the task history indicates it has been canceled at any point.
+   *
+   * @param taskId The ID of the task to check.
+   * @return true, if the task has been cancelled at some point, otherwise false.
+   */
+  @Query("""
+      SELECT CASE WHEN COUNT(th) > 0 THEN true ELSE false END
+      FROM TaskHistory th WHERE th.task.id = :taskId AND th.previousValue = 'CANCELLED'
+      """)
+  boolean hasTaskBeenCancelled(@Param("taskId") Long taskId);
+
   @Query("FROM Task t WHERE t.assignedBy.id = :userId AND t.project.name = :projectName AND t.team.name = :teamName")
   List<Task> findTasksAssignedBy(@Param("userId") Long userId, @Param("projectName") String projectName, @Param("teamName") String teamName);
 
@@ -90,9 +101,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         AND t.project.id = :projectId
         AND t.team.id = :teamId
       """)
-  List<Task> findAllCompletedTasksForUser(@Param("userId") Long userId,
+  List<Task> findAllCompletedTasksAssignedToUser(@Param("userId") Long userId,
                                   @Param("projectId") Long projectId,
                                   @Param("teamId") Long teamId);
+  @Query("""
+      SELECT t
+      FROM Task t
+      WHERE t.taskStatus = 'APPROVED'
+        AND t.assignedBy.id = :userId
+        AND t.project.id = :projectId
+        AND t.team.id = :teamId
+      """)
+  List<Task> findAllCompletedTasksAssignedByUser(@Param("userId") Long userId,
+                                          @Param("projectId") Long projectId,
+                                          @Param("teamId") Long teamId);
 
   @Query(value = """
       WITH RankedTasks AS (

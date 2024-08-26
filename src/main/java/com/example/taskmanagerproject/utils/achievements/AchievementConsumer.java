@@ -1,6 +1,8 @@
 package com.example.taskmanagerproject.utils.achievements;
 
 import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.entities.achievements.Achievement;
@@ -12,9 +14,11 @@ import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.repositories.AchievementRepository;
 import com.example.taskmanagerproject.repositories.AchievementsUsersRepository;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
+import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +40,7 @@ public class AchievementConsumer {
   private final TaskRepository taskRepository;
   private final TeamRepository teamRepository;
   private final ProjectRepository projectRepository;
+  private final TaskCommentRepository taskCommentRepository;
   private final AchievementRepository achievementRepository;
   private final AchievementsUsersRepository achievementsUsersRepository;
 
@@ -57,7 +62,7 @@ public class AchievementConsumer {
     }
 
     List<Achievement> achievements = achievementRepository.findAll();
-    long taskCount = taskRepository.findAllCompletedTasksForUser(event.userId(), event.projectId(), event.teamId()).size();
+    long taskCount = taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).size();
     for (Achievement achievement : achievements) {
       if (isAchievementUnlocked(achievement, event, taskCount)) {
         awardAchievement(user, project, team, event, achievement);
@@ -72,21 +77,20 @@ public class AchievementConsumer {
       case "Second Milestone" -> taskCount >= 100;
       case "Third Milestone" -> taskCount >= 500;
       case "Master of Tasks" -> taskCount >= 1000;
-      case "Legendary Contributor" -> taskCount >= 2000;
 
       // Task-Based Achievements
       case "Consistent Closer" -> countTasksInLast30Days(event) >= 30;
       case "Deadline Crusher" -> countTasksBeforeDeadline(event) >= 20;
       case "Critical Thinker" -> countHighPriorityTasks(event) >= 20;
-      case "Task Warrior" -> countTasksToday(event) >= 5;
-//      case "Rejection Survivor" -> countApprovedAfterRejection(user, event) >= 10;
-//
-//      // Bug Fixing & Issue Resolution
-//      case "Bug Slayer" -> countFixedCriticalBugs(user, event) >= 50;
-//      case "Code Doctor" -> countFixedBugs(user, event) >= 100;
-//      case "Bug Bounty Hunter" -> countReportedBugs(user) >= 25;
-//      case "Quality Champion" -> countResolvedReviewComments(user, event) >= 30;
-//      case "Stability Savior" -> countMajorBugFixes(user, event) >= 1;
+      case "Stability Savior" -> countCriticalPriorityTasks(event) >= 40;
+      case "Task Warrior" -> countTasksCompletedPerDay(event) >= 5;
+      case "Rejection Survivor" -> countApprovedAfterRejection(event) >= 10;
+
+      // Bug Fixing & Issue Resolution
+      case "Bug Slayer" -> countFixedCriticalBugsInOneMonth(event) >= 20;
+      case "Code Doctor" -> countFixedBugs(event) >= 100;
+      case "Bug Bounty Hunter" -> countReportedBugs(event) >= 25;
+      case "Quality Champion" -> countResolvedReviewComments(event) >= 30;
 //
 //      // Time Management
 //      case "Time Wizard" -> checkFasterCompletion(user);
@@ -110,7 +114,7 @@ public class AchievementConsumer {
 //      case "Long-Term Strategist" -> checkContinuousTaskManagement(user);
 //      case "Marathon Worker" -> countLongTasks(user) >= 50;
 //      case "Task Champion" -> checkConsistency(user) >= 90;
-
+      case "Legendary Contributor" -> taskCount >= 2000;
       default -> false;
     };
   }
@@ -131,26 +135,68 @@ public class AchievementConsumer {
 
   // Helper Methods for Achievements
   private long countTasksInLast30Days(KafkaTaskCompletionDto event) {
-    return taskRepository.findAllCompletedTasksForUser(event.userId(), event.projectId(), event.teamId()).stream()
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
       .filter(task -> task.getApprovedAt().isAfter(now().minusDays(30)))
       .count();
   }
 
   private long countTasksBeforeDeadline(KafkaTaskCompletionDto event) {
-    return taskRepository.findAllCompletedTasksForUser(event.userId(), event.projectId(), event.teamId()).stream()
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
       .filter(task -> task.getExpirationDate().isAfter(task.getApprovedAt()))
       .count();
   }
 
   private long countHighPriorityTasks(KafkaTaskCompletionDto event) {
-    return taskRepository.findAllCompletedTasksForUser(event.userId(), event.projectId(), event.teamId()).stream()
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> "HIGH".equals(task.getPriority().name()))
+      .count();
+  }
+
+  private long countCriticalPriorityTasks(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
       .filter(task -> "CRITICAL".equals(task.getPriority().name()))
       .count();
   }
 
-  private long countTasksToday(KafkaTaskCompletionDto event) {
-    return taskRepository.findAllCompletedTasksForUser(event.userId(), event.projectId(), event.teamId()).stream()
-      .filter(task -> task.getApprovedAt().toLocalDate().equals(now().toLocalDate()))
+  private long countTasksCompletedPerDay(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .collect(groupingBy(task -> task.getApprovedAt().toLocalDate(), counting()))
+      .values().stream()
+      .filter(count -> count >= 5)
       .count();
   }
+
+  private long countApprovedAfterRejection(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> taskRepository.hasTaskBeenCancelled(task.getId()))
+      .count();
+  }
+
+  private long countFixedCriticalBugsInOneMonth(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> "CRITICAL".equals(task.getPriority().name()))
+      .collect(groupingBy(task -> YearMonth.from(task.getApprovedAt()), counting()))
+      .values().stream()
+      .max(Long::compare)
+      .orElse(0L);
+  }
+
+  private long countFixedBugs(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> taskCommentRepository.existsByTaskId(task.getId()))
+      .count();
+  }
+
+  private long countReportedBugs(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedByUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> "CRITICAL".equals(task.getPriority().name()) && taskCommentRepository.existsByTaskId(task.getId()))
+      .count();
+  }
+
+  private long countResolvedReviewComments(KafkaTaskCompletionDto event) {
+    return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).stream()
+      .filter(task -> taskCommentRepository.existsByTaskId(task.getId()))
+      .count();
+  }
+
 }

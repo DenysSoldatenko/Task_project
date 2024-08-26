@@ -66,8 +66,12 @@ public class TaskStatusGeneratorService {
   }
 
   private KafkaTaskCompletionDto createAchievementEvent(Task task) {
-    return new KafkaTaskCompletionDto(task.getId(), task.getAssignedTo().getId(),
-        task.getTeam().getId(), task.getProject().getId());
+    return new KafkaTaskCompletionDto(
+      task.getId(),
+      task.getAssignedTo().getId(),
+      task.getTeam().getId(),
+      task.getProject().getId()
+    );
   }
 
   /**

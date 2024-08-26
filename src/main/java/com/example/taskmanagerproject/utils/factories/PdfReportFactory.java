@@ -5,16 +5,18 @@ import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactor
 
 import com.example.taskmanagerproject.entities.achievements.Achievement;
 import com.example.taskmanagerproject.entities.projects.Project;
-import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
-import com.example.taskmanagerproject.repositories.*;
-
+import com.example.taskmanagerproject.repositories.AchievementRepository;
+import com.example.taskmanagerproject.repositories.TaskRepository;
+import com.example.taskmanagerproject.repositories.TeamRepository;
+import com.example.taskmanagerproject.repositories.TeamUserRepository;
+import com.example.taskmanagerproject.repositories.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

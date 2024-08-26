@@ -29,4 +29,12 @@ public interface TaskCommentRepository extends JpaRepository<TaskComment, Long> 
    * @return A list of TaskComment entities associated with the task and sender.
    */
   List<TaskComment> findByTaskAndSender(Task task, User sender);
+
+  /**
+   * Checks if a TaskComment exists for the given task ID.
+   *
+   * @param taskId The ID of the task to check.
+   * @return true if a comment exists for the given task, false otherwise.
+   */
+  boolean existsByTaskId(Long taskId);
 }

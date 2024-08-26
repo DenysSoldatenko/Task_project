@@ -107,14 +107,14 @@ VALUES
     ('Consistent Closer', 'Completed 30+ tasks in a month.', 'https://img.icons8.com/ios/452/goal.png'),
     ('Deadline Crusher', 'Completed 20 tasks before deadlines.', 'https://img.icons8.com/ios/452/clock.png'),
     ('Critical Thinker', 'Solved 20+ high-priority tasks.', 'https://img.icons8.com/ios/452/brain.png'),
+    ('Stability Savior', 'Mitigated system crashes by resolving 40+ critical issues.', 'https://img.icons8.com/ios/452/shield.png'),
     ('Task Warrior', 'Completed 5+ tasks in a day.', 'https://img.icons8.com/ios/452/lightning-bolt.png'),
     ('Rejection Survivor', 'Revised and got 10+ rejected tasks approved.', 'https://img.icons8.com/ios/452/refresh.png'),
 
-    ('Bug Slayer', 'Resolved 50+ critical bugs in a sprint.', 'https://img.icons8.com/ios/452/badge.png'),
+    ('Bug Slayer', 'Resolved 20+ critical bugs in a sprint.', 'https://img.icons8.com/ios/452/badge.png'),
     ('Code Doctor', 'Fixed 100+ bugs in total.', 'https://img.icons8.com/ios/452/stethoscope.png'),
     ('Bug Bounty Hunter', 'Reported 25+ critical issues.', 'https://img.icons8.com/ios/452/bug.png'),
     ('Quality Champion', 'Resolved 30+ review comments.', 'https://img.icons8.com/ios/452/good-quality.png'),
-    ('Stability Savior', 'Reduced system crashes by fixing major bugs.', 'https://img.icons8.com/ios/452/shield.png'),
 
     ('Time Wizard', 'Completed all tasks 10% faster than average.', 'https://img.icons8.com/ios/452/hourglass.png'),
     ('Never Late', 'Completed 50+ tasks on time.', 'https://img.icons8.com/ios/452/time.png'),
