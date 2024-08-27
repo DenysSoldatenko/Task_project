@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class ReportValidator {
+public final class ReportValidator {
 
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;

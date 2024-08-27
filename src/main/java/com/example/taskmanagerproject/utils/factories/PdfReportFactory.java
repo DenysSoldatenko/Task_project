@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PdfReportFactory {
+public final class PdfReportFactory {
 
   private static final String USER_TEMPLATE_PATH = "src/main/resources/report_templates/user_template.html";
   private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

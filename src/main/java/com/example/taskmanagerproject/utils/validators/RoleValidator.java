@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating role data.
  */
 @Component
-public class RoleValidator extends BaseValidator<RoleDto> {
+public final class RoleValidator extends BaseValidator<RoleDto> {
 
   private final RoleRepository roleRepository;
 

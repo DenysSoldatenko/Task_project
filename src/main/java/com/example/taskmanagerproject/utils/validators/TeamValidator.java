@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating team data.
  */
 @Component
-public class TeamValidator extends BaseValidator<TeamDto> {
+public final class TeamValidator extends BaseValidator<TeamDto> {
 
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;

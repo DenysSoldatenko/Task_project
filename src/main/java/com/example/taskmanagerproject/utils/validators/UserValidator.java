@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating user data.
  */
 @Component
-public class UserValidator extends BaseValidator<UserDto> {
+public final class UserValidator extends BaseValidator<UserDto> {
 
   private final UserRepository userRepository;
 

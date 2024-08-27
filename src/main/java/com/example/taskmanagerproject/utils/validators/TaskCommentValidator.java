@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating task comment data.
  */
 @Component
-public class TaskCommentValidator extends BaseValidator<TaskCommentDto> {
+public final class TaskCommentValidator extends BaseValidator<TaskCommentDto> {
 
   private final TaskRepository taskRepository;
 

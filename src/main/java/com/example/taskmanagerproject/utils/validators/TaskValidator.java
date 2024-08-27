@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating task data.
  */
 @Component
-public class TaskValidator extends BaseValidator<TaskDto> {
+public final class TaskValidator extends BaseValidator<TaskDto> {
 
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;

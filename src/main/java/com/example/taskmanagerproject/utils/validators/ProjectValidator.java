@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  * Utility class for validating project data.
  */
 @Component
-public class ProjectValidator extends BaseValidator<ProjectDto> {
+public final class ProjectValidator extends BaseValidator<ProjectDto> {
 
   private final UserRepository userRepository;
   private final ProjectRepository projectRepository;

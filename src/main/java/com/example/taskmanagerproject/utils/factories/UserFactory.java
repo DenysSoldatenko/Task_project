@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 public final class UserFactory {
 
   private final Slugify slugGenerator;
-  private final PasswordEncoder passwordEncoder;
   private final RoleRepository roleRepository;
+  private final PasswordEncoder passwordEncoder;
 
   /**
    * Creates a new User instance from a registration request.
