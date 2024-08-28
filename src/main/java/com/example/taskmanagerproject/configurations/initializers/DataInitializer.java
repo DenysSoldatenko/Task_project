@@ -4,6 +4,7 @@ import static java.util.stream.IntStream.range;
 
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.teams.Team;
+import com.example.taskmanagerproject.entities.users.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -65,19 +66,20 @@ public class DataInitializer {
       var teams = teamGeneratorService.generateTeams(admin, TOTAL_TEAMS);
 
       log.info("Generated {} projects and {} teams for global admin.", projects.size(), teams.size());
-      range(0, TOTAL_USERS / USER_BATCH_SIZE).forEach(i -> processUserBatch(i, teams.get(i % TOTAL_TEAMS), projects.get(i % TOTAL_PROJECTS)));
+      range(0, TOTAL_USERS / USER_BATCH_SIZE).forEach(i -> processUserBatch(i, admin, teams.get(i % TOTAL_TEAMS), projects.get(i % TOTAL_PROJECTS)));
 
     } catch (Exception e) {
       log.error("Data initialization failed: {}", e.getMessage(), e);
     }
   }
 
-  private void processUserBatch(int batchIndex, Team team, Project project) {
+  private void processUserBatch(int batchIndex, User admin, Team team, Project project) {
     try {
       var users = userGeneratorService.generateUserBatch(USER_BATCH_SIZE);
       log.info("Inserted user batch {} ({} users).", batchIndex, users.size());
 
       var teamUsers = teamGeneratorService.generateTeamUsers(users, team);
+      teamGeneratorService.addAdminToTeam(admin, team);
       projectGeneratorService.generateProjectTeam(team, project);
 
       var tasks = taskGeneratorService.generateTasks(project, teamUsers);

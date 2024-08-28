@@ -6,7 +6,6 @@ import static com.example.taskmanagerproject.entities.users.RoleName.PRODUCT_OWN
 import static com.example.taskmanagerproject.entities.users.RoleName.SCRUM_MASTER;
 import static com.example.taskmanagerproject.entities.users.RoleName.TEAM_LEAD;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
@@ -14,14 +13,13 @@ import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.RoleName;
 import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.services.TaskCommentService;
 import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.services.TeamUserService;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,102 +33,111 @@ public class SecurityExpressionService {
   private final UserService userService;
   private final TeamService teamService;
   private final TeamUserService teamUserService;
+  private final TaskCommentService taskCommentService;
 
   private static final List<RoleName> ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS = asList(
       ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD
   );
 
   /**
-   * Checks if the current user has the ADMIN role.
-   *
-   * @return true if the current user has the 'ADMIN' role, false otherwise.
-   */
-  public boolean hasAdminRole() {
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
-    log.info("Checking if user has ADMIN role - isAdmin: {}", isAdmin);
-    return isAdmin;
-  }
-
-  /**
    * Checks if the current user can access the specified user's data by slug.
    *
    * @param slug The slug of the user to check.
-   * @return true if the current user is an admin or matches the user's slug.
+   * @return true if the current user matches the user's slug, false otherwise.
    */
   public boolean canAccessUserDataBySlug(String slug) {
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     JwtEntity jwtEntity = (JwtEntity) getContext().getAuthentication().getPrincipal();
     UserDto user = userService.getUserBySlug(slug);
-    log.info("Checking access for user slug: {} - isAdmin: {}", slug, isAdmin);
-    return jwtEntity.getId().equals(user.id()) || isAdmin;
+    boolean hasAccess = jwtEntity.getId().equals(user.id());
+    log.info("Checking access for user slug: {} - hasAccess: {}", slug, hasAccess);
+    return hasAccess;
   }
 
   /**
    * Checks if the current user can access the specified user's data by ID.
    *
    * @param id The ID of the user to check.
-   * @return true if the current user is an admin or matches the user's ID.
+   * @return true if the current user matches the user's ID, false otherwise.
    */
   public boolean canAccessUserDataById(Long id) {
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    log.info("Checking access for user ID: {} - isAdmin: {}", id, isAdmin);
-    return user.getId().equals(id) || isAdmin;
+    boolean hasAccess = user.getId().equals(id);
+    log.info("Checking access for user ID: {} - hasAccess: {}", id, hasAccess);
+    return hasAccess;
   }
 
   /**
    * Checks if the current user has the necessary permissions to access a project.
-   * The user must either be the creator of the project or have admin privileges.
+   * The user must either be the creator of the project.
    *
    * @param projectName the name of the project to check access for
    * @return true if the user has access to the project, false otherwise
    */
   public boolean canAccessProject(String projectName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     boolean isProjectCreator = userService.isProjectCreator(projectName, user.getUsername());
     log.info(
-        "Checking access for user ID: {} on project name: {} - isAdmin: {}, isProjectCreator: {}",
-        user.getId(), projectName, isAdmin, isProjectCreator
+        "Checking access for user ID: {} on project: {} - hasAccess: {}, isProjectCreator: {}",
+        user.getId(), projectName, isProjectCreator, isProjectCreator
     );
-    return isAdmin || isProjectCreator;
+    return isProjectCreator;
   }
 
   /**
    * Checks if the current user has the necessary permissions to access a team.
-   * The user must either be the creator of the team, have admin privileges, or be a member of the team.
+   * The user must either be the creator of the team or be a member of the team.
    *
    * @param teamName the name of the team to check access for
    * @return true if the user has access to the project, false otherwise
    */
   public boolean canAccessTeam(String teamName) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     boolean hasTeamAccess = userService.hasTeamAccess(teamName, user.getUsername());
     log.info(
-        "Checking access for user ID: {} on team name: {} - isAdmin: {}, hasTeamAccess: {}",
-        user.getId(), teamName, isAdmin, hasTeamAccess
+        "Checking access for user ID: {} on team: {} - hasAccess: {}, hasTeamAccess: {}",
+        user.getId(), teamName, hasTeamAccess, hasTeamAccess
     );
-    return isAdmin || hasTeamAccess;
+    return hasTeamAccess;
   }
 
   /**
    * Checks if the current user can access the specified task's data.
    *
    * @param taskId The ID of the task to check access for.
-   * @return true if the current user can access
-   *     the specified task's data, false otherwise.
+   * @return true if the current user can access the specified task's data, false otherwise.
    */
   public boolean canAccessTask(Long taskId) {
     JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean isAdmin = hasAnyRole(singletonList(ADMIN));
     boolean isTaskOwner = userService.isUserTaskOwner(user.getId(), taskId);
     boolean isTaskAssignedToUser = userService.isUserAssignedToTask(user.getId(), taskId);
+    boolean hasAccess = isTaskOwner || isTaskAssignedToUser;
     log.info(
-        "Checking task access for task id: {} - isAdmin: {}, isTaskOwner: {}, isTaskAssignedToUser: {}",
-        taskId, isAdmin, isTaskOwner, isTaskAssignedToUser
+        "Checking task access for task ID: {} - hasAccess: {}, isTaskOwner: {}, isTaskAssignedToUser: {}",
+        taskId, hasAccess, isTaskOwner, isTaskAssignedToUser
     );
-    return isAdmin || isTaskOwner || isTaskAssignedToUser;
+    return hasAccess;
+  }
+
+  /**
+   * Checks if the current user can access the task data associated with the specified task comment slug.
+   *
+   * @param slug The slug of the task comment for which access is to be checked.
+   * @return true if the current user can access the task data associated with the given slug, false otherwise.
+   */
+  public boolean canAccessTaskComment(String slug) {
+    Long taskId = taskCommentService.getTaskIdBySlug(slug);
+    return canAccessTask(taskId);
+  }
+
+  /**
+   * Checks if the current user can access the task data associated with the specified task comment ID.
+   *
+   * @param taskCommentId The ID of the task comment for which access is to be checked.
+   * @return true if the current user can access the task data associated with the given task comment ID, false otherwise.
+   */
+  public boolean canAccessTaskComment(Long taskCommentId) {
+    Long taskId = taskCommentService.getTaskIdByTaskCommentId(taskCommentId);
+    return canAccessTask(taskId);
   }
 
   /**
@@ -157,51 +164,5 @@ public class SecurityExpressionService {
     );
 
     return canAccess;
-  }
-
-
-
-
-
-
-
-  /**
-   * Checks if the current user has the necessary permissions to create a project.
-   *
-   * @return true if the user has the necessary permissions to create a project, false otherwise.
-   */
-  public boolean canCreateProject() {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasPermission = hasAnyRole(ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS);
-    log.info(
-        "Checking project creation permission for user with username: {} - hasPermission: {}",
-        user.getUsername(), hasPermission
-    );
-    return hasPermission;
-  }
-
-  /**
-   * Checks if the current user has the necessary permissions to create a team.
-   *
-   * @return true if the user has the necessary permissions to create a team, false otherwise.
-   */
-  public boolean canCreateTeam() {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasPermission = hasAnyRole(ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS);
-    log.info(
-        "Checking team creation permission for user with username: {} - hasPermission: {}",
-        user.getUsername(), hasPermission
-    );
-    return hasPermission;
-  }
-
-  private boolean hasAnyRole(List<RoleName> roles) {
-    Authentication authentication = getContext().getAuthentication();
-    boolean hasRole = roles.stream()
-        .map(RoleName::name)
-        .map(SimpleGrantedAuthority::new)
-        .anyMatch(authentication.getAuthorities()::contains);
-    log.info("Checking roles: {} - hasRole: {}", roles, hasRole);
-    return hasRole;
   }
 }

@@ -44,7 +44,6 @@ public class ProjectController {
    * @return the created project
    */
   @PostMapping
-  @PreAuthorize("@expressionService.canCreateProject()")
   @Operation(
       summary = "Create a new project",
       description = "Allows users with specific roles to create a new project in the system",
@@ -79,7 +78,6 @@ public class ProjectController {
    * @return the found project, or 404 if the project does not exist
    */
   @GetMapping("/{projectName}")
-  @PreAuthorize("@expressionService.canAccessProject(#projectName)")
   @Operation(
       summary = "Retrieve a project by name",
       description = "Fetches a project based on its name",
@@ -109,7 +107,6 @@ public class ProjectController {
    * @return a list of teams associated with the project, or 404 if the project does not exist
    */
   @GetMapping("/{projectName}/teams")
-  @PreAuthorize("@expressionService.canAccessProject(#projectName)")
   @Operation(
       summary = "Retrieve all teams for a specific project",
       description = "Fetches a list of teams for the given project",

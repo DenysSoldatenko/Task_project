@@ -39,4 +39,20 @@ public interface TaskCommentService {
    * @return A list of TaskCommentDto objects corresponding to the specified task.
    */
   List<TaskCommentDto> getCommentsByTaskSlug(String slug);
+
+  /**
+   * Retrieves the task ID associated with the given task's slug.
+   *
+   * @param slug The unique slug of the task.
+   * @return The task ID corresponding to the given slug.
+   */
+  Long getTaskIdBySlug(String slug);
+
+  /**
+   * Retrieves the task ID associated with the given task comment ID.
+   *
+   * @param taskCommentId The ID of the task comment.
+   * @return The task ID associated with the given task comment ID.
+   */
+  Long getTaskIdByTaskCommentId(Long taskCommentId);
 }

@@ -52,7 +52,7 @@ public class UserGeneratorService {
     globalAdminUser.setSlug(generateSlugFromFullName("Alice Johnson"));
     globalAdminUser.setPassword(passwordEncoder.encode("password123"));
     globalAdminUser.setConfirmPassword(passwordEncoder.encode("password123"));
-    globalAdminUser.setRole(getAdminRole());
+    globalAdminUser.setRole(getRandomRole());
     return userRepository.save(globalAdminUser);
   }
 
@@ -76,12 +76,5 @@ public class UserGeneratorService {
 
   private Role getRandomRole() {
     return roleRepository.findAll().get(faker.number().numberBetween(0, roleRepository.findAll().size()));
-  }
-
-  private Role getAdminRole() {
-    return roleRepository.findAll().stream()
-      .filter(role -> "ADMIN".equals(role.getName()))
-      .findFirst()
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
   }
 }

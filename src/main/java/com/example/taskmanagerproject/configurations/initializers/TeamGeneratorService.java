@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.IntStream.range;
@@ -9,6 +10,7 @@ import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
@@ -40,6 +42,15 @@ public class TeamGeneratorService {
     return teamRepository.saveAll(range(0, batchSize).mapToObj(i -> createTeam(user)).toList());
   }
 
+  private Team createTeam(User user) {
+    Team team = new Team();
+    team.setName(faker.team().name() + randomUUID().toString().substring(0, 4));
+    team.setDescription(faker.lorem().sentence(10));
+    team.setCreatedAt(now());
+    team.setCreator(user);
+    return team;
+  }
+
   /**
    * Generates a list of TeamUser associations for a given team and a list of users.
    *
@@ -51,13 +62,20 @@ public class TeamGeneratorService {
     return teamUserRepository.saveAll(users.stream().map(user -> createTeamUser(user, team)).toList());
   }
 
-  private Team createTeam(User user) {
-    Team team = new Team();
-    team.setName(faker.team().name() + randomUUID().toString().substring(0, 4));
-    team.setDescription(faker.lorem().sentence(10));
-    team.setCreatedAt(now());
-    team.setCreator(user);
-    return team;
+  /**
+   * Creates a new TeamUser with an ADMIN role for the specified user and team.
+   *
+   * @param user The user to associate with the team.
+   * @param team The team to associate with the user.
+   * @throws RoleNotFoundException if no ADMIN role is found in the system.
+   */
+  public void addAdminToTeam(User user, Team team) {
+    TeamUser teamAdminUser = new TeamUser();
+    teamAdminUser.setId(new TeamUserId(user.getId(), team.getId()));
+    teamAdminUser.setUser(user);
+    teamAdminUser.setTeam(team);
+    teamAdminUser.setRole(getAdminRole());
+    teamUserRepository.save(teamAdminUser);
   }
 
   private TeamUser createTeamUser(User user, Team team) {
@@ -67,6 +85,13 @@ public class TeamGeneratorService {
     teamUser.setTeam(team);
     teamUser.setRole(getRandomRole());
     return teamUser;
+  }
+
+  private Role getAdminRole() {
+    return roleRepository.findAll().stream()
+      .filter(role -> "ADMIN".equals(role.getName()))
+      .findFirst()
+      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
   }
 
   private Role getRandomRole() {

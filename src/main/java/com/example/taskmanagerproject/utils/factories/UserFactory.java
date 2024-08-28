@@ -31,52 +31,27 @@ public final class UserFactory {
    * @return A new User instance.
    */
   public User createUserFromRequest(UserDto request) {
-    Role role = getRoleFromRequest(request);
-    return buildUserFromRequest(request, role);
+    Role role = roleRepository.findByName("USER")
+        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "USER"));
+
+    return User.builder()
+      .fullName(request.fullName())
+      .username(request.username())
+      .slug(generateSlug(request.fullName()))
+      .password(encodePassword(request.password()))
+      .confirmPassword(encodePassword(request.confirmPassword()))
+      .role(role)
+      .build();
   }
 
   /**
-   * Retrieves the Role from the database based on the role name.
-   *
-   * @param request The registration request containing the role name.
-   * @return The Role entity.
-   */
-  private Role getRoleFromRequest(UserDto request) {
-    return roleRepository.findByName(request.role().name())
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + request.role()));
-  }
-
-  /**
-   * Builds the User entity from the registration request and the role.
-   *
-   * @param request The registration request containing user information.
-   * @param role    The Role entity.
-   * @return A new User instance.
-   */
-  private User buildUserFromRequest(UserDto request, Role role) {
-    User user = new User();
-    user.setFullName(request.fullName());
-    user.setUsername(request.username());
-    user.setSlug(generateSlugFromFullName(request.fullName()));
-    user.setPassword(encodePassword(request.password()));
-    user.setConfirmPassword(encodePassword(request.confirmPassword()));
-    user.setRole(role);
-    return user;
-  }
-
-  /**
-   * Generates a unique slug from the user's full name by appending a shortened UUID.
-   *
-   * <p>The base slug is created from the full name,
-   * and a unique 8-character suffix from a UUID is appended.
+   * Generates a unique slug from the user's full name.
    *
    * @param fullName The full name to generate the slug for.
    * @return A unique slug consisting of the base slug and a shortened UUID.
    */
-  private String generateSlugFromFullName(String fullName) {
-    String baseSlug = slugGenerator.slugify(fullName);
-    String uniqueSuffix = randomUUID().toString().substring(0, 8);
-    return baseSlug + "-" + uniqueSuffix;
+  private String generateSlug(String fullName) {
+    return slugGenerator.slugify(fullName) + "-" + randomUUID().toString().substring(0, 8);
   }
 
   /**

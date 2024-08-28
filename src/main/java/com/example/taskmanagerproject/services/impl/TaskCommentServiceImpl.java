@@ -64,4 +64,16 @@ public class TaskCommentServiceImpl implements TaskCommentService {
     List<TaskComment> taskComments = taskCommentRepository.findAllBySlug(slug);
     return taskComments.stream().map(taskCommentMapper::toDto).toList();
   }
+
+  @Override
+  @Transactional
+  public Long getTaskIdBySlug(String slug) {
+    return taskCommentRepository.findDistinctTaskIdBySlug(slug);
+  }
+
+  @Override
+  @Transactional
+  public Long getTaskIdByTaskCommentId(Long taskCommentId) {
+    return taskCommentRepository.findDistinctTaskIdById(taskCommentId);
+  }
 }

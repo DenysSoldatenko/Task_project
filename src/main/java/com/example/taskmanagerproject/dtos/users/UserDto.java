@@ -58,8 +58,5 @@ public record UserDto(
       description = "The confirmation password of the user",
       example = "password123"
     )
-    String confirmPassword,
-
-    @JsonProperty(access = WRITE_ONLY)
-    RoleDto role
+    String confirmPassword
 ) {}

@@ -48,7 +48,6 @@ public class TeamController {
    * @return the created team
    */
   @PostMapping
-  @PreAuthorize("@expressionService.canCreateTeam()")
   @Operation(
       summary = "Create a new team",
       description = "Allows users with specific roles to create a new team in the system",
@@ -83,7 +82,6 @@ public class TeamController {
    * @return the found team, or 404 if the team does not exist
    */
   @GetMapping("/{teamName}")
-  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
   @Operation(
       summary = "Retrieve a team by name",
       description = "Fetches a team based on its name",
@@ -113,7 +111,6 @@ public class TeamController {
    * @return a list of users and their roles in the team, or 404 if the team does not exist
    */
   @GetMapping("/{teamName}/users-roles")
-  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
   @Operation(
       summary = "Retrieve all users and their roles for a specific team",
       description = "Fetches a list of users and their roles for the given team",
@@ -146,7 +143,6 @@ public class TeamController {
    * @return a list of projects associated with the team, or 404 if the team does not exist
    */
   @GetMapping("/{teamName}/projects")
-  @PreAuthorize("@expressionService.canAccessTeam(#teamName)")
   @Operation(
       summary = "Retrieve all projects for a specific team",
       description = "Fetches a list of projects associated with the given team",

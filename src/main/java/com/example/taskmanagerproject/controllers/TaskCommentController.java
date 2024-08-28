@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class TaskCommentController {
    * @return The created TaskCommentDto object.
    */
   @PostMapping({"", "/{slug}"})
+  @PreAuthorize("@expressionService.canAccessTask(#taskCommentDto.task().id())")
   @Operation(
       summary = "Create a new comment on a task",
       description = "Allows the creation of a new comment on a specific task",
@@ -72,6 +74,7 @@ public class TaskCommentController {
    * @return The updated TaskCommentDto object.
    */
   @PutMapping("/{id}")
+  @PreAuthorize("@expressionService.canAccessTask(#taskCommentDto.task().id())")
   @Operation(
       summary = "Update an existing task comment",
       description = "Update a task comment by its ID",
@@ -99,6 +102,7 @@ public class TaskCommentController {
    * @param id The ID of the task comment to delete.
    */
   @DeleteMapping("/{id}")
+  @PreAuthorize("@expressionService.canAccessTaskComment(#id)")
   @Operation(
       summary = "Delete a task comment by ID",
       description = "Delete a task comment by its ID",
@@ -124,6 +128,7 @@ public class TaskCommentController {
    * @return A list of TaskCommentDto objects corresponding to the given slug.
    */
   @GetMapping("/{slug}")
+  @PreAuthorize("@expressionService.canAccessTaskComment(#slug)")
   @Operation(
       summary = "Get task comments by slug",
       description = "Retrieve task comments by their unique slug",

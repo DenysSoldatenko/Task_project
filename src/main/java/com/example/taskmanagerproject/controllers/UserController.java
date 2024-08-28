@@ -79,7 +79,6 @@ public class UserController {
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "getUserBySlug")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
     return userService.getUserBySlug(slug);
   }
@@ -168,7 +167,6 @@ public class UserController {
    * @throws UserNotFoundException if the user is not found
    */
   @GetMapping("/{slug}/projects")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Get projects by user username",
       description = "Fetches all projects associated with a user identified by the username",
@@ -203,7 +201,6 @@ public class UserController {
    * @throws UserNotFoundException if the user is not found
    */
   @GetMapping("/{slug}/teams")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Get teams by user username",
       description = "Fetches all teams associated with a user identified by the username",

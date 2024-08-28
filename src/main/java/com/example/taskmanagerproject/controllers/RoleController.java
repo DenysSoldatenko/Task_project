@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/roles")
-@PreAuthorize("@expressionService.hasAdminRole()")
 @Tag(name = "Role Controller", description = "Endpoints for managing roles")
 public class RoleController {
 
