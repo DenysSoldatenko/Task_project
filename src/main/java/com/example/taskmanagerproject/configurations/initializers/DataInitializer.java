@@ -40,14 +40,20 @@ public class DataInitializer {
   }
 
   /**
+   * Generates achievements for users.
+   * This method uses the taskGeneratorService to generate achievements.
+   */
+  public void generateAchievementsForUsers() {
+    int achievementsGenerated = taskStatusGeneratorService.generateAchievementsForUser();
+    log.info("Generated achievements for {} users.", achievementsGenerated);
+  }
+
+  /**
    * Updates task history dates for all users.
-   * This method uses the taskGeneratorService
-   * to update the task history's updated_at date and generate achievements for users.
+   * This method uses the taskGeneratorService to update the task history's updated_at date.
    */
   @Transactional
   public void updateTaskHistoryDates() {
-    int achievementsGenerated = taskStatusGeneratorService.generateAchievementsForUser();
-    log.info("Generated achievements for {} users.", achievementsGenerated);
     int updatedDatesCount = taskStatusGeneratorService.updateTaskHistoryUpdatedAtForAllUsers();
     log.info("Updated dates for {} tasks.", updatedDatesCount);
     log.info("Data initialization completed successfully...");

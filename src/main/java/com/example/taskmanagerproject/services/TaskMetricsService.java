@@ -8,92 +8,126 @@ import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 public interface TaskMetricsService {
 
   /**
-   * Counts the total number of completed tasks for a specific user, project, and team.
+   * Counts the total number of approved tasks assigned to a user for a specific project and team.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return The number of completed tasks.
+   * @param event The Kafka event containing task approval details.
+   * @return The number of approved tasks for the user.
    */
-  long countCompletedTasks(KafkaTaskCompletionDto event);
+  long countApprovedTasks(KafkaTaskCompletionDto event);
 
   /**
-   * Checks whether the user has completed tasks in the last 30 days.
+   * Checks if the user has approved at least 30 tasks in the last 30 days.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has completed tasks in the last 30 days, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least 30 tasks in the last 30 days, otherwise false.
    */
-  boolean countTasksInLast30Days(KafkaTaskCompletionDto event);
+  boolean hasApprovedTasksInLast30Days(KafkaTaskCompletionDto event);
 
   /**
-   * Checks whether the user has completed tasks before their deadlines.
+   * Checks if the user has approved at least 20 tasks before their deadlines.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has completed tasks before their deadlines, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least 20 tasks before their deadlines, otherwise false.
    */
-  boolean countTasksBeforeDeadline(KafkaTaskCompletionDto event);
+  boolean hasApprovedTasksBeforeDeadline(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of high-priority tasks completed by a user.
+   * Checks if the user has approved at least 20 high-priority tasks.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has completed high-priority tasks, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least 20 high-priority tasks, otherwise false.
    */
-  boolean countHighPriorityTasks(KafkaTaskCompletionDto event);
+  boolean hasApprovedHighPriorityTasks(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of critical-priority tasks completed by a user.
+   * Checks if the user has approved at least 40 critical-priority tasks.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has completed critical-priority tasks, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least 40 critical-priority tasks, otherwise false.
    */
-  boolean countCriticalPriorityTasks(KafkaTaskCompletionDto event);
+  boolean hasApprovedCriticalPriorityTasks(KafkaTaskCompletionDto event);
 
   /**
-   * Checks whether the user has completed a certain number of tasks per day.
+   * Checks if the user has approved at least 5 tasks in a single day.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has completed tasks in a day, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least 5 tasks on a single day, otherwise false.
    */
-  boolean countTasksCompletedPerDay(KafkaTaskCompletionDto event);
+  boolean hasApprovedTasksDaily(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of tasks approved after rejection for a specific user.
+   * Checks if the user has had at least 10 tasks approved after being rejected.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has tasks approved after rejection, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has had at least 10 tasks approved after being rejected, otherwise false.
    */
-  boolean countApprovedAfterRejection(KafkaTaskCompletionDto event);
+  boolean hasTasksApprovedAfterRejection(KafkaTaskCompletionDto event);
 
 
 
   /**
-   * Counts the number of fixed critical bugs completed by the user in one month.
+   * Checks if the user has fixed at least 20 critical bugs in the last month.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has resolved critical bugs in the last month, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has fixed at least 20 critical bugs in the last month, otherwise false.
    */
-  boolean countFixedCriticalBugsInOneMonth(KafkaTaskCompletionDto event);
+  boolean hasFixedCriticalBugsInOneMonth(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of bugs fixed by the user.
+   * Checks if the user has fixed at least 100 bugs.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has fixed bugs, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has fixed at least 100 bugs, otherwise false.
    */
-  boolean countFixedBugs(KafkaTaskCompletionDto event);
+  boolean hasFixedBugs(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of bugs reported by the user.
+   * Checks if the user has reported at least 25 critical bugs.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has reported bugs, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has reported at least 25 critical bugs, otherwise false.
    */
-  boolean countReportedBugs(KafkaTaskCompletionDto event);
+  boolean hasReportedBugs(KafkaTaskCompletionDto event);
 
   /**
-   * Counts the number of review comments resolved by the user.
+   * Checks if the user has resolved at least 30 review comments.
    *
-   * @param event The Kafka event containing task completion details.
-   * @return True if the user has resolved review comments, otherwise false.
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has resolved at least 30 review comments, otherwise false.
    */
-  boolean countResolvedReviewComments(KafkaTaskCompletionDto event);
+  boolean hasResolvedReviewComments(KafkaTaskCompletionDto event);
+
+
+
+  /**
+   * Checks if the user has approved at least 20 tasks 10% faster than the average approval time.
+   *
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user approved tasks 10% faster than average, otherwise false.
+   */
+  boolean hasApprovedTasks10PercentFaster(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has maintained a 90% on-time approval rate.
+   *
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has a 90% or higher on-time approval rate, otherwise false.
+   */
+  boolean hasMaintained90PercentOnTimeApprovalRate(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has approved at least one critical task (task with a 24-hour deadline) within 24 hours.
+   *
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved at least one urgent task within 24 hours, otherwise false.
+   */
+  boolean hasApprovedCriticalTaskWithin24Hours(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has saved a project by approving a task just before the deadline (within 5 minutes).
+   *
+   * @param event The Kafka event containing task approval details.
+   * @return True if the user has approved a task within 5 minutes of the deadline, otherwise false.
+   */
+  boolean hasSavedProjectByApprovingTaskJustBeforeDeadline(KafkaTaskCompletionDto event);
 }

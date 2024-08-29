@@ -49,6 +49,7 @@ public class DataInitializationController {
       dataInitializer.initializeTasks();
       dataInitializer.updateTaskStatuses();
       dataInitializer.updateTaskHistoryDates();
+      dataInitializer.generateAchievementsForUsers();
       return ResponseEntity.status(CREATED).body(DATA_INITIALIZATION_SUCCESS_MESSAGE);
     } catch (Exception e) {
       return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(DATA_INITIALIZATION_FAIL_MESSAGE);

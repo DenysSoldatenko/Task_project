@@ -102,6 +102,7 @@ VALUES ('First Milestone', 'Completed 10 tasks in total.', 'https://img.icons8.c
        ('Second Milestone', 'Completed 100 tasks in total.', 'https://img.icons8.com/ios/452/gold-medal.png'),
        ('Third Milestone', 'Completed 500 tasks in total.', 'https://img.icons8.com/ios/452/trophy.png'),
        ('Master of Tasks', 'Completed 1000+ tasks in total.', 'https://img.icons8.com/ios/452/cup.png'),
+       ('Legendary Contributor', 'Surpassed 2000+ completed tasks.', 'https://img.icons8.com/ios/452/master.png'),
 
        ('Consistent Closer', 'Completed 30+ tasks in a month.', 'https://img.icons8.com/ios/452/goal.png'),
        ('Deadline Crusher', 'Completed 20 tasks before deadlines.', 'https://img.icons8.com/ios/452/clock.png'),
@@ -115,10 +116,9 @@ VALUES ('First Milestone', 'Completed 10 tasks in total.', 'https://img.icons8.c
        ('Bug Bounty Hunter', 'Reported 25+ critical issues.', 'https://img.icons8.com/ios/452/bug.png'),
        ('Quality Champion', 'Resolved 30+ review comments.', 'https://img.icons8.com/ios/452/good-quality.png'),
 
-       ('Time Wizard', 'Completed all tasks 10% faster than average.', 'https://img.icons8.com/ios/452/hourglass.png'),
-       ('Never Late', 'Completed 50+ tasks on time.', 'https://img.icons8.com/ios/452/time.png'),
+       ('Time Wizard', 'Completed 20+ tasks 10% faster than average.', 'https://img.icons8.com/ios/452/hourglass.png'),
        ('On-Time Achiever', 'Maintained a 90% on-time completion rate.', 'https://img.icons8.com/ios/452/clock.png'),
-       ('Deadline Hero', 'Completed an urgent task in less than 24 hours.', 'https://img.icons8.com/ios/452/speed.png'),
+       ('Deadline Hero', 'Completed an critical task in less than 24 hours.', 'https://img.icons8.com/ios/452/speed.png'),
        ('Last-Minute Savior', 'Saved a project by resolving a task just before the deadline.', 'https://img.icons8.com/ios/452/timer.png'),
 
        ('Team Player', 'Collaborated with 5+ teams on cross-functional projects.', 'https://img.icons8.com/ios/452/teamwork.png'),
@@ -132,5 +132,4 @@ VALUES ('First Milestone', 'Completed 10 tasks in total.', 'https://img.icons8.c
 
        ('Long-Term Strategist', 'Managed tasks for over 6 months continuously.', 'https://img.icons8.com/ios/452/calendar.png'),
        ('Marathon Worker', 'Completed 50+ long-duration tasks.', 'https://img.icons8.com/ios/452/patience.png'),
-       ('Task Champion', 'Achieved 90%+ task completion consistency for 12 months.', 'https://img.icons8.com/ios/452/trophy.png'),
-       ('Legendary Contributor', 'Surpassed 2000+ completed tasks.', 'https://img.icons8.com/ios/452/master.png');
+       ('Task Champion', 'Achieved 90%+ task completion consistency for 12 months.', 'https://img.icons8.com/ios/452/trophy.png');

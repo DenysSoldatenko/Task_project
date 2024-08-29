@@ -46,7 +46,7 @@ public final class AchievementFactory {
       return;
     }
 
-    long taskCount = taskMetricsService.countCompletedTasks(event);
+    long taskCount = taskMetricsService.countApprovedTasks(event);
     achievementRepository.findAll()
       .stream()
       .filter(achievement -> isAchievementUnlocked(achievement, event, taskCount))
@@ -60,44 +60,43 @@ public final class AchievementFactory {
       case "Second Milestone" -> taskCount >= 100;
       case "Third Milestone" -> taskCount >= 500;
       case "Master of Tasks" -> taskCount >= 1000;
+      case "Legendary Contributor" -> taskCount >= 2000;
 
       // Task-Based Achievements
-      case "Consistent Closer" -> taskMetricsService.countTasksInLast30Days(event);
-      case "Deadline Crusher" -> taskMetricsService.countTasksBeforeDeadline(event);
-      case "Critical Thinker" -> taskMetricsService.countHighPriorityTasks(event);
-      case "Stability Savior" -> taskMetricsService.countCriticalPriorityTasks(event);
-      case "Task Warrior" -> taskMetricsService.countTasksCompletedPerDay(event);
-      case "Rejection Survivor" -> taskMetricsService.countApprovedAfterRejection(event);
+      case "Consistent Closer" -> taskMetricsService.hasApprovedTasksInLast30Days(event);
+      case "Deadline Crusher" -> taskMetricsService.hasApprovedTasksBeforeDeadline(event);
+      case "Critical Thinker" -> taskMetricsService.hasApprovedHighPriorityTasks(event);
+      case "Stability Savior" -> taskMetricsService.hasApprovedCriticalPriorityTasks(event);
+      case "Task Warrior" -> taskMetricsService.hasApprovedTasksDaily(event);
+      case "Rejection Survivor" -> taskMetricsService.hasTasksApprovedAfterRejection(event);
 
       // Bug Fixing & Issue Resolution
-      case "Bug Slayer" -> taskMetricsService.countFixedCriticalBugsInOneMonth(event);
-      case "Code Doctor" -> taskMetricsService.countFixedBugs(event);
-      case "Bug Bounty Hunter" -> taskMetricsService.countReportedBugs(event);
-      case "Quality Champion" -> taskMetricsService.countResolvedReviewComments(event);
-//
-//      // Time Management
-//      case "Time Wizard" -> taskMetricsService.checkFasterCompletion(user);
-//      case "Never Late" -> taskMetricsService.countOnTimeTasks(user, event) >= 50;
-//      case "On-Time Achiever" -> taskMetricsService.checkOnTimeCompletionRate(user, event) >= 90;
-//      case "Deadline Hero" -> taskMetricsService.checkUrgentTasks(user) >= 1;
-//      case "Last-Minute Savior" -> taskMetricsService.checkLastMinuteSave(user);
+      case "Bug Slayer" -> taskMetricsService.hasFixedCriticalBugsInOneMonth(event);
+      case "Code Doctor" -> taskMetricsService.hasFixedBugs(event);
+      case "Bug Bounty Hunter" -> taskMetricsService.hasReportedBugs(event);
+      case "Quality Champion" -> taskMetricsService.hasResolvedReviewComments(event);
+
+      // Time Management
+      case "Time Wizard" -> taskMetricsService.hasApprovedTasks10PercentFaster(event);
+      case "On-Time Achiever" -> taskMetricsService.hasMaintained90PercentOnTimeApprovalRate(event);
+      case "Deadline Hero" -> taskMetricsService.hasApprovedCriticalTaskWithin24Hours(event);
+      case "Last-Minute Savior" -> taskMetricsService.hasSavedProjectByApprovingTaskJustBeforeDeadline(event);
 //
 //      // Teamwork & Collaboration
-//      case "Team Player" -> taskMetricsService.countTeamProjects(user) >= 5;
-//      case "Mentor" -> taskMetricsService.countHelpedTeammates(user) >= 10;
-//      case "Knowledge Sharer" -> taskMetricsService.countHelpfulComments(user) >= 15;
-//      case "Support System" -> taskMetricsService.countReviewedTasks(user) >= 20;
+//      case "Team Player" -> taskMetricsService.countTeamProjects(event) >= 5;
+//      case "Mentor" -> taskMetricsService.countHelpedTeammates(event) >= 10;
+//      case "Knowledge Sharer" -> taskMetricsService.countHelpfulComments(event) >= 15;
+//      case "Support System" -> taskMetricsService.countReviewedTasks(event) >= 20;
 //
 //      // Commenting & Feedback
-//      case "Discussion Leader" -> countDiscussionsStarted(user) >= 20;
-//      case "Review Guru" -> countTaskReviews(user) >= 50;
-//      case "Question Master" -> countInsightfulQuestions(user) >= 25;
+//      case "Discussion Leader" -> countDiscussionsStarted(event) >= 20;
+//      case "Review Guru" -> countTaskReviews(event) >= 50;
+//      case "Question Master" -> countInsightfulQuestions(event) >= 25;
 //
 //      // Task History & Advanced Achievements
 //      case "Long-Term Strategist" -> checkContinuousTaskManagement(user);
 //      case "Marathon Worker" -> countLongTasks(user) >= 50;
 //      case "Task Champion" -> checkConsistency(user) >= 90;
-      case "Legendary Contributor" -> taskCount >= 2000;
       default -> false;
     };
   }
