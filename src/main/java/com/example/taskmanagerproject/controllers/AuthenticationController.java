@@ -23,15 +23,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller class for handling authentication-related operations.
+ * Controller responsible for handling authentication-related requests.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
-@Tag(
-    name = "Authentication Controller",
-    description = "Endpoints for user authentication"
-)
+@RequestMapping("/api/v2/auth")
+@Tag(name = "Authentication Controller", description = "Endpoints for user authentication")
 public class AuthenticationController {
 
   private final AuthenticationService authenticationService;

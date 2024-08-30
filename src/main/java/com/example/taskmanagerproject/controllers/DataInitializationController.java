@@ -17,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for managing data initialization operations.
+ * Controller responsible for handling data initialization operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/data-initialization")
-@Tag(
-    name = "Data Initialization Controller",
-    description = "Endpoints for user data initialization"
-)
+@RequestMapping("/api/v2/data-initialization")
+@Tag(name = "Data Initialization Controller", description = "Endpoints for user data initialization")
 public class DataInitializationController {
 
   private final DataInitializer dataInitializer;

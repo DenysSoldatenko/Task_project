@@ -30,11 +30,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for managing teams.
+ * Controller responsible for handling team-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/teams")
+@RequestMapping("/api/v2/teams")
 @Tag(name = "Team Controller", description = "Endpoints for managing teams")
 public class TeamController {
 

@@ -35,11 +35,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller class for handling user-related endpoints.
+ * Controller responsible for handling user-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v2/users")
 @Tag(name = "User Controller", description = "Endpoints for managing users")
 public class UserController {
 

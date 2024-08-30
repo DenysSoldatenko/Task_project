@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for managing projects.
+ * Controller responsible for handling project-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/api/v2/projects")
 @Tag(name = "Project Controller", description = "Endpoints for managing projects")
 public class ProjectController {
 

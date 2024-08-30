@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller class for handling task-comment-related endpoints.
+ * Controller responsible for handling task-comment-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/task-comments")
+@RequestMapping("/api/v2/task-comments")
 @Tag(name = "Task Comment Controller", description = "Endpoints for managing task comments")
 public class TaskCommentController {
 

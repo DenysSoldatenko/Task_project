@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for managing reports.
+ * Controller responsible for handling report-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reports")
+@RequestMapping("/api/v2/reports")
 @Tag(name = "Report Controller", description = "Endpoints for generating reports in PDF format")
 public class ReportController {
 

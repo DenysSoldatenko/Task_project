@@ -28,13 +28,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller responsible for managing roles in the system.
- * Provides endpoints to create, update, retrieve, and delete roles.
- * Restricted to users with the 'ADMIN' role for all operations.
+ * Controller responsible for handling role-related operations.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/api/v2/roles")
 @Tag(name = "Role Controller", description = "Endpoints for managing roles")
 public class RoleController {
 
