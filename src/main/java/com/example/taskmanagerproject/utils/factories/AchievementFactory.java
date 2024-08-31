@@ -47,14 +47,19 @@ public final class AchievementFactory {
     }
 
     long taskCount = taskMetricsService.countApprovedTasks(event);
+    var userAchievements = achievementsUsersRepository.findAllByUserId(event.userId())
+      .stream()
+      .map(a -> a.getAchievement().getTitle())
+      .toList();
+
     achievementRepository.findAll()
       .stream()
-      .filter(achievement -> isAchievementUnlocked(achievement, event, taskCount))
-        .forEach(achievement -> awardAchievement(user, project, team, event, achievement));
+      .filter(achievement -> !userAchievements.contains(achievement.getTitle()) && isAchievementUnlocked(achievement.getTitle(), event, taskCount))
+      .forEach(achievement -> awardAchievement(user, project, team, event, achievement));
   }
 
-  private boolean isAchievementUnlocked(Achievement achievement, KafkaTaskCompletionDto event, long taskCount) {
-    return switch (achievement.getTitle()) {
+  private boolean isAchievementUnlocked(String title, KafkaTaskCompletionDto event, long taskCount) {
+    return switch (title) {
       // Milestone Achievements
       case "First Milestone" -> taskCount >= 10;
       case "Second Milestone" -> taskCount >= 100;

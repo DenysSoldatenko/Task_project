@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
         url = "https://example.com/about"
       ),
       title = "Task API",
-      version = "1.0",
+      version = "2.0",
       description = "Task API Information",
       license = @License(
         name = "Example License",
