@@ -44,7 +44,6 @@ public class TaskCommentServiceImpl implements TaskCommentService {
         .orElseThrow(() -> new TaskCommentNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
 
     existingComment.setMessage(taskCommentDto.message());
-    existingComment.setIsResolved(taskCommentDto.isResolved());
 
     taskCommentRepository.save(existingComment);
     return taskCommentMapper.toDto(existingComment);

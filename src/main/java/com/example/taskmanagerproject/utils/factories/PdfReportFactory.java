@@ -50,15 +50,15 @@ public final class PdfReportFactory {
     }
 
     Object[] taskMetrics = taskMetricsList.get(0);
-    String allTasks = taskMetrics[2].toString(); // allTasks
-    String tasksCompleted = taskMetrics[3].toString(); // tasksCompleted
-    String taskCompletionRate = taskMetrics[4].toString(); // taskCompletionRate
-    String onTimeTasks = taskMetrics[5].toString(); // onTimeTasks
-    String allBugs = taskMetrics[6].toString(); // allBugs
-    String bugFixesResolved = taskMetrics[7].toString(); // bugFixesResolved
-    String allCriticalTasks = taskMetrics[8].toString(); // allCriticalTasks
-    String criticalTasksSolved = taskMetrics[9].toString(); // criticalTasksSolved
-    String averageTaskDuration = convertMinutesToHoursMinutes(Double.parseDouble(taskMetrics[10].toString())); // averageTaskDuration
+    String allTasks = taskMetrics[2].toString();
+    String tasksCompleted = taskMetrics[3].toString();
+    String taskCompletionRate = taskMetrics[4].toString();
+    String onTimeTasks = taskMetrics[5].toString();
+    String allBugs = taskMetrics[6].toString();
+    String bugFixesResolved = taskMetrics[7].toString();
+    String allCriticalTasks = taskMetrics[8].toString();
+    String criticalTasksSolved = taskMetrics[9].toString();
+    String averageTaskDuration = convertMinutesToHoursMinutes(Double.parseDouble(taskMetrics[10].toString()));
     List<Achievement> achievementList = achievementRepository.findAchievementsByUserTeamAndProject(user.getId(), team.getId(), project.getId());
 
     String populatedHtml = htmlTemplate

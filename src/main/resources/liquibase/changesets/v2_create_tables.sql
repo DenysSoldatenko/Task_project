@@ -127,7 +127,6 @@ CREATE TABLE IF NOT EXISTS task_comments
     receiver_id BIGINT       NOT NULL,
     message     TEXT         NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_resolved BOOLEAN   DEFAULT FALSE,
     CONSTRAINT fk_task_comments_task FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_task_comments_sender FOREIGN KEY (sender_id) REFERENCES users (id)

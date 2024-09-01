@@ -82,7 +82,6 @@ public final class TaskCommentFactory {
       .slug(slug)
       .message(taskCommentDto.message())
       .createdAt(now())
-      .isResolved(taskCommentDto.isResolved())
       .build();
   }
 

@@ -53,9 +53,6 @@ public class TaskComment {
   @Column(name = "message", nullable = false, columnDefinition = "TEXT")
   private String message;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
+  @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt = now();
-
-  @Column(name = "is_resolved", nullable = false)
-  private Boolean isResolved = false;
 }

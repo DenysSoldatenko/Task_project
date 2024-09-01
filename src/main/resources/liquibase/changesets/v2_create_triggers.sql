@@ -26,22 +26,6 @@ CREATE OR REPLACE FUNCTION log_task_status_change()
     END;
 ' LANGUAGE plpgsql;
 
--- Updates the 'is_resolved' field in task_comments when the task status is set to 'APPROVED'.
--- Ensures related comments are marked as resolved when the task is approved.
-CREATE OR REPLACE FUNCTION update_task_comment_resolved()
-    RETURNS TRIGGER AS
-'
-    BEGIN
-        IF TG_OP = ''UPDATE'' AND NEW.task_status = ''APPROVED'' THEN
-            UPDATE task_comments
-            SET is_resolved = TRUE
-            WHERE task_id = NEW.id;
-        END IF;
-
-        RETURN NEW;
-    END;
-' LANGUAGE plpgsql;
-
 -- Trigger for task creation status
 CREATE TRIGGER task_creation_status_trigger
     AFTER INSERT
@@ -55,10 +39,3 @@ CREATE TRIGGER task_status_change_trigger
     ON tasks
     FOR EACH ROW
 EXECUTE FUNCTION log_task_status_change();
-
--- Trigger for task status approved
-CREATE TRIGGER task_status_approved_trigger
-    AFTER UPDATE
-    ON tasks
-    FOR EACH ROW
-EXECUTE FUNCTION update_task_comment_resolved();

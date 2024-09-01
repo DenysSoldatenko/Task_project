@@ -46,7 +46,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
              AND t2.created_at BETWEEN :startDate AND :endDate
              AND t2.project_id = t.project_id
              AND t2.team_id = t.team_id
-             AND tc.is_resolved = true
              AND t2.task_status = 'APPROVED') AS bugFixesResolved,
   
           COUNT(CASE WHEN t.priority = 'CRITICAL' THEN 1 END) AS allCriticalTasks,

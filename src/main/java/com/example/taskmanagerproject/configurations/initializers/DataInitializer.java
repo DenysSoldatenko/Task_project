@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DataInitializer {
 
-  private static final int USER_BATCH_SIZE = 10;
+  private static final int TOTAL_TEAMS = 2;
   private static final int TOTAL_USERS = 20;
   private static final int TOTAL_PROJECTS = 2;
-  private static final int TOTAL_TEAMS = 2;
+  private static final int USER_BATCH_SIZE = 10;
 
   private final UserGeneratorService userGeneratorService;
   private final TeamGeneratorService teamGeneratorService;
@@ -89,7 +89,7 @@ public class DataInitializer {
       projectGeneratorService.generateProjectTeam(team, project);
 
       var tasks = taskGeneratorService.generateTasks(project, teamUsers);
-      var commentsCount = tasks.stream().mapToInt(task -> taskGeneratorService.generateTaskComment(task).size()).sum();
+      var commentsCount = tasks.stream().mapToInt(task -> taskGeneratorService.generateTaskComments(task).size()).sum();
       log.info("Created {} tasks and {} comments for project {}.", tasks.size(), commentsCount, project.getId());
 
     } catch (Exception e) {

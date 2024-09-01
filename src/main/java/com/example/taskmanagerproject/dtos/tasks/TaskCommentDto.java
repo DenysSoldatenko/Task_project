@@ -62,12 +62,5 @@ public record TaskCommentDto(
       description = "Date and time when the comment was created",
       example = "2025-02-03T13:10:20"
     )
-    LocalDateTime createdAt,
-
-    @NotNull(message = "Resolved status cannot be null")
-    @Schema(
-      description = "Indicates whether the comment has been resolved",
-      example = "false"
-    )
-    Boolean isResolved
+    LocalDateTime createdAt
 ) {}

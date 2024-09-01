@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.configurations.initializers;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.ASSIGNED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.IN_PROGRESS;
+import static java.lang.Math.min;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -29,43 +31,60 @@ public class TaskStatusGeneratorService {
   private static final Random RANDOM = new Random();
   private static final int MIN_EXPIRATION_DAYS = -3;
   private static final int MAX_EXPIRATION_DAYS = 3;
+  private static final int BATCH_SIZE = 500;
+  private static final int MIN_APPROVED_TIME_DIFFERENCE = 10;
 
   private final TaskRepository taskRepository;
   private final TaskHistoryRepository taskHistoryRepository;
   private final KafkaTemplate<String, KafkaTaskCompletionDto> kafkaTemplate;
 
   /**
-   * Changes the status of tasks assigned to all users, setting those with IDs divisible by 2 to APPROVED.
-   * Skips tasks that are already marked as APPROVED, ASSIGNED, or IN_PROGRESS.
+   * Changes the status of tasks to APPROVED for tasks with even IDs and not in approved, assigned,
+   * or in-progress status.
    *
-   * @return the number of tasks whose status was updated to APPROVED
+   * @return the number of tasks updated
    */
   public int changeTaskStatusForAllUsers() {
     List<Task> tasksToApprove = taskRepository.findAll().stream()
         .filter(task -> task.getId() % 2 == 0 && !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS).contains(task.getTaskStatus()))
         .peek(task -> {
           task.setTaskStatus(APPROVED);
-          task.setApprovedAt(updateApprovedAt(task));
+          task.setApprovedAt(calculateApprovedAt(task));
         })
         .toList();
 
-    taskRepository.saveAll(tasksToApprove);
+    saveInBatches(tasksToApprove, taskRepository::saveAll);
     return tasksToApprove.size();
   }
 
   /**
-   * Generates achievement events for users by sending a Kafka message for each randomly approved task.
-   * Each task's completion is recorded as an event, including task details, user, team, and project IDs.
+   * Generates achievement events for users based on approved tasks.
    *
-   * @return the number of achievement events sent
+   * @return the number of tasks for which achievements were generated
    */
   public int generateAchievementsForUser() {
     List<Task> tasks = taskRepository.findRandomApprovedTasksForUserByTeamAndProject();
-    tasks.forEach(task -> kafkaTemplate.send(ACHIEVEMENT_TOPIC, createAchievementEvent(task)));
+    tasks.stream()
+      .map(this::toKafkaDto)
+        .forEach(taskDto -> kafkaTemplate.send(ACHIEVEMENT_TOPIC, taskDto));
     return tasks.size();
   }
 
-  private KafkaTaskCompletionDto createAchievementEvent(Task task) {
+  /**
+   * Updates task history with the approved timestamp for all tasks that were approved.
+   *
+   * @return the number of task histories updated
+   */
+  public int updateTaskHistoryUpdatedAtForAllUsers() {
+    List<TaskHistory> updatedHistories = taskHistoryRepository.findAllByNewValue(APPROVED).stream()
+        .peek(history -> history.setUpdatedAt(history.getTask().getApprovedAt()))
+        .toList();
+
+    saveInBatches(updatedHistories, taskHistoryRepository::saveAll);
+    return updatedHistories.size();
+  }
+
+  private KafkaTaskCompletionDto toKafkaDto(Task task) {
     return new KafkaTaskCompletionDto(
       task.getId(),
       task.getAssignedTo().getId(),
@@ -74,27 +93,16 @@ public class TaskStatusGeneratorService {
     );
   }
 
-  /**
-   * Updates the "updatedAt" field for all task histories with the status "APPROVED".
-   *
-   * @return the number of task histories that were updated
-   */
-  public int updateTaskHistoryUpdatedAtForAllUsers() {
-    List<TaskHistory> updatedHistories = taskHistoryRepository.findAll().stream()
-        .filter(history -> history.getNewValue() == APPROVED)
-        .peek(this::updateUpdatedAt)
-        .toList();
-
-    taskHistoryRepository.saveAll(updatedHistories);
-    return updatedHistories.size();
-  }
-
-  private void updateUpdatedAt(TaskHistory taskHistory) {
-    taskHistory.setUpdatedAt(taskHistory.getTask().getApprovedAt());
-  }
-
-  private LocalDateTime updateApprovedAt(Task task) {
+  private LocalDateTime calculateApprovedAt(Task task) {
     LocalDateTime approvedAt = task.getExpirationDate().plusDays(RANDOM.nextInt(MAX_EXPIRATION_DAYS) + MIN_EXPIRATION_DAYS);
-    return approvedAt.isBefore(task.getCreatedAt().plusMinutes(10)) ? task.getCreatedAt().plusMinutes(10) : approvedAt;
+    return approvedAt.isBefore(task.getCreatedAt().plusMinutes(MIN_APPROVED_TIME_DIFFERENCE))
+      ? task.getCreatedAt().plusMinutes(MIN_APPROVED_TIME_DIFFERENCE)
+      : approvedAt;
+  }
+
+  private <T> void saveInBatches(List<T> items, Consumer<List<T>> saveFunction) {
+    for (int i = 0; i < items.size(); i += BATCH_SIZE) {
+      saveFunction.accept(items.subList(i, min(i + BATCH_SIZE, items.size())));
+    }
   }
 }
