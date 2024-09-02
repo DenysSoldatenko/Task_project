@@ -122,14 +122,6 @@ VALUES ('First Milestone', 'Completed 10 tasks in total.', 'https://img.icons8.c
        ('Last-Minute Savior', 'Saved a project by resolving a task just before the deadline.', 'https://img.icons8.com/ios/452/timer.png'),
 
        ('Team Player', 'Collaborated with 5+ teams on cross-functional projects.', 'https://img.icons8.com/ios/452/teamwork.png'),
-       ('Mentor', 'Helped 10+ team members with their tasks.', 'https://img.icons8.com/ios/452/training.png'),
-       ('Knowledge Sharer', 'Created 15+ task comments helping others.', 'https://img.icons8.com/ios/452/chat.png'),
-       ('Support System', 'Reviewed 20+ tasks for teammates.', 'https://img.icons8.com/ios/452/mark-as-favorite.png'),
-
-       ('Discussion Leader', 'Started 20+ discussions on project tasks.', 'https://img.icons8.com/ios/452/meeting.png'),
-       ('Review Guru', 'Provided valuable feedback on 50+ tasks.', 'https://img.icons8.com/ios/452/guru.png'),
-       ('Question Master', 'Asked 25+ insightful questions in comments.', 'https://img.icons8.com/ios/452/faq.png'),
-
        ('Long-Term Strategist', 'Managed tasks for over 6 months continuously.', 'https://img.icons8.com/ios/452/calendar.png'),
        ('Marathon Worker', 'Completed 50+ long-duration tasks.', 'https://img.icons8.com/ios/452/patience.png'),
        ('Task Champion', 'Achieved 90%+ task completion consistency for 12 months.', 'https://img.icons8.com/ios/452/trophy.png');

@@ -1,5 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static java.util.stream.Collectors.toSet;
+
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.entities.achievements.Achievement;
 import com.example.taskmanagerproject.entities.achievements.AchievementsUsers;
@@ -33,29 +35,27 @@ public final class AchievementFactory {
   private final AchievementsUsersRepository achievementsUsersRepository;
 
   /**
-   * Evaluates whether a user has unlocked any achievements based on a task completion event.
+   * Evaluates and assigns achievements based on a task completion event.
    *
    * @param event The task completion event.
    */
   public void evaluateAchievements(KafkaTaskCompletionDto event) {
-    User user = userRepository.findById(event.userId()).orElse(null);
-    Team team = teamRepository.findById(event.teamId()).orElse(null);
-    Project project = projectRepository.findById(event.projectId()).orElse(null);
+    var user = userRepository.findById(event.userId());
+    var team = teamRepository.findById(event.teamId());
+    var project = projectRepository.findById(event.projectId());
 
-    if (user == null || team == null || project == null) {
+    if (user.isEmpty() || team.isEmpty() || project.isEmpty()) {
       return;
     }
 
-    long taskCount = taskMetricsService.countApprovedTasks(event);
-    var userAchievements = achievementsUsersRepository.findAllByUserId(event.userId())
-      .stream()
-      .map(a -> a.getAchievement().getTitle())
-      .toList();
+    var existingAchievements = achievementsUsersRepository.findAllByUserId(event.userId()).stream()
+        .map(a -> a.getAchievement().getTitle())
+        .collect(toSet());
+    var taskCount = taskMetricsService.countApprovedTasks(event);
 
-    achievementRepository.findAll()
-      .stream()
-      .filter(achievement -> !userAchievements.contains(achievement.getTitle()) && isAchievementUnlocked(achievement.getTitle(), event, taskCount))
-      .forEach(achievement -> awardAchievement(user, project, team, event, achievement));
+    achievementRepository.findAll().stream()
+      .filter(a -> !existingAchievements.contains(a.getTitle()) && isAchievementUnlocked(a.getTitle(), event, taskCount))
+      .forEach(a -> awardAchievement(user.get(), project.get(), team.get(), event, a));
   }
 
   private boolean isAchievementUnlocked(String title, KafkaTaskCompletionDto event, long taskCount) {
@@ -86,22 +86,12 @@ public final class AchievementFactory {
       case "On-Time Achiever" -> taskMetricsService.hasMaintained90PercentOnTimeApprovalRate(event);
       case "Deadline Hero" -> taskMetricsService.hasApprovedCriticalTaskWithin24Hours(event);
       case "Last-Minute Savior" -> taskMetricsService.hasSavedProjectByApprovingTaskJustBeforeDeadline(event);
-//
-//      // Teamwork & Collaboration
-//      case "Team Player" -> taskMetricsService.countTeamProjects(event) >= 5;
-//      case "Mentor" -> taskMetricsService.countHelpedTeammates(event) >= 10;
-//      case "Knowledge Sharer" -> taskMetricsService.countHelpfulComments(event) >= 15;
-//      case "Support System" -> taskMetricsService.countReviewedTasks(event) >= 20;
-//
-//      // Commenting & Feedback
-//      case "Discussion Leader" -> countDiscussionsStarted(event) >= 20;
-//      case "Review Guru" -> countTaskReviews(event) >= 50;
-//      case "Question Master" -> countInsightfulQuestions(event) >= 25;
-//
-//      // Task History & Advanced Achievements
-//      case "Long-Term Strategist" -> checkContinuousTaskManagement(user);
-//      case "Marathon Worker" -> countLongTasks(user) >= 50;
-//      case "Task Champion" -> checkConsistency(user) >= 90;
+
+      // Teamwork & Advanced Achievements
+      case "Team Player" -> taskMetricsService.hasCollaboratedWithMultipleTeams(event);
+      case "Long-Term Strategist" -> taskMetricsService.hasWorkedContinuouslyFor6Months(event);
+      case "Marathon Worker" -> taskMetricsService.hasCompletedLongDurationTasks(event);
+      case "Task Champion" -> taskMetricsService.hasMaintained90PercentCompletionFor12Months(event);
       default -> false;
     };
   }

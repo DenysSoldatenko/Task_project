@@ -130,4 +130,38 @@ public interface TaskMetricsService {
    * @return True if the user has approved a task within 5 minutes of the deadline, otherwise false.
    */
   boolean hasSavedProjectByApprovingTaskJustBeforeDeadline(KafkaTaskCompletionDto event);
+
+
+
+  /**
+   * Checks if the user has collaborated with 5 or more teams on cross-functional projects.
+   *
+   * @param event The Kafka event containing task completion details.
+   * @return True if the user has collaborated with 5 or more teams, otherwise false.
+   */
+  boolean hasCollaboratedWithMultipleTeams(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has worked continuously for over 6 months.
+   *
+   * @param event The Kafka event containing task completion details.
+   * @return True if the user has worked continuously for over 6 months, otherwise false.
+   */
+  boolean hasWorkedContinuouslyFor6Months(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has completed 50 or more long-duration tasks (tasks that took more than 7 days).
+   *
+   * @param event The Kafka event containing task completion details.
+   * @return True if the user has completed 50+ long-duration tasks, otherwise false.
+   */
+  boolean hasCompletedLongDurationTasks(KafkaTaskCompletionDto event);
+
+  /**
+   * Checks if the user has achieved a 90% or higher task completion consistency over the last 12 months.
+   *
+   * @param event The Kafka event containing task completion details.
+   * @return True if the user has maintained 90% task completion consistency over the last 12 months, otherwise false.
+   */
+  boolean hasMaintained90PercentCompletionFor12Months(KafkaTaskCompletionDto event);
 }

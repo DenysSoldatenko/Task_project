@@ -4,12 +4,14 @@ import static java.time.Duration.between;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.LongStream.rangeClosed;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.TaskMetricsService;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,6 @@ public class TaskMetricsServiceImpl implements TaskMetricsService {
   private final TaskRepository taskRepository;
   private final TaskCommentRepository taskCommentRepository;
 
-  // Task-Based Achievements
   @Override
   public long countApprovedTasks(KafkaTaskCompletionDto event) {
     return taskRepository.findAllCompletedTasksAssignedToUser(event.userId(), event.projectId(), event.teamId()).size();
@@ -76,7 +77,6 @@ public class TaskMetricsServiceImpl implements TaskMetricsService {
 
 
 
-  // Bug Fixing & Issue Resolution
   @Override
   public boolean hasFixedCriticalBugsInOneMonth(KafkaTaskCompletionDto event) {
     return getUserCompletedTasks(event).stream()
@@ -110,7 +110,6 @@ public class TaskMetricsServiceImpl implements TaskMetricsService {
 
 
 
-  // Time Management
   @Override
   public boolean hasApprovedTasks10PercentFaster(KafkaTaskCompletionDto event) {
     return getUserCompletedTasks(event).stream()
@@ -129,7 +128,6 @@ public class TaskMetricsServiceImpl implements TaskMetricsService {
       .sum() * 100 / getUserCompletedTasks(event).size() >= 90;
   }
 
-
   @Override
   public boolean hasApprovedCriticalTaskWithin24Hours(KafkaTaskCompletionDto event) {
     return getUserCompletedTasks(event).stream()
@@ -141,6 +139,70 @@ public class TaskMetricsServiceImpl implements TaskMetricsService {
   public boolean hasSavedProjectByApprovingTaskJustBeforeDeadline(KafkaTaskCompletionDto event) {
     return getUserCompletedTasks(event).stream()
       .anyMatch(task -> between(task.getExpirationDate(), task.getApprovedAt()).toMinutes() <= 5);
+  }
+
+
+
+  @Override
+  public boolean hasCollaboratedWithMultipleTeams(KafkaTaskCompletionDto event) {
+    return getUserCompletedTasks(event).stream()
+      .map(task -> task.getTeam().getId())
+      .distinct()
+      .count() >= 5;
+  }
+
+  @Override
+  public boolean hasWorkedContinuouslyFor6Months(KafkaTaskCompletionDto event) {
+    var tasks = getUserCompletedTasks(event);
+    var earliestTask = tasks.stream()
+        .map(Task::getCreatedAt)
+        .min(LocalDateTime::compareTo)
+        .orElse(null);
+
+    if (earliestTask == null || earliestTask.isAfter(now().minusMonths(6))) {
+      return false;
+    }
+
+    return rangeClosed(0, 5)
+      .allMatch(
+        month -> tasks.stream()
+        .anyMatch(
+          task -> task.getCreatedAt().isAfter(now().minusMonths(month + 1))
+            && task.getCreatedAt().isBefore(now().minusMonths(month))
+        )
+      );
+  }
+
+
+  @Override
+  public boolean hasCompletedLongDurationTasks(KafkaTaskCompletionDto event) {
+    return getUserCompletedTasks(event).stream()
+      .mapToLong(task -> between(task.getCreatedAt(), task.getApprovedAt()).toDays())
+      .filter(days -> days > 7)
+      .count() >= 50;
+  }
+
+  @Override
+  public boolean hasMaintained90PercentCompletionFor12Months(KafkaTaskCompletionDto event) {
+    var tasks = getUserCompletedTasks(event);
+
+    if (tasks.isEmpty()) {
+      return false;
+    }
+
+    long totalTasks = tasks.size();
+    long recentTasks = tasks.stream().filter(task -> task.getCreatedAt().isAfter(now().minusMonths(12))).count();
+
+    boolean hasTaskEachMonth = rangeClosed(0, 11)
+        .allMatch(
+          month -> tasks.stream()
+          .anyMatch(
+            task -> task.getCreatedAt().isAfter(now().minusMonths(month + 1))
+              && task.getCreatedAt().isBefore(now().minusMonths(month))
+          )
+        );
+
+    return hasTaskEachMonth && (recentTasks * 100 / totalTasks >= 90);
   }
 
   private List<Task> getUserCompletedTasks(KafkaTaskCompletionDto event) {
