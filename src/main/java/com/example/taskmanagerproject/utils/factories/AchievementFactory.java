@@ -14,7 +14,7 @@ import com.example.taskmanagerproject.repositories.AchievementsUsersRepository;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
-import com.example.taskmanagerproject.services.TaskMetricsService;
+import com.example.taskmanagerproject.services.AchievementMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,8 +30,8 @@ public final class AchievementFactory {
   private final UserRepository userRepository;
   private final TeamRepository teamRepository;
   private final ProjectRepository projectRepository;
-  private final TaskMetricsService taskMetricsService;
   private final AchievementRepository achievementRepository;
+  private final AchievementMetricsService achievementMetricsService;
   private final AchievementsUsersRepository achievementsUsersRepository;
 
   /**
@@ -51,7 +51,7 @@ public final class AchievementFactory {
     var existingAchievements = achievementsUsersRepository.findAllByUserId(event.userId()).stream()
         .map(a -> a.getAchievement().getTitle())
         .collect(toSet());
-    var taskCount = taskMetricsService.countApprovedTasks(event);
+    var taskCount = achievementMetricsService.countApprovedTasks(event);
 
     achievementRepository.findAll().stream()
       .filter(a -> !existingAchievements.contains(a.getTitle()) && isAchievementUnlocked(a.getTitle(), event, taskCount))
@@ -68,36 +68,38 @@ public final class AchievementFactory {
       case "Legendary Contributor" -> taskCount >= 2000;
 
       // Task-Based Achievements
-      case "Consistent Closer" -> taskMetricsService.hasApprovedTasksInLast30Days(event);
-      case "Deadline Crusher" -> taskMetricsService.hasApprovedTasksBeforeDeadline(event);
-      case "Critical Thinker" -> taskMetricsService.hasApprovedHighPriorityTasks(event);
-      case "Stability Savior" -> taskMetricsService.hasApprovedCriticalPriorityTasks(event);
-      case "Task Warrior" -> taskMetricsService.hasApprovedTasksDaily(event);
-      case "Rejection Survivor" -> taskMetricsService.hasTasksApprovedAfterRejection(event);
+      case "Consistent Closer" -> achievementMetricsService.hasApprovedTasksInLast30Days(event);
+      case "Deadline Crusher" -> achievementMetricsService.hasApprovedTasksBeforeDeadline(event);
+      case "Critical Thinker" -> achievementMetricsService.hasApprovedHighPriorityTasks(event);
+      case "Stability Savior" -> achievementMetricsService.hasApprovedCriticalPriorityTasks(event);
+      case "Task Warrior" -> achievementMetricsService.hasApprovedTasksDaily(event);
+      case "Rejection Survivor" -> achievementMetricsService.hasTasksApprovedAfterRejection(event);
 
       // Bug Fixing & Issue Resolution
-      case "Bug Slayer" -> taskMetricsService.hasFixedCriticalBugsInOneMonth(event);
-      case "Code Doctor" -> taskMetricsService.hasFixedBugs(event);
-      case "Bug Bounty Hunter" -> taskMetricsService.hasReportedBugs(event);
-      case "Quality Champion" -> taskMetricsService.hasResolvedReviewComments(event);
+      case "Bug Slayer" -> achievementMetricsService.hasFixedCriticalBugsInOneMonth(event);
+      case "Code Doctor" -> achievementMetricsService.hasFixedBugs(event);
+      case "Bug Bounty Hunter" -> achievementMetricsService.hasReportedBugs(event);
+      case "Quality Champion" -> achievementMetricsService.hasResolvedReviewComments(event);
 
       // Time Management
-      case "Time Wizard" -> taskMetricsService.hasApprovedTasks10PercentFaster(event);
-      case "On-Time Achiever" -> taskMetricsService.hasMaintained90PercentOnTimeApprovalRate(event);
-      case "Deadline Hero" -> taskMetricsService.hasApprovedCriticalTaskWithin24Hours(event);
-      case "Last-Minute Savior" -> taskMetricsService.hasSavedProjectByApprovingTaskJustBeforeDeadline(event);
+      case "Time Wizard" -> achievementMetricsService.hasApprovedTasks10PercentFaster(event);
+      case "On-Time Achiever" -> achievementMetricsService.hasMaintained90PercentOnTimeApprovalRate(event);
+      case "Deadline Hero" -> achievementMetricsService.hasApprovedCriticalTaskWithin24Hours(event);
+      case "Last-Minute Savior" -> achievementMetricsService.hasSavedProjectByApprovingTaskJustBeforeDeadline(event);
 
       // Teamwork & Advanced Achievements
-      case "Team Player" -> taskMetricsService.hasCollaboratedWithMultipleTeams(event);
-      case "Long-Term Strategist" -> taskMetricsService.hasWorkedContinuouslyFor6Months(event);
-      case "Marathon Worker" -> taskMetricsService.hasCompletedLongDurationTasks(event);
-      case "Task Champion" -> taskMetricsService.hasMaintained90PercentCompletionFor12Months(event);
+      case "Team Player" -> achievementMetricsService.hasCollaboratedWithMultipleTeams(event);
+      case "Long-Term Strategist" -> achievementMetricsService.hasWorkedContinuouslyFor6Months(event);
+      case "Marathon Worker" -> achievementMetricsService.hasCompletedLongDurationTasks(event);
+      case "Task Champion" -> achievementMetricsService.hasMaintained90PercentCompletionFor12Months(event);
       default -> false;
     };
   }
 
   private void awardAchievement(User user, Project project, Team team, KafkaTaskCompletionDto event, Achievement achievement) {
-    boolean alreadyAwarded = achievementsUsersRepository.existsByUserIdAndTeamIdAndProjectIdAndAchievementId(event.userId(), event.teamId(), event.projectId(), achievement.getId());
+    boolean alreadyAwarded = achievementsUsersRepository.existsByUserIdAndTeamIdAndProjectIdAndAchievementId(
+        event.userId(), event.teamId(), event.projectId(), achievement.getId()
+    );
     if (!alreadyAwarded) {
       AchievementsUsers achievementsUsers = new AchievementsUsers();
       achievementsUsers.setId(new AchievementsUsersId(event.userId(), achievement.getId()));

@@ -10,7 +10,7 @@ import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
-import com.example.taskmanagerproject.services.TaskMetricsService;
+import com.example.taskmanagerproject.services.AchievementMetricsService;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
@@ -18,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Implementation of the TaskMetricsService interface.
+ * Implementation of the AchievementMetricsService interface.
  */
 @Service
 @RequiredArgsConstructor
-public class TaskMetricsServiceImpl implements TaskMetricsService {
+public class AchievementMetricsServiceImpl implements AchievementMetricsService {
 
   private final TaskRepository taskRepository;
   private final TaskCommentRepository taskCommentRepository;

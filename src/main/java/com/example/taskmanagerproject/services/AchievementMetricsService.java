@@ -3,9 +3,11 @@ package com.example.taskmanagerproject.services;
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 
 /**
- * Service interface for handling task-related metrics calculations.
+ * Service interface for handling achievement-related metrics calculations.
+ * This interface provides methods for checking a user's achievement-based metrics
+ * like task completion rates, bug fixes, task approvals, and more.
  */
-public interface TaskMetricsService {
+public interface AchievementMetricsService {
 
   /**
    * Counts the total number of approved tasks assigned to a user for a specific project and team.

@@ -13,12 +13,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
+
   private final ReportValidator reportValidator;
   private final PdfReportFactory pdfReportFactory;
 
   @Override
   public byte[] generateUserReport(String username, String teamName, String projectName, String startDate, String endDate) {
     ReportData reportData = reportValidator.validateReportData(username, teamName, projectName, startDate, endDate);
-    return pdfReportFactory.generateReport(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate());
+    return pdfReportFactory.generateUserReport(
+      reportData.user(),
+      reportData.team(),
+      reportData.project(),
+      reportData.startDate(),
+      reportData.endDate()
+    );
   }
 }
