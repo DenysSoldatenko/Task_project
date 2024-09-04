@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,33 +42,23 @@ public class RoleController {
    *
    * @return List of all roles.
    */
+  @GetMapping()
   @Operation(
       summary = "Get all roles",
       description = "Fetches a list of all roles present in the system",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Roles retrieved successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Roles not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Roles retrieved successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Roles not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @GetMapping
   public List<RoleDto> getAllRoles() {
     return roleService.getAllRoles();
   }
@@ -77,36 +66,26 @@ public class RoleController {
   /**
    * Retrieves a role by its name.
    *
-   * @param roleName The name of the role to retrieve (e.g., ADMIN, USER).
+   * @param roleName The name of the role to retrieve (for example, ADMIN, USER).
    * @return The requested role.
    */
+  @GetMapping("/{roleName}")
   @Operation(
       summary = "Get a role by name",
       description = "Fetches a specific role by its name (e.g., ADMIN, USER)",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Role retrieved successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Role retrieved successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @GetMapping("/{roleName}")
   public RoleDto getRoleByName(@PathVariable String roleName) {
     return roleService.getRoleByName(roleName);
   }
@@ -117,29 +96,21 @@ public class RoleController {
    * @param roleDto The data transfer object containing the role's information.
    * @return The newly created role.
    */
+  @PostMapping()
   @Operation(
       summary = "Create a new role",
       description = "Creates a new role with the provided details",
       responses = {
-          @ApiResponse(responseCode = "201", description = "Role created successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Role created successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PostMapping
   @ResponseStatus(CREATED)
   public RoleDto createRole(@Valid @RequestBody RoleDto roleDto) {
     return roleService.createRole(roleDto);
@@ -151,37 +122,24 @@ public class RoleController {
    * @param roleDto The data transfer object containing the updated role's information.
    * @return The updated role.
    */
+  @PutMapping("/{roleName}")
   @Operation(
       summary = "Update an existing role",
       description = "Updates an existing role's details with the provided information",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Role updated successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Role updated successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PutMapping("/{roleName}")
-  public RoleDto updateRole(
-      @PathVariable String roleName,
-      @Valid @RequestBody RoleDto roleDto
-  ) {
+  public RoleDto updateRole(@PathVariable String roleName, @Valid @RequestBody RoleDto roleDto) {
     return roleService.updateRole(roleName, roleDto);
   }
 
@@ -190,30 +148,22 @@ public class RoleController {
    *
    * @param roleName The name of the role to delete.
    */
+  @DeleteMapping("/{roleName}")
   @Operation(
       summary = "Delete a role",
       description = "Deletes a specific role by its name",
       responses = {
-          @ApiResponse(responseCode = "204", description = "Role deleted successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "204", description = "Role deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @DeleteMapping("/{roleName}")
   @ResponseStatus(NO_CONTENT)
   public void deleteRole(@PathVariable String roleName) {
     roleService.deleteRole(roleName);
@@ -226,33 +176,23 @@ public class RoleController {
    *                             or a list of role hierarchies to be created.
    * @return The created role hierarchies.
    */
+  @PostMapping("/hierarchies")
   @Operation(
       summary = "Create role hierarchies",
       description = "Creates one or more role hierarchies with the provided details",
       responses = {
-          @ApiResponse(responseCode = "201", description = "Role hierarchies created successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleHierarchyDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Role hierarchies created successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleHierarchyDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PostMapping("/hierarchies")
   @ResponseStatus(CREATED)
   public List<RoleHierarchyDto> createRoleHierarchies(@Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList) {
     return roleService.createRoleHierarchies(roleHierarchyDtoList);
@@ -263,30 +203,22 @@ public class RoleController {
    *
    * @param roleHierarchyDtoList A list of role hierarchies to delete.
    */
+  @DeleteMapping("/hierarchies")
   @Operation(
       summary = "Delete one or more role hierarchies",
       description = "Deletes one or more role hierarchies based on the provided details",
       responses = {
-          @ApiResponse(responseCode = "204", description = "Role hierarchies deleted successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role hierarchy not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "204", description = "Role hierarchies deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role hierarchy not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @DeleteMapping("/hierarchies")
   @ResponseStatus(NO_CONTENT)
   public void deleteRoleHierarchies(@Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList) {
     roleService.deleteRoleHierarchies(roleHierarchyDtoList);
@@ -295,32 +227,24 @@ public class RoleController {
   /**
    * Retrieves a role with all its lower and higher roles.
    *
-   * @param roleName The name of the role (e.g., ADMIN, USER).
+   * @param roleName The name of the role (for example, ADMIN, USER).
    * @return A RoleHierarchyListDto containing the role's hierarchy.
    */
+  @GetMapping("/{roleName}/hierarchy")
   @Operation(
       summary = "Get role with all lower and higher roles",
       description = "Fetches a specific role along with all its roles in the hierarchy",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Successfully retrieved role hierarchy",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = RoleDto.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved role hierarchy",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @GetMapping("/{roleName}/hierarchy")
   public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(@PathVariable String roleName) {
     return roleService.findRoleWithHierarchy(roleName);
   }

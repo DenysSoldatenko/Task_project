@@ -49,16 +49,16 @@ public class TaskCommentController {
       summary = "Create a new comment on a task",
       description = "Allows the creation of a new comment on a specific task",
       responses = {
-          @ApiResponse(responseCode = "201", description = "Task comment created successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "404", description = "Task not found",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+        @ApiResponse(responseCode = "201", description = "Task comment created successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
@@ -79,16 +79,16 @@ public class TaskCommentController {
       summary = "Update an existing task comment",
       description = "Update a task comment by its ID",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Task comment updated successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "404", description = "Task comment not found",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+        @ApiResponse(responseCode = "200", description = "Task comment updated successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task comment not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(OK)
@@ -107,13 +107,13 @@ public class TaskCommentController {
       summary = "Delete a task comment by ID",
       description = "Delete a task comment by its ID",
       responses = {
-          @ApiResponse(responseCode = "204", description = "Task comment deleted successfully"),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "404", description = "Task comment not found",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+        @ApiResponse(responseCode = "204", description = "Task comment deleted successfully"),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task comment not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(NO_CONTENT)

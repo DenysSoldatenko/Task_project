@@ -1,8 +1,11 @@
 package com.example.taskmanagerproject.controllers;
 
+import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
@@ -41,46 +44,35 @@ public class ReportController {
    * @throws IOException If an error occurs during the PDF report generation process.
    */
   @GetMapping("/user")
-  //@PreAuthorize("@expressionService.canAccessReport(#username, #teamName)")
+  @PreAuthorize("@expressionService.canAccessReport(#username, #teamName)")
   @Operation(
       summary = "Generate a PDF report for the user with additional filters",
       description = "Generates a PDF report with user tasks and performance",
       responses = {
-        @ApiResponse(responseCode = "200", description = "PDF report generated successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
-        @ApiResponse(responseCode = "403", description = "Access denied"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+        @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
+          content = @Content(mediaType = "application/pdf")),
+        @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateUserReport(
-      @Parameter(
-        description = "The username of the user for whom the report is to be generated",
-        example = "star.bednar@yahoo.com"
-      )
+      @Parameter(description = "The username of the user for whom the report is to be generated", example = "corinna.witting@hotmail.com")
       @RequestParam String username,
 
-      @Parameter(
-        description = "The name of the team the user belongs to",
-        example = "New Hampshire kangaroosa999"
-      )
+      @Parameter(description = "The name of the team the user belongs to", example = "Michigan dragons09b0")
       @RequestParam String teamName,
 
-      @Parameter(
-        description = "The name of the project the user is associated with",
-        example = "Schinner and Sons71d2"
-      )
+      @Parameter(description = "The name of the project the user is associated with", example = "Stanton Incc8b6")
       @RequestParam String projectName,
 
-      @Parameter(
-        description = "The start date of the report's date range (inclusive)",
-        example = "2025-01-01"
-      )
+      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
       @RequestParam String startDate,
 
-      @Parameter(
-        description = "The end date of the report's date range (inclusive)",
-        example = "2025-12-31"
-      )
+      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
       @RequestParam String endDate
   ) throws IOException {
     byte[] pdfData = reportService.generateUserReport(username, teamName, projectName, startDate, endDate);

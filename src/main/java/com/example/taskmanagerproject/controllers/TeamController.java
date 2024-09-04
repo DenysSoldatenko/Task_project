@@ -47,27 +47,19 @@ public class TeamController {
    * @param teamDto the data transfer object containing team details
    * @return the created team
    */
-  @PostMapping
+  @PostMapping()
   @Operation(
       summary = "Create a new team",
       description = "Allows users with specific roles to create a new team in the system",
       responses = {
-          @ApiResponse(responseCode = "201", description = "Team created successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = TeamDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Team created successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
@@ -79,25 +71,19 @@ public class TeamController {
    * Retrieves a team by its name.
    *
    * @param teamName the name of the team
-   * @return the found team, or 404 if the team does not exist
+   * @return the found team, or 404 if the team doesn't exist
    */
   @GetMapping("/{teamName}")
   @Operation(
       summary = "Retrieve a team by name",
       description = "Fetches a team based on its name",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Team found successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = TeamDto.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Team found successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDto.class))),
+        @ApiResponse(responseCode = "404", description = "Team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public TeamDto getTeamByName(@PathVariable("teamName") String teamName) {
@@ -108,28 +94,19 @@ public class TeamController {
    * Retrieves all users and their roles for a specific team.
    *
    * @param teamName the name of the team
-   * @return a list of users and their roles in the team, or 404 if the team does not exist
+   * @return a list of users and their roles in the team, or 404 if the team doesn't exist
    */
   @GetMapping("/{teamName}/users-roles")
   @Operation(
       summary = "Retrieve all users and their roles for a specific team",
       description = "Fetches a list of users and their roles for the given team",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Users and roles found successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = TeamUserDto.class)
-            )
-          ),
-          @ApiResponse(responseCode = "404", description = "Team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          )
+        @ApiResponse(responseCode = "200", description = "Users and roles found successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamUserDto.class))),
+        @ApiResponse(responseCode = "404", description = "Team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public List<TeamUserDto> getUsersWithRolesForTeam(@PathVariable("teamName") String teamName) {
@@ -140,28 +117,19 @@ public class TeamController {
    * Retrieves all projects for a specific team.
    *
    * @param teamName the name of the team
-   * @return a list of projects associated with the team, or 404 if the team does not exist
+   * @return a list of projects associated with the team, or 404 if the team doesn't exist
    */
   @GetMapping("/{teamName}/projects")
   @Operation(
       summary = "Retrieve all projects for a specific team",
       description = "Fetches a list of projects associated with the given team",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Projects found successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectDto.class)
-            )
-          ),
-          @ApiResponse(responseCode = "404", description = "Team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          )
+        @ApiResponse(responseCode = "200", description = "Projects found successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+        @ApiResponse(responseCode = "404", description = "Team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public List<ProjectTeamDto> getProjectsForTeam(@PathVariable("teamName") String teamName) {
@@ -181,32 +149,19 @@ public class TeamController {
       summary = "Update an existing team",
       description = "Allows users with specific roles to update an existing team",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Team updated successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = TeamDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Team updated successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public TeamDto updateTeam(
-      @PathVariable("teamName") String teamName,
-      @RequestBody @Valid TeamDto teamDto
-  ) {
+  public TeamDto updateTeam(@PathVariable("teamName") String teamName, @RequestBody @Valid TeamDto teamDto) {
     return teamService.updateTeam(teamName, teamDto);
   }
 
@@ -221,19 +176,13 @@ public class TeamController {
       summary = "Delete a team",
       description = "Allows users with specific roles to delete a team",
       responses = {
-          @ApiResponse(responseCode = "204", description = "Team deleted successfully"),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "204", description = "Team deleted successfully"),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(NO_CONTENT)
@@ -254,35 +203,18 @@ public class TeamController {
       summary = "Add users to a team",
       description = "Assigns users to a team with a specific role",
       responses = {
-          @ApiResponse(
-            responseCode = "201",
-            description = "Users added to team successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = TeamUserDto.class))
-          ),
-          @ApiResponse(
-            responseCode = "400",
-            description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(
-            responseCode = "404",
-            description = "User, team, or role not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Users added to team successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TeamUserDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "User, team, or role not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
-  public List<TeamUserDto> addUsersToTeam(
-      @PathVariable("teamName") String teamName,
-      @RequestBody @Valid List<TeamUserDto> teamUserDtoList
-  ) {
+  public List<TeamUserDto> addUsersToTeam(@PathVariable("teamName") String teamName, @RequestBody @Valid List<TeamUserDto> teamUserDtoList) {
     return teamService.addUsersToTeam(teamName, teamUserDtoList);
   }
 }

@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,23 +41,17 @@ public class AuthenticationController {
   @PostMapping("/register")
   @Operation(
       summary = "Register a new user",
-      description = "Register a new user with the provided data"
+      description = "Register a new user with the provided data",
+      responses = {
+        @ApiResponse(responseCode = "201", description = "User registered successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
   )
   @ResponseStatus(CREATED)
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "User registered successfully",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = AuthenticationResponse.class))
-      ),
-      @ApiResponse(responseCode = "400", description = "Invalid input data",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-  })
   public AuthenticationResponse register(@Valid @RequestBody UserDto request) {
     return authenticationService.registerUser(request);
   }
@@ -72,27 +65,19 @@ public class AuthenticationController {
   @PostMapping("/authenticate")
   @Operation(
       summary = "Authenticate a user",
-      description = "Authenticate a user with the provided credentials"
+      description = "Authenticate a user with the provided credentials",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Authentication successful",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "401", description = "Invalid credentials",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
   )
   @ResponseStatus(OK)
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Authentication successful",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = AuthenticationResponse.class))
-      ),
-      @ApiResponse(responseCode = "401", description = "Invalid credentials",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "400", description = "Invalid input data",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      ),
-      @ApiResponse(responseCode = "500", description = "Internal server error",
-        content = @Content(mediaType = "application/json",
-          schema = @Schema(implementation = ErrorDetails.class))
-      )
-  })
   public AuthenticationResponse authenticate(@Valid @RequestBody AuthenticationRequest request) {
     return authenticationService.authenticate(request);
   }

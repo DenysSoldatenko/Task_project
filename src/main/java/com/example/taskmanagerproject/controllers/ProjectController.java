@@ -43,27 +43,19 @@ public class ProjectController {
    * @param projectDto the data transfer object containing project details
    * @return the created project
    */
-  @PostMapping
+  @PostMapping()
   @Operation(
       summary = "Create a new project",
       description = "Allows users with specific roles to create a new project in the system",
       responses = {
-          @ApiResponse(responseCode = "201", description = "Project created successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Project created successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
@@ -75,25 +67,19 @@ public class ProjectController {
    * Retrieves a project by its name.
    *
    * @param projectName the name of the project
-   * @return the found project, or 404 if the project does not exist
+   * @return the found project, or 404 if the project doesn't exist
    */
   @GetMapping("/{projectName}")
   @Operation(
       summary = "Retrieve a project by name",
       description = "Fetches a project based on its name",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Project found successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectDto.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Project not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Project found successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+        @ApiResponse(responseCode = "404", description = "Project not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ProjectDto getProjectByName(@PathVariable("projectName") String projectName) {
@@ -104,28 +90,19 @@ public class ProjectController {
    * Retrieves all teams for a specific project.
    *
    * @param projectName the name of the project
-   * @return a list of teams associated with the project, or 404 if the project does not exist
+   * @return a list of teams associated with the project, or 404 if the project doesn't exist
    */
   @GetMapping("/{projectName}/teams")
   @Operation(
       summary = "Retrieve all teams for a specific project",
       description = "Fetches a list of teams for the given project",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Teams found successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectTeamDto.class)
-            )
-          ),
-          @ApiResponse(responseCode = "404", description = "Project not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class)
-            )
-          )
+        @ApiResponse(responseCode = "200", description = "Teams found successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
+        @ApiResponse(responseCode = "404", description = "Project not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public List<ProjectTeamDto> getTeamsForProject(@PathVariable("projectName") String projectName) {
@@ -145,32 +122,19 @@ public class ProjectController {
       summary = "Update an existing project",
       description = "Allows users with specific roles to update an existing project",
       responses = {
-          @ApiResponse(responseCode = "200", description = "Project updated successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectDto.class))
-          ),
-          @ApiResponse(responseCode = "400", description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Project not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "200", description = "Project updated successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Project not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public ProjectDto updateProject(
-      @PathVariable("projectName") String projectName,
-      @RequestBody @Valid ProjectDto projectDto
-  ) {
+  public ProjectDto updateProject(@PathVariable("projectName") String projectName, @RequestBody @Valid ProjectDto projectDto) {
     return projectService.updateProject(projectName, projectDto);
   }
 
@@ -185,19 +149,13 @@ public class ProjectController {
       summary = "Delete a project",
       description = "Allows users with specific roles to delete a project",
       responses = {
-          @ApiResponse(responseCode = "204", description = "Project deleted successfully"),
-          @ApiResponse(responseCode = "403", description = "Access denied",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "404", description = "Project not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "204", description = "Project deleted successfully"),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Project not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(NO_CONTENT)
@@ -218,35 +176,18 @@ public class ProjectController {
       summary = "Add team to a project",
       description = "Assigns teams to a project with a specific role",
       responses = {
-          @ApiResponse(
-            responseCode = "201",
-            description = "Team added to project successfully",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ProjectTeamDto.class))
-          ),
-          @ApiResponse(
-            responseCode = "400",
-            description = "Invalid input data",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(
-            responseCode = "404",
-            description = "Project or team not found",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          ),
-          @ApiResponse(responseCode = "500", description = "Internal server error",
-            content = @Content(mediaType = "application/json",
-              schema = @Schema(implementation = ErrorDetails.class))
-          )
+        @ApiResponse(responseCode = "201", description = "Team added to project successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Project or team not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
-  public ProjectDto addTeamToProject(
-      @PathVariable("projectName") String projectName,
-      @RequestBody @Valid List<ProjectTeamDto> projectTeamDtoList
-  ) {
+  public ProjectDto addTeamToProject(@PathVariable("projectName") String projectName, @RequestBody @Valid List<ProjectTeamDto> projectTeamDtoList) {
     return projectService.addTeamToProject(projectName, projectTeamDtoList);
   }
 }

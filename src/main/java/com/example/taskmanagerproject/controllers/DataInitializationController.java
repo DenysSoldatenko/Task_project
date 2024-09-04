@@ -6,9 +6,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import com.example.taskmanagerproject.configurations.initializers.DataInitializer;
+import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +37,14 @@ public class DataInitializationController {
   @PostMapping("/initialize")
   @Operation(
       summary = "Initialize Database Data",
-      description = "Initializes roles, users, and projects in the database"
+      description = "Initializes roles, users, and projects in the database",
+      responses = {
+        @ApiResponse(responseCode = "201", description = "Data initialized successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
   )
-  @ApiResponses(value = {
-    @ApiResponse(responseCode = "201", description = "Data initialized successfully"),
-    @ApiResponse(responseCode = "500", description = "Internal server error")
-  })
   public ResponseEntity<String> initializeDatabase() {
     try {
       dataInitializer.initializeTasks();
