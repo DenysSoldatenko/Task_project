@@ -7,7 +7,6 @@ import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
-import com.example.taskmanagerproject.exceptions.UserNotFoundException;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TaskService;
@@ -140,7 +139,6 @@ public class UserController {
    *
    * @param slug the unique identifier (slug) of the user
    * @return a list of projects associated with the specified user
-   * @throws UserNotFoundException if the user is not found
    */
   @GetMapping("/{slug}/projects")
   @Operation(
@@ -166,7 +164,6 @@ public class UserController {
    *
    * @param slug the unique identifier (slug) of the user
    * @return a list of teams associated with the specified user
-   * @throws UserNotFoundException if the user is not found
    */
   @GetMapping("/{slug}/teams")
   @Operation(

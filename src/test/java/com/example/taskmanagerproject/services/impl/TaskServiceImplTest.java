@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
-import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.utils.mappers.TaskMapper;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import java.time.LocalDateTime;
@@ -66,7 +66,7 @@ class TaskServiceImplTest {
     Long taskId = 1L;
     when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
 
-    assertThrows(TaskNotFoundException.class, () -> taskService.getTaskById(taskId));
+    assertThrows(ResourceNotFoundException.class, () -> taskService.getTaskById(taskId));
   }
 
   @Test

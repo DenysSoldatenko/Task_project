@@ -8,7 +8,7 @@ import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
-import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.TaskService;
@@ -46,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
   @Cacheable(value = "TaskService::getById", key = "#taskId")
   public TaskDto getTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
     return taskMapper.toDto(task);
   }
 
@@ -56,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
   public TaskDto updateTask(TaskDto taskDto, Long taskId) {
     taskValidator.validateTaskDto(taskDto);
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
 
     task.setTitle(taskDto.title());
     task.setDescription(taskDto.description());
@@ -93,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void deleteTaskById(Long taskId) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
     taskRepository.delete(task);
   }
 
@@ -111,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
   @CacheEvict(value = "TaskService::getById", key = "#taskId")
   public void uploadImage(Long taskId, TaskImageDto image) {
     Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
 
     String fileName = imageService.uploadImage(image);
     task.getImages().add(fileName);

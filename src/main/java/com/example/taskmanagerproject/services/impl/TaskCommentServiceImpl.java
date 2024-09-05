@@ -4,7 +4,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TASK_COMMENT_FOU
 
 import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.entities.tasks.TaskComment;
-import com.example.taskmanagerproject.exceptions.TaskCommentNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.services.TaskCommentService;
 import com.example.taskmanagerproject.utils.factories.TaskCommentFactory;
@@ -41,7 +41,7 @@ public class TaskCommentServiceImpl implements TaskCommentService {
   @Transactional
   public TaskCommentDto updateTaskComment(TaskCommentDto taskCommentDto, Long id) {
     TaskComment existingComment = taskCommentRepository.findById(id)
-        .orElseThrow(() -> new TaskCommentNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
 
     existingComment.setMessage(taskCommentDto.message());
 
@@ -53,7 +53,7 @@ public class TaskCommentServiceImpl implements TaskCommentService {
   @Transactional
   public void deleteTaskComment(Long id) {
     taskCommentRepository.findById(id)
-        .orElseThrow(() -> new TaskCommentNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_COMMENT_FOUND_WITH_ID + id));
     taskCommentRepository.deleteById(id);
   }
 

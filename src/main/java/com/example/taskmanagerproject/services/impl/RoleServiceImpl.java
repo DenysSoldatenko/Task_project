@@ -9,8 +9,7 @@ import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
 import com.example.taskmanagerproject.dtos.users.RoleHierarchyListDto;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.RoleHierarchy;
-import com.example.taskmanagerproject.exceptions.RoleHierarchyNotFoundException;
-import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleHierarchyRepository;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.services.RoleService;
@@ -54,7 +53,7 @@ public class RoleServiceImpl implements RoleService {
   @Cacheable(value = "roles", key = "#roleName")
   public RoleDto getRoleByName(String roleName) {
     Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
     return roleMapper.toDto(role);
   }
 
@@ -73,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
   @CachePut(value = "roles", key = "#roleDto.name")
   public RoleDto updateRole(String roleName, RoleDto roleDto) {
     Role existingRole = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     roleValidator.validateRoleDto(roleDto, existingRole);
 
@@ -89,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
   @CacheEvict(value = "roles", key = "#roleName")
   public void deleteRole(String roleName) {
     Role existingRole = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     roleRepository.delete(existingRole);
   }
@@ -107,7 +106,7 @@ public class RoleServiceImpl implements RoleService {
   @Override
   public RoleHierarchyListDto findRoleWithHierarchy(String roleName) {
     Role role = roleRepository.findByName(roleName)
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
 
     List<RoleDto> higherRoles = roleHierarchyRepository.findByLowerRole(role).stream()
         .map(roleHierarchy -> roleMapper.toDto(roleHierarchy.getHigherRole()))
@@ -125,7 +124,7 @@ public class RoleServiceImpl implements RoleService {
   public void deleteRoleHierarchies(List<RoleHierarchyDto> roleHierarchyDtoList) {
     for (RoleHierarchyDto roleHierarchyDto : roleHierarchyDtoList) {
       RoleHierarchy roleHierarchy = findByHigherRoleNameAndLowerRoleName(roleHierarchyDto.higherRole().name(), roleHierarchyDto.lowerRole().name())
-          .orElseThrow(() -> new RoleHierarchyNotFoundException(
+          .orElseThrow(() -> new ResourceNotFoundException(
             format(ROLE_HIERARCHY_NOT_FOUND, roleHierarchyDto.higherRole().name(), roleHierarchyDto.lowerRole().name())
           ));
       roleHierarchyRepository.delete(roleHierarchy);

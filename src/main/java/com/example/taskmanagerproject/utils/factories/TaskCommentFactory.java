@@ -9,8 +9,7 @@ import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
-import com.example.taskmanagerproject.exceptions.UserNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskCommentRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
@@ -50,7 +49,7 @@ public final class TaskCommentFactory {
    */
   private Task getTaskById(Long taskId) {
     return taskRepository.findById(taskId)
-      .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+      .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
   }
 
   /**
@@ -61,7 +60,7 @@ public final class TaskCommentFactory {
    */
   private User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
-      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
+      .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
   }
 
   /**

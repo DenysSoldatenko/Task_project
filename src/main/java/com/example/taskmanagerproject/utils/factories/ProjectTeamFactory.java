@@ -8,8 +8,7 @@ import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.projects.ProjectTeam;
 import com.example.taskmanagerproject.entities.projects.ProjectTeamId;
 import com.example.taskmanagerproject.entities.teams.Team;
-import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
-import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import java.util.ArrayList;
@@ -50,11 +49,11 @@ public final class ProjectTeamFactory {
    *
    * @param projectTeamDto The ProjectTeamDto containing the project.
    * @return The {@link Project} entity corresponding to the project.
-   * @throws ProjectNotFoundException if the project with the specified project is not found.
+   * @throws ResourceNotFoundException if the project with the specified project is not found.
    */
   private Project getProjectFromRequest(ProjectTeamDto projectTeamDto) {
     return projectRepository.findByName(projectTeamDto.project().name())
-        .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectTeamDto.project().name()));
+        .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectTeamDto.project().name()));
   }
 
   /**
@@ -62,11 +61,11 @@ public final class ProjectTeamFactory {
    *
    * @param projectTeamDto The ProjectTeamDto containing the team.
    * @return The {@link Team} entity corresponding to the team.
-   * @throws TeamNotFoundException if the team with the specified team is not found.
+   * @throws ResourceNotFoundException if the team with the specified team is not found.
    */
   private Team getTeamFromRequest(ProjectTeamDto projectTeamDto) {
     return teamRepository.findByName(projectTeamDto.team().name())
-      .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + projectTeamDto.team().name()));
+      .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + projectTeamDto.team().name()));
   }
 
   private ProjectTeam buildProjectTeam(Project project, Team team) {

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.UserNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.example.taskmanagerproject.repositories.UserRepository;
 import com.example.taskmanagerproject.services.MailService;
@@ -74,7 +74,7 @@ class UserServiceImplTest {
     Long userId = 1L;
     when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> userService.getUserById(userId));
+    assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(userId));
   }
 
   @Test
@@ -95,7 +95,7 @@ class UserServiceImplTest {
     String username = "testuser";
     when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
-    assertThrows(UserNotFoundException.class, () -> userService.getUserByUsername(username));
+    assertThrows(ResourceNotFoundException.class, () -> userService.getUserByUsername(username));
   }
 
   @Test

@@ -5,7 +5,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_W
 import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.RoleHierarchy;
-import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public final class RoleHierarchyFactory {
    */
   private Role getRoleFromDto(String roleName) {
     return roleRepository.findByName(roleName)
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
+      .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
   }
 
   /**

@@ -12,8 +12,7 @@ import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
-import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
@@ -22,7 +21,6 @@ import com.example.taskmanagerproject.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -62,11 +60,11 @@ public final class TeamUserFactory {
    *
    * @param teamUserDto The UserTeamDto containing the user.
    * @return The {@link User} entity corresponding to the user.
-   * @throws UsernameNotFoundException if the user with the specified user is not found.
+   * @throws ResourceNotFoundException if the user with the specified user is not found.
    */
   private User getUserFromRequest(TeamUserDto teamUserDto) {
     return userRepository.findByUsername(teamUserDto.user().username())
-        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + teamUserDto.user().username()));
+        .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_WITH_USERNAME + teamUserDto.user().username()));
   }
 
   /**
@@ -74,22 +72,22 @@ public final class TeamUserFactory {
    *
    * @param teamUserDto The UserTeamDto containing the team.
    * @return The {@link Team} entity corresponding to the team.
-   * @throws TeamNotFoundException if the team with the specified team is not found.
+   * @throws ResourceNotFoundException if the team with the specified team is not found.
    */
   private Team getTeamFromRequest(TeamUserDto teamUserDto) {
     return teamRepository.findByName(teamUserDto.team().name())
-        .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamUserDto.team().name()));
+        .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamUserDto.team().name()));
   }
 
   /**
    * Retrieves the Role entity based on the role from the UserTeamDto.
    *
    * @param teamUserDto The UserTeamDto containing the role.
-   * @throws RoleNotFoundException if the role with the specified role is not found.
+   * @throws ResourceNotFoundException if the role with the specified role is not found.
    */
   private Role getRoleFromRequest(TeamUserDto teamUserDto) {
     return roleRepository.findByName(teamUserDto.role().name())
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + teamUserDto.role().name()));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + teamUserDto.role().name()));
   }
 
   private void checkUserAlreadyInTeam(User user, Team team) {

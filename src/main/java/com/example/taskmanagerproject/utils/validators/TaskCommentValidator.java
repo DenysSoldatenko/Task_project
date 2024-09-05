@@ -4,7 +4,7 @@ import static com.example.taskmanagerproject.utils.MessageUtils.TASK_COMMENT_INV
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
-import com.example.taskmanagerproject.exceptions.TaskNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import jakarta.validation.Validator;
 import java.util.HashSet;
@@ -60,6 +60,6 @@ public final class TaskCommentValidator extends BaseValidator<TaskCommentDto> {
 
   private void validateTaskExists(TaskCommentDto taskCommentDto) {
     taskRepository.findById(taskCommentDto.task().id())
-        .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_WITH_ID + taskCommentDto.task().id()));
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskCommentDto.task().id()));
   }
 }

@@ -6,7 +6,7 @@ import static java.util.UUID.randomUUID;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public final class UserFactory {
    */
   public User createUserFromRequest(UserDto request) {
     Role role = roleRepository.findByName("USER")
-        .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "USER"));
+        .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "USER"));
 
     return User.builder()
       .fullName(request.fullName())

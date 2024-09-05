@@ -6,7 +6,7 @@ import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.teams.TeamUserDto;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
-import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.services.TeamService;
@@ -48,7 +48,7 @@ public class TeamServiceImpl implements TeamService {
   @Override
   public TeamDto getTeamByName(String teamName) {
     Team team = teamRepository.findByName(teamName)
-        .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
+        .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
     return teamMapper.toDto(team);
   }
 
@@ -67,7 +67,7 @@ public class TeamServiceImpl implements TeamService {
   @Transactional
   public TeamDto updateTeam(String teamName, TeamDto teamDto) {
     Team existingTeam = teamRepository.findByName(teamName)
-        .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
+        .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
 
     teamValidator.validateTeamDto(teamDto, existingTeam);
     existingTeam.setName(teamDto.name());
@@ -81,7 +81,7 @@ public class TeamServiceImpl implements TeamService {
   @Transactional
   public void deleteTeam(String teamName) {
     Team existingTeam = teamRepository.findByName(teamName)
-        .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
+        .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
     teamRepository.delete(existingTeam);
   }
 

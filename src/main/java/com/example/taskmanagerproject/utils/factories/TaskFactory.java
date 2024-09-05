@@ -11,9 +11,7 @@ import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
-import com.example.taskmanagerproject.exceptions.TeamNotFoundException;
-import com.example.taskmanagerproject.exceptions.UserNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
@@ -56,7 +54,7 @@ public final class TaskFactory {
    */
   private Project getProjectByName(String projectName) {
     return projectRepository.findByName(projectName)
-      .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
+      .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
   }
 
   /**
@@ -67,7 +65,7 @@ public final class TaskFactory {
    */
   private Team getTeamByName(String teamName) {
     return teamRepository.findByName(teamName)
-      .orElseThrow(() -> new TeamNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
+      .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
   }
 
   /**
@@ -78,7 +76,7 @@ public final class TaskFactory {
    */
   private User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
-      .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
+      .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
   }
 
   /**

@@ -10,7 +10,7 @@ import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
 import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.exceptions.RoleNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.TeamRepository;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
@@ -67,7 +67,7 @@ public class TeamGeneratorService {
    *
    * @param user The user to associate with the team.
    * @param team The team to associate with the user.
-   * @throws RoleNotFoundException if no ADMIN role is found in the system.
+   * @throws ResourceNotFoundException if no ADMIN role is found in the system.
    */
   public void addAdminToTeam(User user, Team team) {
     TeamUser teamAdminUser = new TeamUser();
@@ -91,7 +91,7 @@ public class TeamGeneratorService {
     return roleRepository.findAll().stream()
       .filter(role -> "ADMIN".equals(role.getName()))
       .findFirst()
-      .orElseThrow(() -> new RoleNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
+      .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + "ADMIN"));
   }
 
   private Role getRandomRole() {

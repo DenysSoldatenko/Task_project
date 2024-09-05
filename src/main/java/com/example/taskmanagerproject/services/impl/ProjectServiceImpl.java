@@ -6,7 +6,7 @@ import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.projects.ProjectTeam;
-import com.example.taskmanagerproject.exceptions.ProjectNotFoundException;
+import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.ProjectTeamRepository;
 import com.example.taskmanagerproject.services.ProjectService;
@@ -48,7 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public ProjectDto getProjectByName(String name) {
     Project existingProject = projectRepository.findByName(name)
-        .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + name));
+        .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + name));
     return projectMapper.toDto(existingProject);
   }
 
@@ -72,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Transactional
   public ProjectDto updateProject(String projectName, ProjectDto projectDto) {
     Project existingProject = projectRepository.findByName(projectName)
-        .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
+        .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
 
     projectValidator.validateProjectDto(projectDto, existingProject);
 
@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
   @Transactional
   public void deleteProject(String projectName) {
     Project existingProject = projectRepository.findByName(projectName)
-        .orElseThrow(() -> new ProjectNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
+        .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
 
     projectRepository.delete(existingProject);
   }
