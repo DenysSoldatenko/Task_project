@@ -52,6 +52,8 @@ public class MessageUtils {
       = "Failed to load HTML template from file: ";
   public static final String PDF_GENERATION_ERROR
       = "Failed to generate PDF.";
+  public static final String TASK_METRICS_NOT_FOUND_ERROR
+      = "No task metrics found for user %s in project %s.";
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";

@@ -1,7 +1,9 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static com.example.taskmanagerproject.utils.MessageUtils.TASK_METRICS_NOT_FOUND_ERROR;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.generatePdfFromHtml;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.loadTemplate;
+import static java.lang.String.format;
 
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.teams.Team;
@@ -50,7 +52,7 @@ public final class PdfReportFactory {
 
     Object[] taskMetrics = reportDataService.fetchTaskMetrics(user, team, project, startDate, endDate);
     if (taskMetrics == null) {
-      throw new PdfGenerationException("No task metrics found for user " + user.getUsername() + " in project " + project.getName());
+      throw new PdfGenerationException(format(TASK_METRICS_NOT_FOUND_ERROR, user.getUsername(), project.getName()));
     }
 
     String populatedHtml = htmlProcessor.populateUserTemplate(htmlTemplate, user, team, project, startDate, endDate, taskMetrics);

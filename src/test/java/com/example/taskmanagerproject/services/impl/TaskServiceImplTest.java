@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.entities.tasks.TaskStatus.NOT_STARTED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

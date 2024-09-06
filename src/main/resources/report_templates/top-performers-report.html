@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Performers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+
+        .top-performers-container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f1c40f;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        .team-info {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .top-performers {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .performer {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 22%;  /* Adjust width to fit 4 performers */
+            text-align: center;
+        }
+
+        /* Placeholder for missing performers */
+        .performer.no-performer {
+            background-color: #eee;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .performer img.user-img {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            border: 3px solid #3498db;
+            margin-bottom: 10px;
+        }
+
+        .performer img.medal {
+            width: 50px;
+            height: 50px;
+            margin-top: 10px;
+        }
+
+        .xp-bar {
+            background-color: #ddd;
+            border-radius: 25px;
+            width: 90%;
+            height: 20px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+
+        .xp-progress {
+            height: 100%;
+            background-color: #3498db;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+            font-size: 14px;
+            border-radius: 25px;
+        }
+
+        /* Styling for the date range */
+        .date-range {
+            font-size: 20px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-performers-container">
+    <h2>🏆 Top Performers in the team {team_name}</h2>
+
+    <!-- Team Information -->
+    <div class="team-info">
+        <h3 class="date-range">({startDate} – {endDate})</h3>
+    </div>
+
+    <div class="top-performers">
+
+        <!-- First Place -->
+        <div class="performer" id="firstPlace">
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User 1" class="user-img"><br>
+            <img src="https://img.icons8.com/?id=VUt5dWfcfFzt" alt="Gold Medal" class="medal"><br>
+            <h3>{top1_name}</h3>
+            <p>🔥 <strong>Level:</strong> {top1_level}</p>
+            <p>🎯 Tasks Completed: {top1_tasks}</p>
+            <p>📈 Performance Score: {top1_score}%</p>
+            <div class="xp-bar">
+                <div class="xp-progress" style="width: {top1_xp}%">{top1_xp}% XP</div>
+            </div>
+        </div>
+
+        <!-- Second Place -->
+        <div class="performer" id="secondPlace">
+            <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="User 2" class="user-img"><br>
+            <img src="https://img.icons8.com/?id=2AxMUk3BMPIc" alt="Silver Medal" class="medal"><br>
+            <h3>{top2_name}</h3>
+            <p>🔥 <strong>Level:</strong> {top2_level}</p>
+            <p>🎯 Tasks Completed: {top2_tasks}</p>
+            <p>📈 Performance Score: {top2_score}%</p>
+            <div class="xp-bar">
+                <div class="xp-progress" style="width: {top2_xp}%">{top2_xp}% XP</div>
+            </div>
+        </div>
+
+        <!-- Third Place -->
+        <div class="performer" id="thirdPlace">
+            <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="User 3" class="user-img"><br>
+            <img src="https://img.icons8.com/?id=2WK1cEIaoUzY" alt="Bronze Medal" class="medal"><br>
+            <h3>{top3_name}</h3>
+            <p>🔥 <strong>Level:</strong> {top3_level}</p>
+            <p>🎯 Tasks Completed: {top3_tasks}</p>
+            <p>📈 Performance Score: {top3_score}%</p>
+            <div class="xp-bar">
+                <div class="xp-progress" style="width: {top3_xp}%">{top3_xp}% XP</div>
+            </div>
+        </div>
+
+        <!-- Placeholder for No Performers -->
+        <div class="performer no-performer" id="noPerformer" style="display: {no_performer_display};">
+            <h3>No Performer Yet</h3>
+            <p>🚀 Stay tuned for updates!</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
