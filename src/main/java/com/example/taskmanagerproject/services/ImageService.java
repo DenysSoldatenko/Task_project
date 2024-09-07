@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
+import com.example.taskmanagerproject.dtos.users.UserImageDto;
 
 /**
  * Service interface for managing images.
@@ -10,8 +11,16 @@ public interface ImageService {
   /**
    * Uploads an image for a task.
    *
-   * @param taskImage The TaskImageDto containing the image data and task information.
-   * @return A string representing the location or URL of the uploaded image.
+   * @param taskImage The image and task details.
+   * @return The image location or URL.
    */
-  String uploadImage(TaskImageDto taskImage);
+  String uploadTaskImage(TaskImageDto taskImage);
+
+  /**
+   * Uploads an image for a user.
+   *
+   * @param userImageDto The image and user details.
+   * @return The image location or URL.
+   */
+  String uploadUserImage(UserImageDto userImageDto);
 }

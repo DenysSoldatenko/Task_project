@@ -4,8 +4,10 @@ import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_W
 import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.dtos.users.UserImageDto;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
+import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.factories.UserFactory;
 import com.example.taskmanagerproject.utils.mappers.UserMapper;
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserMapper userMapper;
   private final UserFactory userFactory;
+  private final ImageService imageService;
   private final UserValidator userValidator;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -108,5 +111,28 @@ public class UserServiceImpl implements UserService {
   @Cacheable(value = "UserService::isUserAssignedToTask", key = "#userId + '.' + #taskId")
   public boolean isUserAssignedToTask(Long userId, Long taskId) {
     return userRepository.isUserAssignedToTask(userId, taskId);
+  }
+
+  @Override
+  @Transactional
+  public void uploadUserPhoto(String slug, UserImageDto imageDto) {
+    User user = userRepository.findBySlug(slug)
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
+
+    String fileName = imageService.uploadUserImage(imageDto);
+    user.getImage().add(fileName);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void updateUserPhoto(String slug, UserImageDto imageDto) {
+    //todo
+  }
+
+  @Override
+  @Transactional
+  public void deleteUserPhoto(String slug) {
+    //todo
   }
 }

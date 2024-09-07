@@ -10,6 +10,14 @@ CREATE TABLE IF NOT EXISTS users
     CONSTRAINT chk_confirm_password_length CHECK (LENGTH(confirm_password) >= 6)
 );
 
+CREATE TABLE IF NOT EXISTS users_images
+(
+    user_id BIGINT       NOT NULL PRIMARY KEY,
+    image   VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_users_images_users FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE NO ACTION
+);
+
 CREATE TABLE IF NOT EXISTS roles
 (
     id          BIGSERIAL PRIMARY KEY,

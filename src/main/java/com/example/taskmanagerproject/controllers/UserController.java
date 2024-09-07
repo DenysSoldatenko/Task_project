@@ -1,12 +1,13 @@
 package com.example.taskmanagerproject.controllers;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.dtos.users.UserImageDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TaskService;
@@ -26,7 +27,9 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +71,6 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @ResponseStatus(OK)
   @QueryMapping(name = "getUserBySlug")
   public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
     return userService.getUserBySlug(slug);
@@ -98,7 +100,6 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @ResponseStatus(OK)
   @MutationMapping(name = "updateUser")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto updateUser(
@@ -205,7 +206,6 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @ResponseStatus(OK)
   @QueryMapping(name = "getTasksAssignedToUser")
   @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public List<TaskDto> getTasksAssignedToUser(@PathVariable(name = "id") @Argument Long id) {
@@ -233,10 +233,91 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @ResponseStatus(OK)
   @QueryMapping(name = "getTasksAssignedByUser")
   @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
   public List<TaskDto> getTasksAssignedByUser(@PathVariable(name = "id") @Argument Long id) {
     return taskService.getAllTasksAssignedByUser(id);
+  }
+
+  /**
+   * Uploads a photo for a user.
+   *
+   * @param imageDto The DTO containing the image to upload.
+   * @param slug the unique identifier (slug) of the user.
+   */
+  @PostMapping("/{slug}/image")
+  @Operation(
+      summary = "Upload a photo for a user",
+      description = "Upload a photo for the user identified by their ID",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Photo uploaded successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "User not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @ResponseStatus(CREATED)
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public void uploadUserPhoto(@Valid @ModelAttribute UserImageDto imageDto, @PathVariable(name = "slug") String slug) {
+    userService.uploadUserPhoto(slug, imageDto);
+  }
+
+  /**
+   * Updates a photo for a user.
+   *
+   * @param imageDto The DTO containing the image to upload.
+   * @param slug     The unique identifier (slug) of the user.
+   */
+  @PutMapping("/{slug}/image")
+  @Operation(
+      summary = "Update a photo for a user",
+      description = "Update the photo for the user identified by their ID",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Photo updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "User not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public void updateUserPhoto(@Valid @ModelAttribute UserImageDto imageDto, @PathVariable(name = "slug") String slug) {
+    userService.updateUserPhoto(slug, imageDto);
+  }
+
+  /**
+   * Deletes a photo for a user.
+   *
+   * @param slug The unique identifier (slug) of the user.
+   */
+  @DeleteMapping("/{slug}/image")
+  @Operation(
+      summary = "Delete a photo for a user",
+      description = "Delete the photo for the user identified by their ID",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Photo deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "User not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @ResponseStatus(NO_CONTENT)
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public void deleteUserPhoto(@PathVariable(name = "slug") String slug) {
+    userService.deleteUserPhoto(slug);
   }
 }

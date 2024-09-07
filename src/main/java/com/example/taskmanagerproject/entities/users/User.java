@@ -5,7 +5,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -63,4 +65,9 @@ public class User {
   @JsonManagedReference
   @OneToMany(mappedBy = "user")
   private List<TeamUser> teamUsers;
+
+  @ElementCollection
+  @Column(name = "image")
+  @CollectionTable(name = "users_images")
+  private List<String> image;
 }

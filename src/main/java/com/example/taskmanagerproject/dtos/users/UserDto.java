@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Represents a user DTO (Data Transfer Object) in the project.
@@ -58,5 +59,12 @@ public record UserDto(
       description = "The confirmation password of the user",
       example = "password123"
     )
-    String confirmPassword
+    String confirmPassword,
+
+    @JsonProperty(access = READ_ONLY)
+    @Schema(
+      description = "Image associated with the entity",
+      example = "[\"image1.png\"]"
+    )
+    List<String> image
 ) {}

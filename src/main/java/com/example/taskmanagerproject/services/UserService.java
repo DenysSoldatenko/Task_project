@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.dtos.users.UserImageDto;
 import com.example.taskmanagerproject.entities.users.User;
 
 /**
@@ -83,4 +84,27 @@ public interface UserService {
    * @return true if the user is assigned to the task, false otherwise
    */
   boolean isUserAssignedToTask(Long id, Long taskId);
+
+  /**
+   * Uploads a photo for a user.
+   *
+   * @param slug the unique identifier (slug) of the user
+   * @param imageDto the DTO containing the image to upload
+   */
+  void uploadUserPhoto(String slug, UserImageDto imageDto);
+
+  /**
+   * Updates a photo for a user.
+   *
+   * @param slug the unique identifier (slug) of the user
+   * @param imageDto the DTO containing the image to upload
+   */
+  void updateUserPhoto(String slug, UserImageDto imageDto);
+
+  /**
+   * Deletes a photo for a user.
+   *
+   * @param slug the unique identifier (slug) of the user
+   */
+  void deleteUserPhoto(String slug);
 }

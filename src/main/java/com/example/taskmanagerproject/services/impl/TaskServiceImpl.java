@@ -36,8 +36,8 @@ public class TaskServiceImpl implements TaskService {
   private static final String ACHIEVEMENT_TOPIC = "achievement-topic";
 
   private final TaskMapper taskMapper;
-  private final ImageService imageService;
   private final TaskFactory taskFactory;
+  private final ImageService imageService;
   private final TaskValidator taskValidator;
   private final TaskRepository taskRepository;
 
@@ -113,7 +113,7 @@ public class TaskServiceImpl implements TaskService {
     Task task = taskRepository.findById(taskId)
         .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
 
-    String fileName = imageService.uploadImage(image);
+    String fileName = imageService.uploadTaskImage(image);
     task.getImages().add(fileName);
     taskRepository.save(task);
   }
