@@ -127,12 +127,28 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public void updateUserPhoto(String slug, UserImageDto imageDto) {
-    //todo
+    User user = userRepository.findBySlug(slug)
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
+
+    String newFileName = imageService.uploadUserImage(imageDto);
+
+    if (user.getImage() != null) {
+      deleteUserPhoto(slug);
+    }
+
+    user.getImage().add(newFileName);
+    userRepository.save(user);
   }
 
   @Override
   @Transactional
   public void deleteUserPhoto(String slug) {
-    //todo
+    User user = userRepository.findBySlug(slug)
+        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
+
+    if (user.getImage() != null) {
+      user.getImage().clear();
+      userRepository.save(user);
+    }
   }
 }
