@@ -1,6 +1,8 @@
 package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
+import static com.example.taskmanagerproject.utils.MessageUtils.NO_IMAGE_TO_DELETE;
+import static com.example.taskmanagerproject.utils.MessageUtils.NO_IMAGE_TO_UPDATE;
 import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
 
@@ -8,6 +10,7 @@ import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
+import com.example.taskmanagerproject.exceptions.ImageUploadException;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
@@ -107,18 +110,6 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  @Transactional
-  @CacheEvict(value = "TaskService::getById", key = "#taskId")
-  public void uploadImage(Long taskId, TaskImageDto image) {
-    Task task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
-
-    String fileName = imageService.uploadTaskImage(image);
-    task.getImages().add(fileName);
-    taskRepository.save(task);
-  }
-
-  @Override
   @Transactional(readOnly = true)
   public List<TaskDto> getAllTasksAssignedToUser(Long userId) {
     List<Task> taskList = taskRepository.findTasksAssignedTo(userId);
@@ -130,5 +121,49 @@ public class TaskServiceImpl implements TaskService {
   public List<TaskDto> getAllTasksAssignedByUser(Long userId) {
     List<Task> taskList = taskRepository.findTasksAssignedBy(userId);
     return taskList.stream().map(taskMapper::toDto).toList();
+  }
+
+  @Override
+  @Transactional
+  public void uploadImage(Long taskId, TaskImageDto image) {
+    Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + taskId));
+
+    String fileName = imageService.uploadTaskImage(image);
+    task.getImages().add(fileName);
+    taskRepository.save(task);
+  }
+
+  @Override
+  @Transactional
+  public void updateImage(Long id, TaskImageDto imageDto, String imageName) {
+    Task task = taskRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + id));
+
+    String oldImage = task.getImages().stream()
+        .filter(image -> image.equals(imageName))
+        .findFirst()
+        .orElseThrow(() -> new ImageUploadException(NO_IMAGE_TO_UPDATE));
+
+    String newImage = imageService.uploadTaskImage(imageDto);
+    imageService.deleteImage(oldImage);
+
+    task.getImages().remove(oldImage);
+    task.getImages().add(newImage);
+    taskRepository.save(task);
+  }
+
+  @Override
+  @Transactional
+  public void deleteImage(Long id, String imageName) {
+    Task task = taskRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + id));
+
+    if (!task.getImages().remove(imageName)) {
+      throw new ImageUploadException(NO_IMAGE_TO_DELETE);
+    }
+
+    imageService.deleteImage(imageName);
+    taskRepository.save(task);
   }
 }

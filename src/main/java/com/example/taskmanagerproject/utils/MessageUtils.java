@@ -76,9 +76,12 @@ public class MessageUtils {
   public static final String TEAM_ALREADY_EXISTS
       = "Team already exists with name: ";
 
-
-  public static final String IMAGE_UPLOAD_FAILED
-      = "Image upload failed: ";
+  public static final String NO_IMAGE_TO_UPDATE
+      = "No image to update.";
+  public static final String NO_IMAGE_TO_DELETE
+      = "No image to delete.";
+  public static final String FAILED_TO_DELETE_IMAGE
+      = "Failed to delete image: %s. %s";
   public static final String FAILED_TO_CREATE_BUCKET
       = "Failed to create bucket: ";
   public static final String IMAGE_MUST_NOT_BE_EMPTY

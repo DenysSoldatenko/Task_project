@@ -23,4 +23,11 @@ public interface ImageService {
    * @return The image location or URL.
    */
   String uploadUserImage(UserImageDto userImageDto);
+
+  /**
+   * Deletes an image for a user.
+   *
+   * @param imageName The name of the image to be deleted. This should be the image's unique identifier or filename.
+   */
+  void deleteImage(String imageName);
 }

@@ -178,9 +178,62 @@ public class TaskController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @ResponseStatus(NO_CONTENT)
+  @ResponseStatus(CREATED)
   @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void uploadImage(@Valid @ModelAttribute TaskImageDto imageDto, @PathVariable(name = "id") Long id) {
     taskService.uploadImage(id, imageDto);
+  }
+
+  /**
+   * Updates an image for a task.
+   *
+   * @param imageDto The DTO containing the updated image data.
+   * @param id       The ID of the task to update the image for.
+   */
+  @PutMapping("/{id}/image/{imageName}")
+  @Operation(
+      summary = "Update an image for a task",
+      description = "Update the image for the task identified by its ID",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Image updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
+  public void updateImage(@Valid @ModelAttribute TaskImageDto imageDto, @PathVariable(name = "id") Long id, @PathVariable String imageName) {
+    taskService.updateImage(id, imageDto, imageName);
+  }
+
+  /**
+   * Deletes an image for a task.
+   *
+   * @param id        The ID of the task.
+   * @param imageName The name of the image to delete.
+   */
+  @DeleteMapping("/{id}/image/{imageName}")
+  @Operation(
+      summary = "Delete an image for a task",
+      description = "Deletes a specific image from the task identified by its ID",
+      responses = {
+        @ApiResponse(responseCode = "204", description = "Image deleted successfully"),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task or image not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @ResponseStatus(NO_CONTENT)
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
+  public void deleteImage(@PathVariable Long id, @PathVariable String imageName) {
+    taskService.deleteImage(id, imageName);
   }
 }

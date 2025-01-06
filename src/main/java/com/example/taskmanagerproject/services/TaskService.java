@@ -51,14 +51,6 @@ public interface TaskService {
   List<TaskDto> findAllSoonExpiringTasks(Duration duration);
 
   /**
-   * Uploads an image for a task.
-   *
-   * @param id The ID of the task to upload the image for.
-   * @param image The TaskImageDto containing the image data.
-   */
-  void uploadImage(Long id, TaskImageDto image);
-
-  /**
    * Retrieves all tasks assigned to a specific user.
    *
    * @param userId The ID of the user to retrieve tasks for.
@@ -73,4 +65,29 @@ public interface TaskService {
    * @return A list of TaskDto objects representing the tasks assigned by the user.
    */
   List<TaskDto> getAllTasksAssignedByUser(Long userId);
+
+  /**
+   * Uploads an image for a task.
+   *
+   * @param id The ID of the task to upload the image for.
+   * @param image The TaskImageDto containing the image data to be uploaded.
+   */
+  void uploadImage(Long id, TaskImageDto image);
+
+  /**
+   * Updates an image for a task.
+   *
+   * @param id The ID of the task to update the image for.
+   * @param imageDto The DTO containing the new image data to upload.
+   * @param imageName The name of the existing image that is being replaced or updated.
+   */
+  void updateImage(Long id, TaskImageDto imageDto, String imageName);
+
+  /**
+   * Deletes an image from a task.
+   *
+   * @param id The ID of the task to delete the image from.
+   * @param imageName The name of the image to delete from the task.
+   */
+  void deleteImage(Long id, String imageName);
 }

@@ -1,8 +1,10 @@
 package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_CREATE_BUCKET;
+import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_DELETE_IMAGE;
 import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_UPLOAD_IMAGE;
 import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_MUST_NOT_BE_EMPTY;
+import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.configurations.minio.MinioProperties;
@@ -14,6 +16,7 @@ import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,16 @@ public class ImageServiceImpl implements ImageService {
   @Transactional
   public String uploadTaskImage(TaskImageDto taskImageDto) {
     return uploadImage(taskImageDto.file());
+  }
+
+  @Override
+  @Transactional
+  public void deleteImage(String imageName) {
+    try {
+      minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioProperties.getBucket()).object(imageName).build());
+    } catch (Exception e) {
+      throw new ImageUploadException(format(FAILED_TO_DELETE_IMAGE, imageName, e.getMessage()));
+    }
   }
 
   private String uploadImage(MultipartFile file) {
