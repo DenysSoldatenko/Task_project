@@ -10,7 +10,7 @@ import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.entities.tasks.Task;
-import com.example.taskmanagerproject.exceptions.ImageUploadException;
+import com.example.taskmanagerproject.exceptions.ImageProcessingException;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
@@ -143,7 +143,7 @@ public class TaskServiceImpl implements TaskService {
     String oldImage = task.getImages().stream()
         .filter(image -> image.equals(imageName))
         .findFirst()
-        .orElseThrow(() -> new ImageUploadException(NO_IMAGE_TO_UPDATE));
+        .orElseThrow(() -> new ImageProcessingException(NO_IMAGE_TO_UPDATE));
 
     String newImage = imageService.uploadTaskImage(imageDto);
     imageService.deleteImage(oldImage);
@@ -160,7 +160,7 @@ public class TaskServiceImpl implements TaskService {
         .orElseThrow(() -> new ResourceNotFoundException(TASK_NOT_FOUND_WITH_ID + id));
 
     if (!task.getImages().remove(imageName)) {
-      throw new ImageUploadException(NO_IMAGE_TO_DELETE);
+      throw new ImageProcessingException(NO_IMAGE_TO_DELETE);
     }
 
     imageService.deleteImage(imageName);

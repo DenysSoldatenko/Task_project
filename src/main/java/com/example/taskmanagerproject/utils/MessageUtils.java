@@ -88,7 +88,8 @@ public class MessageUtils {
       = "Image must not be empty and must have a name!";
   public static final String FAILED_TO_UPLOAD_IMAGE
       = "Failed to upload image to Minio: ";
-
+  public static final String IMAGE_DOWNLOAD_ERROR
+      = "Failed to download image: ";
 
   public static final String DATA_INITIALIZATION_SUCCESS_MESSAGE
       = "Data initialization completed successfully!";

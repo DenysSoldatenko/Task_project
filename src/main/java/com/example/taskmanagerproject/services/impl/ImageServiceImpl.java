@@ -10,7 +10,7 @@ import static java.util.UUID.randomUUID;
 import com.example.taskmanagerproject.configurations.minio.MinioProperties;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.dtos.users.UserImageDto;
-import com.example.taskmanagerproject.exceptions.ImageUploadException;
+import com.example.taskmanagerproject.exceptions.ImageProcessingException;
 import com.example.taskmanagerproject.services.ImageService;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
@@ -51,7 +51,7 @@ public class ImageServiceImpl implements ImageService {
     try {
       minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioProperties.getBucket()).object(imageName).build());
     } catch (Exception e) {
-      throw new ImageUploadException(format(FAILED_TO_DELETE_IMAGE, imageName, e.getMessage()));
+      throw new ImageProcessingException(format(FAILED_TO_DELETE_IMAGE, imageName, e.getMessage()));
     }
   }
 
@@ -70,7 +70,7 @@ public class ImageServiceImpl implements ImageService {
       );
       return fileName;
     } catch (Exception e) {
-      throw new ImageUploadException(FAILED_TO_UPLOAD_IMAGE + e.getMessage());
+      throw new ImageProcessingException(FAILED_TO_UPLOAD_IMAGE + e.getMessage());
     }
   }
 
@@ -80,13 +80,13 @@ public class ImageServiceImpl implements ImageService {
         minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucket()).build());
       }
     } catch (Exception e) {
-      throw new ImageUploadException(FAILED_TO_CREATE_BUCKET + e.getMessage());
+      throw new ImageProcessingException(FAILED_TO_CREATE_BUCKET + e.getMessage());
     }
   }
 
   private void validateImage(MultipartFile file) {
     if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
-      throw new ImageUploadException(IMAGE_MUST_NOT_BE_EMPTY);
+      throw new ImageProcessingException(IMAGE_MUST_NOT_BE_EMPTY);
     }
   }
 

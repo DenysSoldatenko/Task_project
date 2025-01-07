@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.example.taskmanagerproject.exceptions.ImageUploadException;
+import com.example.taskmanagerproject.exceptions.ImageProcessingException;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
@@ -70,14 +70,14 @@ public class GlobalExceptionHandler {
   }
 
   /**
-   * Handles the exception when a {@link ImageUploadException} occurs.
+   * Handles the exception when a {@link ImageProcessingException} occurs.
    *
    * @param exception  the exception that was thrown.
    * @param webRequest the web request where the exception occurred.
    * @return a ResponseEntity containing details of the error response.
    */
-  @ExceptionHandler(ImageUploadException.class)
-  public ResponseEntity<ErrorDetails> handleImageUploadException(ImageUploadException exception, WebRequest webRequest) {
+  @ExceptionHandler(ImageProcessingException.class)
+  public ResponseEntity<ErrorDetails> handleImageUploadException(ImageProcessingException exception, WebRequest webRequest) {
     ErrorDetails errorDetails = new ErrorDetails(
         new Date(),
         valueOf(BAD_REQUEST.value()),

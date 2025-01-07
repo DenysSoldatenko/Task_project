@@ -46,6 +46,7 @@ public class TeamServiceImpl implements TeamService {
   }
 
   @Override
+  @Transactional
   public TeamDto getTeamByName(String teamName) {
     Team team = teamRepository.findByName(teamName)
         .orElseThrow(() -> new ResourceNotFoundException(TEAM_NOT_FOUND_WITH_NAME + teamName));
@@ -53,12 +54,14 @@ public class TeamServiceImpl implements TeamService {
   }
 
   @Override
+  @Transactional
   public List<TeamDto> getTeamsBySlug(String slug) {
     List<Team> teamDtoList = teamRepository.findByUserSlug(slug);
     return teamDtoList.stream().map(teamMapper::toDto).toList();
   }
 
   @Override
+  @Transactional
   public List<TeamUserDto> getUsersWithRolesForTeam(String teamName) {
     return teamUserRepository.findAllByTeamName(teamName).stream().map(teamUserMapper::toDto).toList();
   }

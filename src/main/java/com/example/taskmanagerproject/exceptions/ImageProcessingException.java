@@ -5,17 +5,17 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception to be thrown when there is an issue with uploading an image.
+ * General Exception to be thrown for image processing errors.
  */
 @ResponseStatus(BAD_REQUEST)
-public class ImageUploadException extends RuntimeException {
+public class ImageProcessingException extends RuntimeException {
 
   /**
    * Constructs a new ImageUploadException with the specified detail message.
    *
    * @param message The detail message explaining the error.
    */
-  public ImageUploadException(String message) {
+  public ImageProcessingException(String message) {
     super(message);
   }
 }
