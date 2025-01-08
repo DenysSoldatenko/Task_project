@@ -28,12 +28,14 @@ public class ReportMetricsCalculator {
   /**
    * Determines the user level based on weighted performance metrics.
    *
-   * @param completionRate Task completion rate (0-100).
-   * @param bugFixRate     Bugfix success rate (0-100).
+   * @param completionRate     Task completion rate (0-100).
+   * @param bugFixRate         Bugfix success rate (0-100).
+   * @param approvalRate       Approval success rate (0-100).
+   * @param criticalResolution Critical resolution rate (0-100).
    * @return User level (1-5).
    */
-  public int determineUserLevel(double completionRate, double bugFixRate) {
-    double score = Math.min(100, (completionRate * 0.6)  + (bugFixRate * 0.4));
+  public int determineUserLevel(double completionRate, double bugFixRate, double approvalRate, double criticalResolution) {
+    double score = Math.min(100, (completionRate * 0.4) + (bugFixRate * 0.3) + (approvalRate * 0.2) + (criticalResolution * 0.1));
     return score >= 85 ? 5 : score >= 70 ? 4 : score >= 55 ? 3 : score >= 40 ? 2 : 1;
   }
 

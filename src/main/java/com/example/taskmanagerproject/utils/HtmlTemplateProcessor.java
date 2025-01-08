@@ -48,7 +48,7 @@ public final class HtmlTemplateProcessor {
     double averageTaskDuration = parseDouble(metrics[10].toString());
     double approvalRate = ReportMetricsCalculator.calculatePercentage(metrics[5], metrics[3]);
     double criticalResolution = ReportMetricsCalculator.calculatePercentage(metrics[9], metrics[8]);
-    int userLevel = ReportMetricsCalculator.determineUserLevel(completionRate, bugFixRate);
+    int userLevel = ReportMetricsCalculator.determineUserLevel(completionRate, bugFixRate, approvalRate, criticalResolution);
     String userLevelName = ReportMetricsCalculator.getUserLevelName(userLevel);
     String performanceStars = generateStarsHtml(userLevel);
 

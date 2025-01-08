@@ -2,6 +2,7 @@ package com.example.taskmanagerproject.configurations.initializers;
 
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.ASSIGNED;
+import static com.example.taskmanagerproject.entities.tasks.TaskStatus.CANCELLED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.IN_PROGRESS;
 import static java.lang.Math.min;
 
@@ -46,7 +47,7 @@ public class TaskStatusGeneratorService {
    */
   public int changeTaskStatusForAllUsers() {
     List<Task> tasksToApprove = taskRepository.findAll().stream()
-        .filter(task -> !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS).contains(task.getTaskStatus()))
+        .filter(task -> !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS, CANCELLED).contains(task.getTaskStatus()))
         .peek(task -> {
           task.setTaskStatus(APPROVED);
           task.setApprovedAt(calculateApprovedAt(task));
