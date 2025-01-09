@@ -18,12 +18,22 @@ public class ReportServiceImpl implements ReportService {
   private final PdfReportFactory pdfReportFactory;
 
   @Override
-  public byte[] generateUserReport(String username, String teamName, String projectName, String startDate, String endDate) {
-    ReportData reportData = reportValidator.validateReportData(username, teamName, projectName, startDate, endDate);
+  public byte[] buildUserReport(String username, String teamName, String projectName, String startDate, String endDate) {
+    ReportData reportData = reportValidator.validateUserReportData(username, teamName, projectName, startDate, endDate);
     return pdfReportFactory.generateUserReport(
       reportData.user(),
       reportData.team(),
       reportData.project(),
+      reportData.startDate(),
+      reportData.endDate()
+    );
+  }
+
+  @Override
+  public byte[] buildTopPerformersInTeamReport(String teamName, String startDate, String endDate) {
+    ReportData reportData = reportValidator.validateTopPerformersReportData(teamName, startDate, endDate);
+    return pdfReportFactory.generateTopPerformersInTeamReport(
+      reportData.team(),
       reportData.startDate(),
       reportData.endDate()
     );

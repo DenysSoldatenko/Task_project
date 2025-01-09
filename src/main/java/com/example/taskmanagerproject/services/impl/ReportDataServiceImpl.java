@@ -27,19 +27,24 @@ public class ReportDataServiceImpl implements ReportDataService {
   private final AchievementRepository achievementRepository;
 
   @Override
-  public Object[] fetchTaskMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
+  public Object[] fetchUserTaskMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
     List<Object[]> taskMetricsList = taskRepository.getTaskMetricsByAssignedUser(user.getId(), startDate, endDate, project.getName(), team.getName());
-    return taskMetricsList.isEmpty() ? null : taskMetricsList.get(0);
+    return taskMetricsList.get(0);
   }
 
   @Override
   public String fetchUserRole(User user, Team team) {
-    String role = teamUserRepository.findRoleByTeamNameAndUsername(team.getName(), user.getUsername()).getName();
+    String role = teamUserRepository.findRoleByTeamNameAndUsername(team.getName(), user.getUsername()).getName().replace("_", " ");
     return toUpperCase(role.charAt(0)) + role.substring(1).toLowerCase();
   }
 
   @Override
   public List<Achievement> fetchAchievements(User user, Team team, Project project) {
     return achievementRepository.findAchievementsByUserTeamAndProject(user.getId(), team.getId(), project.getId());
+  }
+
+  @Override
+  public List<Object[]> fetchTopPerformersInTeamMetrics(Team team, LocalDateTime startDate, LocalDateTime endDate) {
+    return taskRepository.getTopPerformerMetricsByTeamName(team.getName(), startDate, endDate);
   }
 }

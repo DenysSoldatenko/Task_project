@@ -44,26 +44,20 @@ public interface TeamUserRepository extends JpaRepository<TeamUser, TeamUserId> 
    */
   @Query(value = """
         SELECT u.id
-        FROM users u
+        FROM task_list.users u
         WHERE u.id IN (
-            SELECT tu.user_id
-            FROM teams_users tu
-            WHERE tu.team_id = :teamId
-              AND tu.role_id < (
-                SELECT tu2.role_id
-                FROM teams_users tu2
-                WHERE tu2.team_id = :teamId
-                  AND tu2.user_id = :userId
-            )
-              AND EXISTS (
-                SELECT 1
-                FROM role_hierarchy rh
-                WHERE rh.higher_role = tu.role_id
-                  AND rh.lower_role = (
-                    SELECT tu2.role_id
-                    FROM teams_users tu2
-                    WHERE tu2.team_id = :teamId
-                      AND tu2.user_id = :userId
+          SELECT tu.user_id
+          FROM task_list.teams_users tu
+          WHERE tu.team_id = :teamId
+            AND EXISTS (
+              SELECT 1
+              FROM task_list.role_hierarchy rh
+              WHERE rh.higher_role = tu.role_id
+                AND rh.lower_role = (
+                  SELECT tu2.role_id
+                  FROM task_list.teams_users tu2
+                  WHERE tu2.team_id = :teamId
+                    AND tu2.user_id = :userId
                 )
             )
         )

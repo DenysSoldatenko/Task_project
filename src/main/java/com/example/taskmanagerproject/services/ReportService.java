@@ -1,7 +1,5 @@
 package com.example.taskmanagerproject.services;
 
-import java.io.IOException;
-
 /**
  * Service interface for generating various reports in PDF format.
  */
@@ -16,7 +14,16 @@ public interface ReportService {
    * @param startDate  The start date for the report period, formatted as "yyyy-MM-dd".
    * @param endDate    The end date for the report period, formatted as "yyyy-MM-dd".
    * @return A byte array containing the generated PDF report.
-   * @throws IOException If there is an error during report generation or file handling.
    */
-  byte[] generateUserReport(String username, String teamName, String projectName, String startDate, String endDate) throws IOException;
+  byte[] buildUserReport(String username, String teamName, String projectName, String startDate, String endDate);
+
+  /**
+   * Generates a PDF report displaying the top performers in a team within a specified date range.
+   *
+   * @param teamName   The name of the team for which the report is being generated.
+   * @param startDate  The start date for the report period, formatted as "yyyy-MM-dd".
+   * @param endDate    The end date for the report period, formatted as "yyyy-MM-dd".
+   * @return A byte array containing the generated PDF report.
+   */
+  byte[] buildTopPerformersInTeamReport(String teamName, String startDate, String endDate);
 }

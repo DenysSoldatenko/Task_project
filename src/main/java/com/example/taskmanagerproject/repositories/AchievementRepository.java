@@ -22,11 +22,11 @@ public interface AchievementRepository extends JpaRepository<Achievement, Long> 
    */
   @Query(value = """
       SELECT a.*
-      FROM achievements a
-      JOIN achievements_users ua ON ua.achievement_id = a.id
-      JOIN users u ON ua.user_id = u.id
-      JOIN teams t ON ua.team_id = t.id
-      JOIN projects p ON ua.project_id = p.id
+      FROM task_list.achievements a
+      JOIN task_list.achievements_users ua ON ua.achievement_id = a.id
+      JOIN task_list.users u ON ua.user_id = u.id
+      JOIN task_list.teams t ON ua.team_id = t.id
+      JOIN task_list.projects p ON ua.project_id = p.id
       WHERE ua.user_id = :userId
       AND ua.team_id = :teamId
       AND ua.project_id = :projectId

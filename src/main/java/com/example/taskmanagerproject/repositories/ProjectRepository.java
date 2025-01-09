@@ -45,10 +45,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
    */
   @Query(value = """
       SELECT DISTINCT p.*
-      FROM projects p
-      JOIN projects_teams pt ON p.id = pt.project_id
-      JOIN teams_users tu ON pt.team_id = tu.team_id
-      JOIN users u ON u.id = tu.user_id
+      FROM task_list.projects p
+      JOIN task_list.projects_teams pt ON p.id = pt.project_id
+      JOIN task_list.teams_users tu ON pt.team_id = tu.team_id
+      JOIN task_list.users u ON u.id = tu.user_id
       WHERE u.slug = :slug
       """, nativeQuery = true)
   List<Project> findByUserSlug(@Param("slug") String slug);

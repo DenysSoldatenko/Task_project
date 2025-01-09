@@ -150,17 +150,32 @@ public class SecurityExpressionService {
   public boolean canAccessReport(String username, String teamName) {
     JwtEntity jwt = (JwtEntity) getContext().getAuthentication().getPrincipal();
     User user = userService.getUserByUsername(username);
+    return hasAccess(jwt, teamName, user.getId());
+  }
+
+  /**
+   * Checks if the current user can access the specified report.
+   *
+   * @param teamName The associated team name.
+   * @return true if the user has access, false otherwise.
+   */
+  public boolean canAccessReport(String teamName) {
+    JwtEntity jwt = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    return hasAccess(jwt, teamName, jwt.getId());
+  }
+
+  private boolean hasAccess(JwtEntity jwt, String teamName, Long userId) {
     TeamDto team = teamService.getTeamByName(teamName);
     Role userRole = teamUserService.getRoleByTeamNameAndUsername(team.name(), jwt.getUsername());
 
     boolean hasPermission = ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS.stream()
-        .anyMatch(roleName -> roleName.name().equals(userRole.getName()));
+        .anyMatch(role -> role.name().equals(userRole.getName()));
     boolean isUserInTeam = teamUserService.existsByUserIdAndTeamId(jwt.getId(), team.id());
-    boolean canAccess = (jwt.getId().equals(user.getId()) || hasPermission) && isUserInTeam;
+    boolean canAccess = (jwt.getId().equals(userId) || hasPermission) && isUserInTeam;
 
     log.info(
-        "Access check for report - Team: {}, User has permission: {}, In team: {}, Access granted: {}",
-        teamName, hasPermission, isUserInTeam, canAccess
+        "Access check for report - Team: {}, User: {}, Role: {}, Has permission: {}, In team: {}, Access granted: {}",
+        teamName, jwt.getUsername(), userRole.getName(), hasPermission, isUserInTeam, canAccess
     );
 
     return canAccess;

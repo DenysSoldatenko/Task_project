@@ -38,8 +38,8 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
    */
   @Query(value = """
        SELECT r.*
-       FROM roles r
-       JOIN teams_users tu ON tu.role_id = r.id
+       FROM task_list.roles r
+       JOIN task_list.teams_users tu ON tu.role_id = r.id
        WHERE tu.user_id = :userId AND tu.team_id = :teamId
        """, nativeQuery = true)
   Role getRoleForUserInTeam(@Param("userId") Long userId, @Param("teamId") Long teamId);

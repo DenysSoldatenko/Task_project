@@ -99,12 +99,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
    */
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-      FROM users u
-      JOIN teams_users ut ON u.id = ut.user_id
-      JOIN roles r ON r.id = ut.role_id
+      FROM task_list.users u
+      JOIN task_list.teams_users ut ON u.id = ut.user_id
+      JOIN task_list.roles r ON r.id = ut.role_id
       WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
       AND u.username = :username
-      AND ut.team_id = (SELECT t.id FROM teams t WHERE t.name = :teamName)
+      AND ut.team_id = (SELECT t.id FROM task_list.teams t WHERE t.name = :teamName)
       """, nativeQuery = true)
   boolean isUserInLeadershipPositionInTeam(@Param("teamName") String teamName, @Param("username") String username);
 
@@ -116,9 +116,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
    */
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-      FROM users u
-               JOIN users_roles ur on u.id = ur.user_id
-               JOIN roles r ON r.id = ur.role_id
+      FROM task_list.users u
+               JOIN task_list.users_roles ur on u.id = ur.user_id
+               JOIN task_list.roles r ON r.id = ur.role_id
       WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
       AND u.username = :username
       """, nativeQuery = true)
