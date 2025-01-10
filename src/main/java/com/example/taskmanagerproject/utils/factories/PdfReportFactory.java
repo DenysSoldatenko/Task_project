@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_METRICS_NOT_FOUND_ERROR;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_PERFORMANCE_NOT_FOUND_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_METRICS_NOT_FOUND_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_PERFORMANCE_NOT_FOUND_ERROR;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.generatePdfFromHtml;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.loadTemplate;
 import static java.lang.String.format;

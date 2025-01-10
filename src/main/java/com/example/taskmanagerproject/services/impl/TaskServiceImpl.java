@@ -1,9 +1,9 @@
 package com.example.taskmanagerproject.services.impl;
 
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
-import static com.example.taskmanagerproject.utils.MessageUtils.NO_IMAGE_TO_DELETE;
-import static com.example.taskmanagerproject.utils.MessageUtils.NO_IMAGE_TO_UPDATE;
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
+import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_DELETE;
+import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_UPDATE;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.PDF_GENERATION_ERROR;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEMPLATE_LOAD_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.PDF_GENERATION_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEMPLATE_LOAD_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readString;
 import static org.jsoup.nodes.Document.OutputSettings.Syntax.xml;

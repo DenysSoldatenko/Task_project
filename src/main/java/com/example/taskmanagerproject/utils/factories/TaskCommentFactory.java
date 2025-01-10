@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 

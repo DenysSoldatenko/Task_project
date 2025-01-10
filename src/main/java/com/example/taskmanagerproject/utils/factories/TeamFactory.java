@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
 import static java.time.LocalDateTime.now;
 
 import com.example.taskmanagerproject.dtos.teams.TeamDto;

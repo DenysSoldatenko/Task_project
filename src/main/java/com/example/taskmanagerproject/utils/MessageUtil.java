@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
  * Utility class for holding application constants.
  */
 @UtilityClass
-public class MessageUtils {
+public class MessageUtil {
 
   public static final String USER_NOT_FOUND_WITH_SLUG
       = "User not found with slug: ";

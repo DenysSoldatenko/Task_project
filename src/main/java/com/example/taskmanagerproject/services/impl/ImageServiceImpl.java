@@ -1,9 +1,9 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_CREATE_BUCKET;
-import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_DELETE_IMAGE;
-import static com.example.taskmanagerproject.utils.MessageUtils.FAILED_TO_UPLOAD_IMAGE;
-import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_MUST_NOT_BE_EMPTY;
+import static com.example.taskmanagerproject.utils.MessageUtil.FAILED_TO_CREATE_BUCKET;
+import static com.example.taskmanagerproject.utils.MessageUtil.FAILED_TO_DELETE_IMAGE;
+import static com.example.taskmanagerproject.utils.MessageUtil.FAILED_TO_UPLOAD_IMAGE;
+import static com.example.taskmanagerproject.utils.MessageUtil.IMAGE_MUST_NOT_BE_EMPTY;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 

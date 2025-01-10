@@ -29,17 +29,6 @@ public interface ReportDataService {
   Object[] fetchUserTaskMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
 
   /**
-   * Fetches the role of a specified user within the context of a given team.
-   * This can be used to determine the user's responsibilities and impact within the team for reporting purposes.
-   *
-   * @param user The user whose role is to be fetched.
-   * @param team The team the user is a part of.
-   *
-   * @return A string representing the user's role within the team (for example, "Developer", "Manager").
-   */
-  String fetchUserRole(User user, Team team);
-
-  /**
    * Fetches the list of achievements for a user within a specified team and project.
    * Achievements could include completing significant milestones, surpassing goals, or other notable accomplishments.
    *

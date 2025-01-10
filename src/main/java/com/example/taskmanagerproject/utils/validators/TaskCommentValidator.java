@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_COMMENT_INVALID_SENDER_RECEIVER;
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_NOT_FOUND_WITH_ID;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_COMMENT_INVALID_SENDER_RECEIVER;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;

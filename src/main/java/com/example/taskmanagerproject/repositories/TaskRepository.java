@@ -29,18 +29,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   @Query(value = """
       SELECT
           t.project_id,
-  
           t.team_id,
-  
+          r.name AS user_role,
+
           COUNT(t.id) AS allTasks,
   
           COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) AS tasksCompleted,
   
           ROUND(
               CASE
-                  WHEN COUNT(t.id) > 0 THEN (COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t.id)
+                  WHEN COUNT(t.id) > 0
+                      THEN (COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t.id)
                   ELSE 0
               END, 2) AS taskCompletionRate,
+
           COUNT(CASE WHEN t.task_status = 'APPROVED' AND t.expiration_date >= t.approved_at THEN 1 END) AS onTimeTasks,
   
           (SELECT COUNT(DISTINCT tc.task_id)
@@ -68,11 +70,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
       FROM task_list.tasks t
       JOIN task_list.projects p ON p.id = t.project_id
       JOIN task_list.teams tm ON tm.id = t.team_id
+      JOIN task_list.teams_users tu ON tu.team_id = t.team_id AND tu.user_id = :assignedTo
+      JOIN task_list.roles r ON r.id = tu.role_id
       WHERE t.assigned_to = :assignedTo
         AND t.created_at BETWEEN :startDate AND :endDate
         AND p.name = :projectName
         AND tm.name = :teamName
-      GROUP BY t.project_id, t.team_id
+      GROUP BY t.project_id, t.team_id, r.name;
       """, nativeQuery = true)
   List<Object[]> getTaskMetricsByAssignedUser(@Param("assignedTo") Long assignedTo,
                                               @Param("startDate") LocalDateTime startDate,

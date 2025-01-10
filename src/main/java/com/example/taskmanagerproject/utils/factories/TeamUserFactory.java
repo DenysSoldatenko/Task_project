@@ -1,9 +1,9 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_ALREADY_IN_TEAM;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_ALREADY_IN_TEAM;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
 import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.teams.TeamUserDto;

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_ALREADY_EXISTS;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT;
+import static com.example.taskmanagerproject.utils.MessageUtil.PROJECT_ALREADY_EXISTS;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_PROJECT;
 import static java.util.Arrays.stream;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;

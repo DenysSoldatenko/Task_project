@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.TASK_COMMENT_FOUND_WITH_ID;
+import static com.example.taskmanagerproject.utils.MessageUtil.TASK_COMMENT_FOUND_WITH_ID;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.entities.tasks.TaskComment;

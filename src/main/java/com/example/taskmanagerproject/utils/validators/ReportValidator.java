@@ -1,12 +1,12 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.DATE_RANGE_REQUIRED;
-import static com.example.taskmanagerproject.utils.MessageUtils.INVALID_DATE_RANGE;
-import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_IN_PROJECT;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_IN_TEAM;
+import static com.example.taskmanagerproject.utils.MessageUtil.DATE_RANGE_REQUIRED;
+import static com.example.taskmanagerproject.utils.MessageUtil.INVALID_DATE_RANGE;
+import static com.example.taskmanagerproject.utils.MessageUtil.PROJECT_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_NOT_IN_PROJECT;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_IN_TEAM;
 
 import com.example.taskmanagerproject.dtos.reports.ReportData;
 import com.example.taskmanagerproject.entities.projects.Project;

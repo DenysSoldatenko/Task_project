@@ -1,12 +1,12 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.PROJECT_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_DISCREPANCY_FOUND;
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_NOT_FOUND_WITH_NAME;
-import static com.example.taskmanagerproject.utils.MessageUtils.USERS_DO_NOT_HAVE_ROLES_IN_TEAM;
-import static com.example.taskmanagerproject.utils.MessageUtils.USERS_NOT_IN_SAME_PROJECT;
-import static com.example.taskmanagerproject.utils.MessageUtils.USERS_NOT_IN_SAME_TEAM;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.PROJECT_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_DISCREPANCY_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.USERS_DO_NOT_HAVE_ROLES_IN_TEAM;
+import static com.example.taskmanagerproject.utils.MessageUtil.USERS_NOT_IN_SAME_PROJECT;
+import static com.example.taskmanagerproject.utils.MessageUtil.USERS_NOT_IN_SAME_TEAM;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
 import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;

@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.IntStream.range;

@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.IMAGE_DOWNLOAD_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.IMAGE_DOWNLOAD_ERROR;
 import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.users.UserImageDto;

@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
 
 import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
 import com.example.taskmanagerproject.entities.users.Role;

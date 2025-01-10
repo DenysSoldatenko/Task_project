@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.utils;
 
 import static java.lang.Double.parseDouble;
+import static java.lang.Math.min;
 import static java.util.stream.Collectors.joining;
 
 import com.example.taskmanagerproject.entities.achievements.Achievement;
@@ -43,38 +44,36 @@ public final class HtmlTemplateProcessor {
    * @return the populated HTML template as a String
    */
   public String populateUserTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, Object[] metrics) {
-    String role = reportDataService.fetchUserRole(user, team);
     List<Achievement> achievements = reportDataService.fetchAchievements(user, team, project);
-
-    double completionRate = ReportMetricsCalculator.calculatePercentage(metrics[3], metrics[2]);
-    double bugFixRate = ReportMetricsCalculator.calculatePercentage(metrics[7], metrics[6]);
-    double averageTaskDuration = parseDouble(metrics[10].toString());
-    double approvalRate = ReportMetricsCalculator.calculatePercentage(metrics[5], metrics[3]);
-    double criticalResolution = ReportMetricsCalculator.calculatePercentage(metrics[9], metrics[8]);
-    int userLevel = ReportMetricsCalculator.determineUserLevel(completionRate, bugFixRate, approvalRate, criticalResolution);
-    String userLevelName = ReportMetricsCalculator.getUserLevelName(userLevel);
+    double completionRate = ReportMetricUtil.calculatePercentage(metrics[4], metrics[3]);
+    double bugFixRate = ReportMetricUtil.calculatePercentage(metrics[8], metrics[7]);
+    double averageTaskDuration = parseDouble(metrics[11].toString());
+    double approvalRate = ReportMetricUtil.calculatePercentage(metrics[6], metrics[4]);
+    double criticalResolution = ReportMetricUtil.calculatePercentage(metrics[10], metrics[9]);
+    int userLevel = ReportMetricUtil.determineUserLevel(completionRate, bugFixRate, approvalRate, criticalResolution);
+    String userLevelName = ReportMetricUtil.getUserLevelName(userLevel);
     String performanceStars = generateStarsHtml(userLevel);
 
     return template.replace("{startDate}", startDate.format(DATE_FORMATTER))
       .replace("{endDate}", endDate.format(DATE_FORMATTER))
       .replace("{fullName}", user.getFullName())
       .replace("{email}", user.getUsername())
-      .replace("{role}", role)
+      .replace("{role}", ReportMetricUtil.formatRoleName(metrics[2]))
       .replace("{teamName}", team.getName())
       .replace("{teamObjective}", team.getDescription())
       .replace("{projectName}", project.getName())
       .replace("{projectDescription}", project.getDescription())
-      .replace("{tasksCompleted}", metrics[3] + "/" + metrics[2])
-      .replace("{taskCompletionRate}", metrics[4].toString())
-      .replace("{onTimeTasks}", metrics[5] + "/" + metrics[3])
-      .replace("{averageTaskDuration}", ReportMetricsCalculator.formatDuration(averageTaskDuration))
-      .replace("{bugFixesResolved}", metrics[7] + "/" + metrics[6])
-      .replace("{criticalTasksSolved}", metrics[9] + "/" + metrics[8])
+      .replace("{tasksCompleted}", metrics[4] + "/" + metrics[3])
+      .replace("{taskCompletionRate}", metrics[5].toString())
+      .replace("{onTimeTasks}", metrics[6] + "/" + metrics[4])
+      .replace("{averageTaskDuration}", ReportMetricUtil.formatDuration(averageTaskDuration))
+      .replace("{bugFixesResolved}", metrics[8] + "/" + metrics[7])
+      .replace("{criticalTasksSolved}", metrics[10] + "/" + metrics[9])
       .replace("{achievements}", generateAchievementsHtml(achievements))
-      .replace("{taskCompletionProgress}", ReportMetricsCalculator.formatPercentage(completionRate))
-      .replace("{bugFixProgress}", ReportMetricsCalculator.formatPercentage(bugFixRate))
-      .replace("{criticalTaskResolution}", ReportMetricsCalculator.formatPercentage(criticalResolution))
-      .replace("{onTimeApprovalRate}", ReportMetricsCalculator.formatPercentage(approvalRate))
+      .replace("{taskCompletionProgress}", ReportMetricUtil.formatPercentage(completionRate))
+      .replace("{bugFixProgress}", ReportMetricUtil.formatPercentage(bugFixRate))
+      .replace("{criticalTaskResolution}", ReportMetricUtil.formatPercentage(criticalResolution))
+      .replace("{onTimeApprovalRate}", ReportMetricUtil.formatPercentage(approvalRate))
       .replace("{userLevelName}", userLevelName)
       .replace("{performanceStars}", performanceStars);
   }
@@ -119,13 +118,13 @@ public final class HtmlTemplateProcessor {
     placeholders.put("{endDate}", endDate.format(DATE_FORMATTER));
     placeholders.put("{team_name}", team.getName());
 
-    for (int i = 0; i < Math.min(3, metrics.size()); i++) {
+    for (int i = 0; i < min(3, metrics.size()); i++) {
       Object[] data = metrics.get(i);
       placeholders.put("{top" + (i + 1) + "_name}", (String) data[0]);
-      placeholders.put("{top" + (i + 1) + "_role}", (String) data[2]);
+      placeholders.put("{top" + (i + 1) + "_role}", ReportMetricUtil.formatRoleName(data[2]));
       placeholders.put("{top" + (i + 1) + "_image}", generateImageUser((String) data[1]));
       placeholders.put("{top" + (i + 1) + "_tasks}", data[4] + "/" + data[3]);
-      placeholders.put("{top" + (i + 1) + "_xp}", ReportMetricsCalculator.formatPercentage(((BigDecimal) data[5]).doubleValue()));
+      placeholders.put("{top" + (i + 1) + "_xp}", ReportMetricUtil.formatPercentage(((BigDecimal) data[5]).doubleValue()));
       placeholders.put("{top" + (i + 1) + "_achievements}", String.valueOf(data[6]));
     }
 

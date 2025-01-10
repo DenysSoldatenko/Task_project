@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.controllers;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_FAIL_MESSAGE;
-import static com.example.taskmanagerproject.utils.MessageUtils.DATA_INITIALIZATION_SUCCESS_MESSAGE;
+import static com.example.taskmanagerproject.utils.MessageUtil.DATA_INITIALIZATION_FAIL_MESSAGE;
+import static com.example.taskmanagerproject.utils.MessageUtil.DATA_INITIALIZATION_SUCCESS_MESSAGE;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 

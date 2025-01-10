@@ -1,8 +1,11 @@
 package com.example.taskmanagerproject.utils;
 
+import static java.lang.Character.toUpperCase;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
 
+import java.util.Arrays;
 import java.util.Locale;
 import lombok.experimental.UtilityClass;
 
@@ -10,7 +13,7 @@ import lombok.experimental.UtilityClass;
  * Utility service for calculating various report metrics.
  */
 @UtilityClass
-public class ReportMetricsCalculator {
+public class ReportMetricUtil {
 
   /**
    * Calculates the percentage of a numerator over a denominator.
@@ -75,5 +78,18 @@ public class ReportMetricsCalculator {
   public String formatDuration(Object duration) {
     double minutes = parseDouble(duration.toString());
     return format(Locale.US, "%.1f hours, %.1f minutes", minutes / 60, minutes % 60);
+  }
+
+  /**
+   * Formats a role name by replacing underscores with spaces and capitalizing the first letter.
+   *
+   * @param roleName The role name to be formatted.
+   * @return The formatted role name.
+   */
+  public String formatRoleName(Object roleName) {
+    String role = roleName.toString().toLowerCase();
+    return Arrays.stream(role.split("_"))
+      .map(word -> toUpperCase(word.charAt(0)) + word.substring(1))
+      .collect(joining(" "));
   }
 }

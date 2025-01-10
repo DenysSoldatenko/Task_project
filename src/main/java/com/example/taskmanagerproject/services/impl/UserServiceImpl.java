@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_SLUG;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_NOT_FOUND_WITH_USERNAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_SLUG;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.dtos.users.UserImageDto;

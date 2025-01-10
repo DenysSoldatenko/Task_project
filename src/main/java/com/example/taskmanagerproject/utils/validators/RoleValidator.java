@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_ALREADY_EXISTS;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_ALREADY_EXISTS;
 import static java.util.Arrays.stream;
 
 import com.example.taskmanagerproject.dtos.users.RoleDto;

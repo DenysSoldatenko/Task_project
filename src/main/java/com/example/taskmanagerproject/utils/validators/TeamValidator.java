@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.TEAM_ALREADY_EXISTS;
-import static com.example.taskmanagerproject.utils.MessageUtils.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_ALREADY_EXISTS;
+import static com.example.taskmanagerproject.utils.MessageUtil.USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM;
 import static java.util.Arrays.stream;
 
 import com.example.taskmanagerproject.dtos.teams.TeamDto;

@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_HIERARCHY_NOT_FOUND;
-import static com.example.taskmanagerproject.utils.MessageUtils.ROLE_NOT_FOUND_WITH_NAME;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_HIERARCHY_NOT_FOUND;
+import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
 import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.users.RoleDto;
