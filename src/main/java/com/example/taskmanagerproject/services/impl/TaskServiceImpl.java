@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,16 +113,16 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> getAllTasksAssignedToUser(Long userId) {
-    List<Task> taskList = taskRepository.findTasksAssignedTo(userId);
-    return taskList.stream().map(taskMapper::toDto).toList();
+  public Page<TaskDto> getAllTasksAssignedToUser(String slug, String projectName, String teamName, Pageable pageable) {
+    Page<Task> tasksPage = taskRepository.findTasksAssignedToUser(slug, projectName, teamName, pageable);
+    return tasksPage.map(taskMapper::toDto);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> getAllTasksAssignedByUser(Long userId) {
-    List<Task> taskList = taskRepository.findTasksAssignedBy(userId);
-    return taskList.stream().map(taskMapper::toDto).toList();
+  public Page<TaskDto> getAllTasksAssignedByUser(String slug, String projectName, String teamName, Pageable pageable) {
+    Page<Task> tasksPage = taskRepository.findTasksAssignedByUser(slug, projectName, teamName, pageable);
+    return tasksPage.map(taskMapper::toDto);
   }
 
   @Override

@@ -3,6 +3,8 @@ package com.example.taskmanagerproject.repositories;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -149,17 +151,35 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                   @Param("startDate") LocalDateTime startDate,
                                                   @Param("endDate") LocalDateTime endDate);
 
-  @Query("FROM Task t WHERE t.assignedBy.id = :userId AND t.project.name = :projectName AND t.team.name = :teamName")
-  List<Task> findTasksAssignedBy(@Param("userId") Long userId, @Param("projectName") String projectName, @Param("teamName") String teamName);
+  /**
+   * Finds tasks assigned to a user for a specific project and team.
+   *
+   * @param slug The slug of the user.
+   * @param projectName The name of the project.
+   * @param teamName The name of the team.
+   * @param pageable The pageable object for pagination.
+   * @return A paginated list of tasks assigned to the user.
+   */
+  @Query("FROM Task t WHERE t.assignedTo.slug = :slug AND t.project.name = :projectName AND t.team.name = :teamName")
+  Page<Task> findTasksAssignedToUser(@Param("slug") String slug,
+                                     @Param("projectName") String projectName,
+                                     @Param("teamName") String teamName,
+                                     Pageable pageable);
 
-  @Query("FROM Task t WHERE t.assignedTo.id = :userId AND t.project.name = :projectName AND t.team.name = :teamName")
-  List<Task> findTasksAssignedTo(@Param("userId") Long userId, @Param("projectName") String projectName, @Param("teamName") String teamName);
-
-  @Query("FROM Task t WHERE t.assignedBy.id = :userId")
-  List<Task> findTasksAssignedBy(@Param("userId") Long userId);
-
-  @Query("FROM Task t WHERE t.assignedTo.id = :userId")
-  List<Task> findTasksAssignedTo(@Param("userId") Long userId);
+  /**
+   * Finds tasks assigned by a user for a specific project and team.
+   *
+   * @param slug The slug of the user.
+   * @param projectName The name of the project.
+   * @param teamName The name of the team.
+   * @param pageable The pageable object for pagination.
+   * @return A paginated list of tasks assigned by the user.
+   */
+  @Query("FROM Task t WHERE t.assignedBy.slug = :slug AND t.project.name = :projectName AND t.team.name = :teamName")
+  Page<Task> findTasksAssignedByUser(@Param("slug") String slug,
+                                     @Param("projectName") String projectName,
+                                     @Param("teamName") String teamName,
+                                     Pageable pageable);
 
   /**
    * Retrieves all approved tasks assigned to a specific user within a given project and team.
@@ -178,20 +198,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         AND t.team.id = :teamId
       """)
   List<Task> findAllCompletedTasksAssignedToUser(@Param("userId") Long userId,
-                                  @Param("projectId") Long projectId,
-                                  @Param("teamId") Long teamId);
-
-  @Query("""
-      SELECT t
-      FROM Task t
-      WHERE t.taskStatus = 'APPROVED'
-        AND t.assignedBy.id = :userId
-        AND t.project.id = :projectId
-        AND t.team.id = :teamId
-      """)
-  List<Task> findAllCompletedTasksAssignedByUser(@Param("userId") Long userId,
-                                          @Param("projectId") Long projectId,
-                                          @Param("teamId") Long teamId);
+                                                 @Param("projectId") Long projectId,
+                                                 @Param("teamId") Long teamId);
 
   /**
    * Retrieves a random approved task assigned to a user within each team and project.

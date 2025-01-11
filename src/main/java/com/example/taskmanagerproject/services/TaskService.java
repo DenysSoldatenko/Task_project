@@ -4,6 +4,8 @@ import com.example.taskmanagerproject.dtos.tasks.TaskDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import java.time.Duration;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service interface for managing tasks.
@@ -51,20 +53,26 @@ public interface TaskService {
   List<TaskDto> findAllSoonExpiringTasks(Duration duration);
 
   /**
-   * Retrieves all tasks assigned to a specific user.
+   * Retrieves a paginated list of tasks assigned to a specific user for a specific project and team.
    *
-   * @param userId The ID of the user to retrieve tasks for.
-   * @return A list of TaskDto objects representing the tasks assigned to the user.
+   * @param slug       The user's unique identifier (slug).
+   * @param projectName The name of the project to filter tasks.
+   * @param teamName   The name of the team to filter tasks.
+   * @param pageable   The pagination details (page number, size, and sort order).
+   * @return A paginated list of TaskDto objects representing tasks assigned to the user.
    */
-  List<TaskDto> getAllTasksAssignedToUser(Long userId);
+  Page<TaskDto> getAllTasksAssignedToUser(String slug, String projectName, String teamName, Pageable pageable);
 
   /**
-   * Retrieves all tasks assigned by a specific user.
+   * Retrieves a paginated list of tasks assigned by a specific user for a specific project and team.
    *
-   * @param userId The ID of the user who assigned the tasks.
-   * @return A list of TaskDto objects representing the tasks assigned by the user.
+   * @param slug       The user's unique identifier (slug).
+   * @param projectName The name of the project to filter tasks.
+   * @param teamName   The name of the team to filter tasks.
+   * @param pageable   The pagination details (page number, size, and sort order).
+   * @return A paginated list of TaskDto objects representing tasks assigned by the user.
    */
-  List<TaskDto> getAllTasksAssignedByUser(Long userId);
+  Page<TaskDto> getAllTasksAssignedByUser(String slug, String projectName, String teamName, Pageable pageable);
 
   /**
    * Uploads an image for a task.

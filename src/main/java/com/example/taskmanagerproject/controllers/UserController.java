@@ -1,5 +1,8 @@
 package com.example.taskmanagerproject.controllers;
 
+import static org.springframework.data.domain.PageRequest.of;
+import static org.springframework.data.domain.Sort.Direction.fromString;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -14,6 +17,7 @@ import com.example.taskmanagerproject.services.TaskService;
 import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +25,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -33,6 +40,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -186,15 +194,19 @@ public class UserController {
   }
 
   /**
-   * Retrieves tasks assigned to a user by ID.
+   * Retrieves tasks assigned to a specific user for a specific project and team.
    *
-   * @param id The ID of the user to retrieve tasks for.
-   * @return ResponseEntity containing a list of task DTOs.
+   * @param slug The user's unique identifier.
+   * @param projectName The name of the project.
+   * @param teamName The name of the team.
+   * @param page Page number (0-based).
+   * @param size Number of tasks per page.
+   * @param sort Sort criteria (for example, "id,asc").
+   * @return A paginated list of tasks assigned to the user.
    */
-  @GetMapping("/{id}/tasks/assigned-to")
-  @Operation(
-      summary = "Get tasks assigned to a user",
-      description = "Retrieve tasks assigned to a user by ID",
+  @GetMapping("/{slug}/tasks/assigned-to")
+  @Operation(summary = "Get tasks assigned to a user for a project and team",
+      description = "Retrieve tasks assigned to a user by slug, project, and team with pagination",
       responses = {
         @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto[].class))),
@@ -206,22 +218,36 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @QueryMapping(name = "getTasksAssignedToUser")
-  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
-  public List<TaskDto> getTasksAssignedToUser(@PathVariable(name = "id") @Argument Long id) {
-    return taskService.getAllTasksAssignedToUser(id);
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public Page<TaskDto> getTasksAssignedToUser(
+      @PathVariable String slug,
+      @RequestParam String projectName,
+      @RequestParam String teamName,
+      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
+      @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
+      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort
+  ) {
+    String[] sortParams = sort.split(",");
+    Direction direction = fromString(sortParams[1]);
+    Pageable pageable = of(page, size, by(direction, sortParams[0]));
+    return taskService.getAllTasksAssignedToUser(slug, projectName, teamName, pageable);
   }
 
   /**
-   * Retrieves tasks assigned by a user by ID.
+   * Retrieves tasks assigned by a specific user for a specific project and team.
    *
-   * @param id The ID of the user to retrieve tasks for.
-   * @return ResponseEntity containing a list of task DTOs.
+   * @param slug The user's unique identifier.
+   * @param projectName The name of the project.
+   * @param teamName The name of the team.
+   * @param page Page number (0-based).
+   * @param size Number of tasks per page.
+   * @param sort Sort criteria (for example, "id,asc").
+   * @return A paginated list of tasks assigned by the user.
    */
-  @GetMapping("/{id}/tasks/assigned-by")
+  @GetMapping("/{slug}/tasks/assigned-by")
   @Operation(
-      summary = "Get tasks assigned by a user",
-      description = "Retrieve tasks assigned by a user by ID",
+      summary = "Get tasks assigned by a user for a project and team",
+      description = "Retrieve tasks assigned by a user by slug, project, and team with pagination",
       responses = {
         @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto[].class))),
@@ -233,10 +259,19 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @QueryMapping(name = "getTasksAssignedByUser")
-  @PreAuthorize("@expressionService.canAccessUserDataById(#id)")
-  public List<TaskDto> getTasksAssignedByUser(@PathVariable(name = "id") @Argument Long id) {
-    return taskService.getAllTasksAssignedByUser(id);
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+  public Page<TaskDto> getTasksAssignedByUser(
+      @PathVariable String slug,
+      @RequestParam String projectName,
+      @RequestParam String teamName,
+      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
+      @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
+      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort
+  ) {
+    String[] sortParams = sort.split(",");
+    Direction direction = fromString(sortParams[1]);
+    Pageable pageable = of(page, size, by(direction, sortParams[0]));
+    return taskService.getAllTasksAssignedByUser(slug, projectName, teamName, pageable);
   }
 
   /**
