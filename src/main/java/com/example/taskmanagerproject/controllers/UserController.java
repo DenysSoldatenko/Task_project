@@ -221,8 +221,8 @@ public class UserController {
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public Page<TaskDto> getTasksAssignedToUser(
       @PathVariable String slug,
-      @RequestParam String projectName,
-      @RequestParam String teamName,
+      @RequestParam(defaultValue = "Project Alpha") String projectName,
+      @RequestParam(defaultValue = "Team A") String teamName,
       @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
       @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
       @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort
@@ -262,8 +262,8 @@ public class UserController {
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public Page<TaskDto> getTasksAssignedByUser(
       @PathVariable String slug,
-      @RequestParam String projectName,
-      @RequestParam String teamName,
+      @RequestParam(defaultValue = "Project Alpha") String projectName,
+      @RequestParam(defaultValue = "Team A") String teamName,
       @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
       @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
       @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort

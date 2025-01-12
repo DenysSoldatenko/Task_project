@@ -10,8 +10,9 @@ import com.example.taskmanagerproject.services.TaskCommentService;
 import com.example.taskmanagerproject.utils.factories.TaskCommentFactory;
 import com.example.taskmanagerproject.utils.mappers.TaskCommentMapper;
 import com.example.taskmanagerproject.utils.validators.TaskCommentValidator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,9 +60,9 @@ public class TaskCommentServiceImpl implements TaskCommentService {
 
   @Override
   @Transactional
-  public List<TaskCommentDto> getCommentsByTaskSlug(String slug) {
-    List<TaskComment> taskComments = taskCommentRepository.findAllBySlug(slug);
-    return taskComments.stream().map(taskCommentMapper::toDto).toList();
+  public Page<TaskCommentDto> getCommentsByTaskSlug(String slug, Pageable pageable) {
+    Page<TaskComment> taskCommentsPage = taskCommentRepository.findByTaskSlug(slug, pageable);
+    return taskCommentsPage.map(taskCommentMapper::toDto);
   }
 
   @Override

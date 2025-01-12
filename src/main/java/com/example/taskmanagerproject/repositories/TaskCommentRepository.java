@@ -4,6 +4,8 @@ import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.entities.tasks.TaskComment;
 import com.example.taskmanagerproject.entities.users.User;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,12 +18,14 @@ import org.springframework.stereotype.Repository;
 public interface TaskCommentRepository extends JpaRepository<TaskComment, Long> {
 
   /**
-   * Retrieves a list of TaskComment entities by the given task slug.
+   * Retrieves task comments by task slug with pagination.
    *
-   * @param slug The unique identifier (slug) of the task for which comments are retrieved.
-   * @return A list of TaskComment entities associated with the provided task slug.
+   * @param slug The slug of the task comments to retrieve.
+   * @param pageable The pagination information (page number, size, and sort).
+   * @return A paginated list of TaskComment objects.
    */
-  List<TaskComment> findAllBySlug(String slug);
+  @Query("SELECT t FROM TaskComment t WHERE t.slug = :slug")
+  Page<TaskComment> findByTaskSlug(@Param("slug") String slug, Pageable pageable);
 
   /**
    * Find comments by task and sender.
@@ -57,5 +61,4 @@ public interface TaskCommentRepository extends JpaRepository<TaskComment, Long> 
    */
   @Query("SELECT DISTINCT tc.task.id FROM TaskComment tc WHERE tc.id = :taskCommentId")
   Long findDistinctTaskIdById(@Param("taskCommentId") Long taskCommentId);
-
 }

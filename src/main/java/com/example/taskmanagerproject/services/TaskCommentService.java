@@ -1,7 +1,8 @@
 package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service interface for managing task comments.
@@ -33,12 +34,13 @@ public interface TaskCommentService {
   void deleteTaskComment(Long id);
 
   /**
-   * Retrieves all comments associated with a specific task using the task's slug.
+   * Retrieves task comments by slug with pagination.
    *
-   * @param slug The unique slug of the task whose comments are to be retrieved.
-   * @return A list of TaskCommentDto objects corresponding to the specified task.
+   * @param slug The slug of the task comments to retrieve.
+   * @param pageable The pagination information (page number, size, and sort).
+   * @return A paginated list of TaskCommentDto objects.
    */
-  List<TaskCommentDto> getCommentsByTaskSlug(String slug);
+  Page<TaskCommentDto> getCommentsByTaskSlug(String slug, Pageable pageable);
 
   /**
    * Retrieves the task ID associated with the given task's slug.

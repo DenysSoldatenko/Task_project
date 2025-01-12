@@ -1,5 +1,8 @@
 package com.example.taskmanagerproject.controllers;
 
+import static org.springframework.data.domain.PageRequest.of;
+import static org.springframework.data.domain.Sort.Direction.fromString;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -8,13 +11,16 @@ import com.example.taskmanagerproject.dtos.tasks.TaskCommentDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TaskCommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -122,19 +129,23 @@ public class TaskCommentController {
   }
 
   /**
-   * Retrieves task comments by their slug.
+   * Retrieves task comments by their slug with pagination.
    *
    * @param slug The slug of the task comments to retrieve.
-   * @return A list of TaskCommentDto objects corresponding to the given slug.
+   * @param page The page number (0-based).
+   * @param size The number of task comments per page.
+   * @param sort The sort criteria (for example, "id,asc").
+   * @return A paginated list of TaskCommentDto objects corresponding to the given slug.
    */
   @GetMapping("/{slug}")
   @PreAuthorize("@expressionService.canAccessTaskComment(#slug)")
   @Operation(
       summary = "Get task comments by slug",
-      description = "Retrieve task comments by their unique slug",
+      description = "Retrieve task comments by their unique slug with pagination",
       responses = {
         @ApiResponse(responseCode = "200", description = "Task comments retrieved successfully",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskCommentDto.class))),
+          content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = TaskCommentDto.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Task comments not found",
@@ -144,7 +155,15 @@ public class TaskCommentController {
       }
   )
   @ResponseStatus(OK)
-  public List<TaskCommentDto> getTaskCommentsBySlug(@PathVariable String slug) {
-    return taskCommentService.getCommentsByTaskSlug(slug);
+  public Page<TaskCommentDto> getTaskCommentsBySlug(
+      @PathVariable String slug,
+      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
+      @RequestParam(defaultValue = "10") @Parameter(description = "Number of task comments per page", example = "10") int size,
+      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria (e.g., 'id,asc')", example = "id,asc") String sort
+  ) {
+    String[] sortParams = sort.split(",");
+    Direction direction = fromString(sortParams[1]);
+    Pageable pageable = of(page, size, by(direction, sortParams[0]));
+    return taskCommentService.getCommentsByTaskSlug(slug, pageable);
   }
 }

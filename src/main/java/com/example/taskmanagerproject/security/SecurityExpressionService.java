@@ -54,19 +54,6 @@ public class SecurityExpressionService {
   }
 
   /**
-   * Checks if the current user can access the specified user's data by ID.
-   *
-   * @param id The ID of the user to check.
-   * @return true if the current user matches the user's ID, false otherwise.
-   */
-  public boolean canAccessUserDataById(Long id) {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasAccess = user.getId().equals(id);
-    log.info("Checking access for user ID: {} - hasAccess: {}", id, hasAccess);
-    return hasAccess;
-  }
-
-  /**
    * Checks if the current user has the necessary permissions to access a project.
    * The user must either be the creator of the project.
    *
