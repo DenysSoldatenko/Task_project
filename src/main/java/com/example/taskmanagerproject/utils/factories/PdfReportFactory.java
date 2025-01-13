@@ -11,7 +11,7 @@ import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
 import com.example.taskmanagerproject.services.ReportDataService;
-import com.example.taskmanagerproject.utils.HtmlTemplateProcessor;
+import com.example.taskmanagerproject.utils.reports.ReportTemplateProcessor;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +28,10 @@ public final class PdfReportFactory {
 
   private static final String USER_TEMPLATE_PATH = "src/main/resources/report_templates/user_template.html";
   private static final String TOP_PERFORMERS_TEMPLATE_PATH = "src/main/resources/report_templates/top_performers_template.html";
+  private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_report.html";
 
   private final ReportDataService reportDataService;
-  private final HtmlTemplateProcessor htmlProcessor;
+  private final ReportTemplateProcessor htmlProcessor;
 
   /**
    * Generates a performance report for a user in the context of a team and project.
@@ -82,6 +83,18 @@ public final class PdfReportFactory {
     }
 
     String populatedHtml = htmlProcessor.populateTopPerformersInTeamTemplate(htmlTemplate, team, startDate, endDate, performersMetrics);
+    return generatePdfFromHtml(populatedHtml);
+  }
+
+  public byte[] generateTaskProgressReport(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
+    String htmlTemplate = loadTemplate(TASK_PROGRESS_TEMPLATE_PATH);
+
+    List<Object[]> progressMetrics = reportDataService.fetchProgressMetrics(user, team, project, startDate, endDate);
+    if (progressMetrics == null) {
+      throw new PdfGenerationException(format(TASK_METRICS_NOT_FOUND_ERROR, user.getUsername(), project.getName(), startDate, endDate));
+    }
+
+    String populatedHtml = htmlProcessor.populateTaskProgressTemplate(htmlTemplate, user, team, project, startDate, endDate, progressMetrics);
     return generatePdfFromHtml(populatedHtml);
   }
 }

@@ -152,6 +152,87 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                   @Param("endDate") LocalDateTime endDate);
 
   /**
+   * Retrieves the daily task completion rates for a specific user, project, and team within a given date range.
+   * The completion rate is calculated as the percentage of tasks marked as "APPROVED"
+   * relative to the total number of tasks.
+   *
+   * @param startDate   the start date of the period for which the task completion rates are calculated.
+   * @param endDate     the end date of the period for which the task completion rates are calculated.
+   * @param assignedTo  the user ID to filter tasks assigned to a specific user.
+   * @param projectName the name of the project to filter tasks by project.
+   * @param teamName    the name of the team to filter tasks by team.
+   * @return a list of Object arrays, where each element represents a row of the query result containing the
+   *         task date and the corresponding task completion rate.
+   */
+  @Query(value = """ 
+        WITH date_series AS (SELECT generate_series(:startDate, :endDate, INTERVAL '1 day') AS task_date)
+        SELECT ds.task_date,
+               ROUND(
+                 CASE
+                     WHEN COUNT(t.id) > 0 THEN (COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t.id)
+                     ELSE 0
+                 END, 2
+               ) AS taskCompletionRate
+        FROM date_series ds
+        LEFT JOIN task_list.tasks t
+            ON t.created_at >= ds.task_date
+            AND t.created_at < ds.task_date + INTERVAL '1 day'
+            AND t.assigned_to = :assignedTo
+            AND t.created_at BETWEEN :startDate AND :endDate
+            AND t.project_id IN (SELECT id FROM task_list.projects WHERE name = :projectName)
+            AND t.team_id IN (SELECT id FROM task_list.teams WHERE name = :teamName)
+        GROUP BY ds.task_date
+        ORDER BY ds.task_date;
+        """, nativeQuery = true)
+  List<Object[]> getDailyCompletionRates(@Param("startDate") LocalDateTime startDate,
+                                         @Param("endDate") LocalDateTime endDate,
+                                         @Param("assignedTo") Long assignedTo,
+                                         @Param("projectName") String projectName,
+                                         @Param("teamName") String teamName);
+
+  /**
+   * Retrieves the monthly task completion rates for a specific user, project, and team within a given date range.
+   * The completion rate is calculated as the percentage of tasks marked as "APPROVED"
+   * relative to the total number of tasks.
+   *
+   * @param startDate   the start date of the period for which the task completion rates are calculated.
+   * @param endDate     the end date of the period for which the task completion rates are calculated.
+   * @param assignedTo  the user ID to filter tasks assigned to a specific user.
+   * @param projectName the name of the project to filter tasks by project.
+   * @param teamName    the name of the team to filter tasks by team.
+   * @return a list of Object arrays, where each element represents a row of the query result containing the
+   *         task month and the corresponding task completion rate.
+   */
+  @Query(value = """
+      WITH date_series AS (SELECT generate_series(:startDate, :endDate, INTERVAL '1 month') AS task_month)
+      SELECT
+          to_char(ds.task_month, 'YYYY-FMMon') AS task_month,
+          ROUND(
+              CASE
+                  WHEN COUNT(t.id) > 0 THEN
+                      (COUNT(CASE WHEN t.task_status = 'APPROVED' THEN 1 END) * 100.0) / COUNT(t.id)
+                  ELSE 0
+              END, 2) AS taskCompletionRate
+      FROM
+          date_series ds
+      LEFT JOIN task_list.tasks t
+          ON t.created_at >= ds.task_month
+          AND t.created_at < ds.task_month + INTERVAL '1 month'
+          AND t.assigned_to = :assignedTo
+          AND t.created_at BETWEEN :startDate AND :endDate
+          AND t.project_id IN (SELECT id FROM task_list.projects WHERE name = :projectName)
+          AND t.team_id IN (SELECT id FROM task_list.teams WHERE name = :teamName)
+      GROUP BY ds.task_month
+      ORDER BY ds.task_month
+      """, nativeQuery = true)
+  List<Object[]> getMonthlyCompletionRates(@Param("startDate") LocalDateTime startDate,
+                                           @Param("endDate") LocalDateTime endDate,
+                                           @Param("assignedTo") Long assignedTo,
+                                           @Param("projectName") String projectName,
+                                           @Param("teamName") String teamName);
+
+
+  /**
    * Finds tasks assigned to a user for a specific project and team.
    *
    * @param slug The slug of the user.
@@ -225,12 +306,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   List<Task> findRandomApprovedTasksForUserByTeamAndProject();
 
   @Query(value = """
-    SELECT * FROM tasks
-    WHERE expiration_date IS NOT NULL
-      AND expiration_date BETWEEN :start AND :end
-      AND project_name = :projectName
-      AND team_name = :teamName
-    """, nativeQuery = true)
+      SELECT * FROM task_list.tasks
+      WHERE expiration_date IS NOT NULL
+        AND expiration_date BETWEEN :start AND :end
+        AND project_name = :projectName
+        AND team_name = :teamName
+      """, nativeQuery = true)
   List<Task> findExpiringTasksBetween(@Param("start") LocalDateTime start,
                                       @Param("end") LocalDateTime end,
                                       @Param("projectName") String projectName,

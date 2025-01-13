@@ -47,7 +47,7 @@ public final class ReportValidator {
    * @param endDate     The report's end date (yyyy-MM-dd).
    * @return A `ReportData` object with validated user, team, project, and timestamps.
    */
-  public ReportData validateUserReportData(String username, String teamName, String projectName, String startDate, String endDate) {
+  public ReportData validateUserData(String username, String teamName, String projectName, String startDate, String endDate) {
     User user = getUser(username);
     Team team = getTeam(teamName);
     Project project = getProject(projectName);
@@ -67,7 +67,7 @@ public final class ReportValidator {
    * @param endDate   The report's end date (yyyy-MM-dd).
    * @return A `ReportData` object with a validated team and timestamps.
    */
-  public ReportData validateTopPerformersReportData(String teamName, String startDate, String endDate) {
+  public ReportData validateTopPerformersData(String teamName, String startDate, String endDate) {
     Team team = getTeam(teamName);
     validateDates(startDate, endDate);
 

@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.utils;
+package com.example.taskmanagerproject.utils.reports;
 
 import static java.lang.Character.toUpperCase;
 import static java.lang.Double.parseDouble;
@@ -91,5 +91,9 @@ public class ReportMetricUtil {
     return Arrays.stream(role.split("_"))
       .map(word -> toUpperCase(word.charAt(0)) + word.substring(1))
       .collect(joining(" "));
+  }
+
+  public String formatChartDate(Object date) {
+    return date.toString().substring(5, 10);
   }
 }

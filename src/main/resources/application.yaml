@@ -24,6 +24,9 @@ spring:
   jpa:
     open-in-view: false
 #    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVER}
     topic:

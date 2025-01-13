@@ -30,7 +30,7 @@ public interface ReportDataService {
 
   /**
    * Fetches the list of achievements for a user within a specified team and project.
-   * Achievements could include completing significant milestones, surpassing goals, or other notable accomplishments.
+   * Achievements include completing significant milestones, surpassing goals, or other notable accomplishments.
    *
    * @param user The user whose achievements are to be fetched.
    * @param team The team the user is a part of, providing context to their achievements.
@@ -52,4 +52,19 @@ public interface ReportDataService {
    *         such as name, image, role, tasks completed, and performance metrics.
    */
   List<Object[]> fetchTopPerformersInTeamMetrics(Team team, LocalDateTime startDate, LocalDateTime endDate);
+
+  /**
+   * Fetches the progress metrics for a user within the context of a specified team, project, and date range.
+   * This includes information such as the user's progress towards completing assigned tasks.
+   *
+   * @param user The user whose progress metrics are to be fetched.
+   * @param team The team the user belongs to, for additional context.
+   * @param project The project in which the user is working and for which progress metrics are being retrieved.
+   * @param startDate The start date of the time period for which progress is being tracked.
+   * @param endDate The end date of the time period for which progress is being tracked.
+   *
+   * @return A list of Object arrays containing various progress metrics for the user within the specified time range.
+   *         These metrics may include task completion rates, milestones achieved, etc.
+   */
+  List<Object[]> fetchProgressMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
 }
