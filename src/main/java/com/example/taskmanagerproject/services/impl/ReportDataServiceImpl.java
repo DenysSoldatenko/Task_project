@@ -8,6 +8,7 @@ import com.example.taskmanagerproject.repositories.AchievementRepository;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ReportDataService;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,12 @@ public class ReportDataServiceImpl implements ReportDataService {
 
   @Override
   public List<Object[]> fetchProgressMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
-    return taskRepository.getDailyCompletionRates(startDate, endDate, user.getId(), project.getName(), team.getName());
+    long daysDifference = ChronoUnit.DAYS.between(startDate.toLocalDate(), endDate.toLocalDate());
+
+    if (daysDifference > 31) {
+      return taskRepository.getMonthlyCompletionRates(startDate, endDate, user.getId(), project.getName(), team.getName());
+    } else {
+      return taskRepository.getDailyCompletionRates(startDate, endDate, user.getId(), project.getName(), team.getName());
+    }
   }
 }

@@ -93,7 +93,19 @@ public class ReportMetricUtil {
       .collect(joining(" "));
   }
 
+  /**
+   * Formats the date by extracting the month and day from the provided date string.
+   * The format of the date is expected to be at least "yyyy-MM-dd" (or a similar pattern).
+   * The method extracts and returns a substring representing the month and day (i.e., "MM-dd").
+   *
+   * @param date The date object to format. It is expected to be convertible to a string.
+   * @return A formatted string representing the month and day in "MM-dd" format, or the
+   *         substring starting from the 5th character if the date string is shorter.
+   */
   public String formatChartDate(Object date) {
-    return date.toString().substring(5, 10);
+    String dateString = date.toString();
+    return (dateString.length() >= 10) ? dateString.substring(5, 10)
+      : (dateString.length() >= 5) ? dateString.substring(5)
+      : dateString;
   }
 }

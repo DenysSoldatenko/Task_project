@@ -321,7 +321,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
    * Finds tasks where the task history indicates it has been canceled at any point.
    *
    * @param taskId The ID of the task to check.
-   * @return true, if the task has been cancelled at some point, otherwise false.
+   * @return true, if the task has been canceled at some point, otherwise false.
    */
   @Query("""
       SELECT CASE WHEN COUNT(th) > 0 THEN true ELSE false END

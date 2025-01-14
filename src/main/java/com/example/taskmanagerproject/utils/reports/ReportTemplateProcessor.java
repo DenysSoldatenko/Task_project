@@ -41,10 +41,7 @@ public final class ReportTemplateProcessor {
    * @param metrics   the array of metrics used to calculate performance and other details
    * @return the populated HTML template as a String
    */
-  public String populateUserTemplate(
-      String template, User user, Team team, Project project,
-      LocalDateTime startDate, LocalDateTime endDate, Object[] metrics
-  ) {
+  public String populateUserTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, Object[] metrics) {
     List<Achievement> achievements = reportDataService.fetchAchievements(user, team, project);
     double completionRate = ReportMetricUtil.calculatePercentage(metrics[4], metrics[3]);
     double bugFixRate = ReportMetricUtil.calculatePercentage(metrics[8], metrics[7]);
@@ -91,10 +88,7 @@ public final class ReportTemplateProcessor {
    * @param metrics   A list of top performers' metrics.
    * @return The populated HTML template as a string with placeholders replaced by actual data.
    */
-  public String populateTopPerformersInTeamTemplate(
-      String template, Team team, LocalDateTime startDate,
-      LocalDateTime endDate, List<Object[]> metrics
-  ) {
+  public String populateTopPerformersInTeamTemplate(String template, Team team, LocalDateTime startDate, LocalDateTime endDate, List<Object[]> metrics) {
     Map<String, String> placeholders = new HashMap<>();
     placeholders.put("{startDate}", startDate.format(DATE_FORMATTER));
     placeholders.put("{endDate}", endDate.format(DATE_FORMATTER));
@@ -128,10 +122,7 @@ public final class ReportTemplateProcessor {
    * @param metrics   A list of task progress metrics for the user, which will be used to populate the chart and task-related data.
    * @return The populated HTML template as a string, with placeholders replaced by actual task progress data.
    */
-  public String populateTaskProgressTemplate(
-      String template, User user, Team team, Project project,
-      LocalDateTime startDate, LocalDateTime endDate, List<Object[]> metrics
-  ) {
+  public String populateTaskProgressTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, List<Object[]> metrics) {
     Map<String, String> placeholders = new HashMap<>();
     placeholders.put("{startDate}", startDate.format(DATE_FORMATTER));
     placeholders.put("{endDate}", endDate.format(DATE_FORMATTER));
