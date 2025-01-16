@@ -45,13 +45,14 @@ public interface ReportDataService {
    * This includes metrics for the highest-performing users, such as completed tasks, XP, and achievements unlocked.
    *
    * @param team The team for which top performers are to be fetched.
+   * @param project The project for which to fetch top performers.
    * @param startDate The start date of the period to assess the top performers.
    * @param endDate The end date of the period to assess the top performers.
    *
    * @return A list of Object arrays, where each array contains the task metrics for a top performer,
    *         such as name, image, role, tasks completed, and performance metrics.
    */
-  List<Object[]> fetchTopPerformersInTeamMetrics(Team team, LocalDateTime startDate, LocalDateTime endDate);
+  List<Object[]> fetchTopPerformersInTeamMetrics(Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
 
   /**
    * Fetches the progress metrics for a user within the context of a specified team, project, and date range.

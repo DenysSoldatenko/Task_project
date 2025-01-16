@@ -60,18 +60,21 @@ public final class ReportValidator {
   }
 
   /**
-   * Validates report parameters and retrieves required entities and parsed dates for top performers report.
+   * Validates the data for generating a report for a specific team and project within a date range.
    *
-   * @param teamName  The name of the team.
-   * @param startDate The report's start date (yyyy-MM-dd).
-   * @param endDate   The report's end date (yyyy-MM-dd).
-   * @return A `ReportData` object with a validated team and timestamps.
+   * @param teamName    The name of the team.
+   * @param projectName The name of the project.
+   * @param startDate   The report's start date (yyyy-MM-dd).
+   * @param endDate     The report's end date (yyyy-MM-dd).
+   * @return A `ReportData` object with validated user, team, project, and timestamps.
    */
-  public ReportData validateTopPerformersData(String teamName, String startDate, String endDate) {
+  public ReportData validateTeamData(String teamName, String projectName, String startDate, String endDate) {
     Team team = getTeam(teamName);
+    Project project = getProject(projectName);
+    checkTeamInProject(team, project);
     validateDates(startDate, endDate);
 
-    return new ReportData(null, team, null, toStartOfDay(startDate), toEndOfDay(endDate));
+    return new ReportData(null, team, project, toStartOfDay(startDate), toEndOfDay(endDate));
   }
 
   private User getUser(String username) {

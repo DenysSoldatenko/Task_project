@@ -27,7 +27,7 @@ public class ReportServiceImpl implements ReportService {
 
   private static final String USER_TEMPLATE_PATH = "src/main/resources/report_templates/user_template.html";
   private static final String TOP_PERFORMERS_TEMPLATE_PATH = "src/main/resources/report_templates/top_performers_template.html";
-  private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_report.html";
+  private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_template.html";
 
   private final ReportValidator reportValidator;
   private final ReportDataService reportDataService;
@@ -44,10 +44,10 @@ public class ReportServiceImpl implements ReportService {
   }
 
   @Override
-  public byte[] buildTopPerformersInTeamReport(String teamName, String startDate, String endDate) {
-    ReportData reportData = reportValidator.validateTopPerformersData(teamName, startDate, endDate);
+  public byte[] buildTopPerformersInTeamReport(String teamName, String projectName, String startDate, String endDate) {
+    ReportData reportData = reportValidator.validateTeamData(teamName, projectName, startDate, endDate);
     return generateReport(
-      () -> reportDataService.fetchTopPerformersInTeamMetrics(reportData.team(), reportData.startDate(), reportData.endDate()),
+      () -> reportDataService.fetchTopPerformersInTeamMetrics(reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
       metrics -> htmlProcessor.populateTopPerformersInTeamTemplate(loadTemplate(TOP_PERFORMERS_TEMPLATE_PATH), reportData.team(), reportData.startDate(), reportData.endDate(), metrics),
       format(TEAM_PERFORMANCE_NOT_FOUND_ERROR, teamName, startDate, endDate)
     );

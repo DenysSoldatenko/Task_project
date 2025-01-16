@@ -112,14 +112,17 @@ public class ReportController {
       @Parameter(description = "The name of the team", example = "Hawaii chickensd2f9")
       @RequestParam String teamName,
 
+      @Parameter(description = "The name of the project", example = "Moen, Kreiger and Kunze67a6")
+      @RequestParam String projectName,
+
       @Parameter(description = "The start date of the report's date range", example = "2025-01-01")
       @RequestParam String startDate,
 
       @Parameter(description = "The end date of the report's date range", example = "2025-12-31")
       @RequestParam String endDate
   ) {
-    byte[] pdfData = reportService.buildTopPerformersInTeamReport(teamName, startDate, endDate);
-    String fileName = "top_performers_report_" + teamName + "_" + startDate + "_to_" + endDate + ".pdf";
+    byte[] pdfData = reportService.buildTopPerformersInTeamReport(teamName, projectName, startDate, endDate);
+    String fileName = "top_performers_report_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
 
     return ResponseEntity.ok()
       .header("Content-Type", "application/pdf")

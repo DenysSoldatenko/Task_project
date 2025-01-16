@@ -103,6 +103,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             FROM task_list.teams_users tu
             LEFT JOIN task_list.tasks t ON t.assigned_to = tu.user_id AND t.team_id = tu.team_id
             WHERE tu.team_id = (SELECT id FROM task_list.teams WHERE name = :teamName)
+              AND t.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
               AND t.created_at BETWEEN :startDate AND :endDate
             GROUP BY tu.user_id
         ),
@@ -148,6 +149,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         ORDER BY tasks_completed DESC, task_completion_rate DESC;
         """, nativeQuery = true)
   List<Object[]> getTopPerformerMetricsByTeamName(@Param("teamName") String teamName,
+                                                  @Param("projectName") String projectName,
                                                   @Param("startDate") LocalDateTime startDate,
                                                   @Param("endDate") LocalDateTime endDate);
 
