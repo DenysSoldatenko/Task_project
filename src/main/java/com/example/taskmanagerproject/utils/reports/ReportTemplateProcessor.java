@@ -1,6 +1,7 @@
 package com.example.taskmanagerproject.utils.reports;
 
 import static java.lang.Double.parseDouble;
+import static java.util.stream.Collectors.joining;
 
 import com.example.taskmanagerproject.entities.achievements.Achievement;
 import com.example.taskmanagerproject.entities.projects.Project;
@@ -41,7 +42,7 @@ public final class ReportTemplateProcessor {
    * @param metrics   the array of metrics used to calculate performance and other details
    * @return the populated HTML template as a String
    */
-  public String populateUserTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, Object[] metrics) {
+  public String populateUserPerformanceTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, Object[] metrics) {
     List<Achievement> achievements = reportDataService.fetchAchievements(user, team, project);
     double completionRate = ReportMetricUtil.calculatePercentage(metrics[4], metrics[3]);
     double bugFixRate = ReportMetricUtil.calculatePercentage(metrics[8], metrics[7]);
@@ -123,15 +124,38 @@ public final class ReportTemplateProcessor {
    * @return The populated HTML template as a string, with placeholders replaced by actual task progress data.
    */
   public String populateTaskProgressTemplate(String template, User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate, List<Object[]> metrics) {
-    Map<String, String> placeholders = new HashMap<>();
-    placeholders.put("{startDate}", startDate.format(DATE_FORMATTER));
-    placeholders.put("{endDate}", endDate.format(DATE_FORMATTER));
-    placeholders.put("{teamName}", team.getName());
-    placeholders.put("{projectName}", project.getName());
-    placeholders.put("{fullName}", user.getFullName());
-    placeholders.put("{email}", user.getUsername());
-    placeholders.put("{role}", ReportMetricUtil.formatRoleName(user.getRole().getName()));
-    placeholders.put("{chart_bars}", ReportTemplateUtil.generateChartHtml(metrics));
+    Map<String, String> placeholders = Map.of(
+        "{startDate}", startDate.format(DATE_FORMATTER),
+        "{endDate}", endDate.format(DATE_FORMATTER),
+        "{teamName}", team.getName(),
+        "{projectName}", project.getName(),
+        "{fullName}", user.getFullName(),
+        "{email}", user.getUsername(),
+        "{role}", ReportMetricUtil.formatRoleName(user.getRole().getName()),
+        "{chart_bars}", ReportTemplateUtil.generateChartHtml(metrics)
+    );
+
+    return ReportTemplateUtil.replacePlaceholders(template, placeholders);
+  }
+
+  /**
+   * Populates the team performance report template with dynamic data.
+   *
+   * @param template  The HTML template as a string.
+   * @param team      The team whose performance is being reported.
+   * @param startDate The start date of the reporting period.
+   * @param endDate   The end date of the reporting period.
+   * @param metrics   The performance metrics for team members.
+   * @return The populated HTML report as a string.
+   */
+  public String populateTeamPerformanceTemplate(String template, Team team, LocalDateTime startDate,
+                                                LocalDateTime endDate, List<Object[]> metrics) {
+    Map<String, String> placeholders = Map.of(
+        "{startDate}", startDate.format(DATE_FORMATTER),
+        "{endDate}", endDate.format(DATE_FORMATTER),
+        "{teamName}", team.getName(),
+        "{team_members}", metrics.stream().map(ReportTemplateUtil::generateTeamMemberHtml).collect(joining())
+    );
 
     return ReportTemplateUtil.replacePlaceholders(template, placeholders);
   }

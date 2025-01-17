@@ -83,6 +83,55 @@ public class ReportController {
   }
 
   /**
+   * Generates a PDF report for a team's overall performance and progress within a specified date range.
+   *
+   * @param teamName  The name of the team for which the report is generated.
+   * @param projectName The name of the project associated with the team.
+   * @param startDate The start date (inclusive) of the date range for which the report is generated.
+   * @param endDate   The end date (inclusive) of the date range for which the report is generated.
+   * @return A {@link ResponseEntity} containing the generated PDF report.
+   */
+  @GetMapping("/team-report")
+  @PreAuthorize("@expressionService.canAccessReport(#teamName)")
+  @Operation(
+      summary = "Generate a PDF report for team performance and progress",
+      description = "Generates a PDF report displaying the overall performance and progress of the team for a given date range",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
+          content = @Content(mediaType = "application/pdf")),
+        @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  public ResponseEntity<byte[]> generateTeamReport(
+      @Parameter(description = "The name of the team", example = "Tennessee cats86c5")
+      @RequestParam String teamName,
+
+      @Parameter(description = "The name of the project the team is associated with", example = "Hoppe, Jacobson and Cole116c")
+      @RequestParam String projectName,
+
+      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
+      @RequestParam String startDate,
+
+      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
+      @RequestParam String endDate
+  ) {
+    byte[] pdfData = reportService.buildTeamReport(teamName, projectName, startDate, endDate);
+    String fileName = "team_report_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
+
+    return ResponseEntity.ok()
+      .header("Content-Type", "application/pdf")
+      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+      .body(pdfData);
+  }
+
+  /**
    * Generates a PDF report for the top performers of a team.
    *
    * @param teamName  The name of the team.

@@ -39,4 +39,15 @@ public interface ReportService {
    * @return A byte array containing the generated PDF report.
    */
   byte[] buildTaskProgressReport(String username, String teamName, String projectName, String startDate, String endDate);
+
+  /**
+   * Generates a PDF report displaying the overall performance and progress of a team within a specified date range.
+   *
+   * @param teamName   The name of the team for which the report is being generated.
+   * @param projectName The name of the project the report should be associated with.
+   * @param startDate  The start date for the report period, formatted as "yyyy-MM-dd".
+   * @param endDate    The end date for the report period, formatted as "yyyy-MM-dd".
+   * @return A byte array containing the generated PDF report.
+   */
+  byte[] buildTeamReport(String teamName, String projectName, String startDate, String endDate);
 }

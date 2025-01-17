@@ -154,6 +154,111 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                   @Param("endDate") LocalDateTime endDate);
 
   /**
+   * Retrieves task metrics for all team members in a specific team, including those with no tasks.
+   * Metrics include task counts, completed tasks, task completion rate, achievements,
+   * on-time task completion, and average task duration.
+   *
+   * @param teamName The name of the team to retrieve task metrics for.
+   * @param projectName The name of the project to filter tasks by.
+   * @param startDate The start date for task creation.
+   * @param endDate The end date for task creation.
+   * @return A list of task metrics, including username, image, role, task counts,
+   *     task completion rates, on-time completion, and task duration.
+   */
+  @Query(value = """
+        WITH TeamTasks AS (
+            SELECT
+                tu.user_id,
+                COUNT(t.id) FILTER (WHERE t.task_status = 'APPROVED') AS tasks_completed,
+                COUNT(t.id) AS total_tasks
+            FROM task_list.teams_users tu
+                     LEFT JOIN task_list.tasks t ON t.assigned_to = tu.user_id AND t.team_id = tu.team_id
+                AND t.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+                AND t.created_at BETWEEN :startDate AND :endDate
+            WHERE tu.team_id = (SELECT id FROM task_list.teams WHERE name = :teamName)
+            GROUP BY tu.user_id
+        ),
+        UserAchievements AS (
+            SELECT
+                au.user_id,
+                COUNT(au.achievement_id) AS achievement_count
+            FROM task_list.achievements_users au
+                    JOIN task_list.users u ON au.user_id = u.id
+            WHERE u.id IN (SELECT user_id FROM task_list.teams_users WHERE team_id = (SELECT id FROM task_list.teams WHERE name = :teamName))
+            AND au.team_id = (SELECT id FROM task_list.teams WHERE name = :teamName)
+            GROUP BY au.user_id
+        ),
+        UserBugs AS (
+            SELECT
+                t2.assigned_to AS user_id,
+                COUNT(DISTINCT tc.task_id) AS allBugs,
+                COUNT(DISTINCT CASE WHEN t2.task_status = 'APPROVED' THEN tc.task_id END) AS bugFixesResolved
+            FROM task_list.task_comments tc
+                    JOIN task_list.tasks t2 ON tc.task_id = t2.id
+            WHERE t2.created_at BETWEEN :startDate AND :endDate
+            AND t2.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+            GROUP BY t2.assigned_to
+        ),
+        UserCriticalTasks AS (
+            SELECT
+                t.assigned_to AS user_id,
+                COUNT(CASE WHEN t.priority = 'CRITICAL' THEN 1 END) AS allCriticalTasks,
+                COUNT(CASE WHEN t.priority = 'CRITICAL' AND t.task_status = 'APPROVED' THEN 1 END) AS criticalTasksSolved
+            FROM task_list.tasks t
+            WHERE t.created_at BETWEEN :startDate AND :endDate
+            AND t.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+            GROUP BY t.assigned_to
+        ),
+        UserTaskDetails AS (
+            SELECT
+                u.full_name AS user_name,
+                COALESCE(ui.image, 'https://dummyimage.com/150x150/000/fff&text=No+Data') AS user_image,
+                COALESCE(r.name, 'N/A') AS user_role,
+                COALESCE(tt.total_tasks, 0) AS all_tasks,
+                COALESCE(tt.tasks_completed, 0) AS tasks_completed,
+                ROUND(COALESCE(tt.tasks_completed * 100.0 / NULLIF(tt.total_tasks, 0), 0), 2) AS task_completion_rate,
+                COALESCE(ua.achievement_count, 0) AS all_achievements,
+                COALESCE(ub.allBugs, 0) AS allBugs,
+                COALESCE(ub.bugFixesResolved, 0) AS bugFixesResolved,
+                COALESCE(uct.allCriticalTasks, 0) AS allCriticalTasks,
+                COALESCE(uct.criticalTasksSolved, 0) AS criticalTasksSolved,
+                COUNT(CASE WHEN t.task_status = 'APPROVED' AND t.approved_at <= t.expiration_date THEN 1 END) AS onTimeTasks,
+                ROUND(COALESCE(AVG(EXTRACT(EPOCH FROM (t.approved_at - t.created_at)) / 60), 0), 2) AS averageTaskDuration
+            FROM task_list.teams_users tu
+                    JOIN task_list.users u ON tu.user_id = u.id
+                    LEFT JOIN task_list.roles r ON tu.role_id = r.id
+                    LEFT JOIN task_list.users_images ui ON u.id = ui.user_id
+                    LEFT JOIN TeamTasks tt ON tu.user_id = tt.user_id
+                    LEFT JOIN UserAchievements ua ON tu.user_id = ua.user_id
+                    LEFT JOIN UserBugs ub ON tu.user_id = ub.user_id
+                    LEFT JOIN UserCriticalTasks uct ON tu.user_id = uct.user_id
+                    LEFT JOIN task_list.tasks t ON t.assigned_to = tu.user_id AND t.team_id = tu.team_id
+                AND t.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+                AND t.created_at BETWEEN :startDate AND :endDate
+            WHERE tu.team_id = (SELECT id FROM task_list.teams WHERE name = :teamName)
+            GROUP BY u.full_name, ui.image, r.name, tt.total_tasks, tt.tasks_completed, ua.achievement_count, ub.allBugs, ub.bugFixesResolved, uct.allCriticalTasks, uct.criticalTasksSolved
+        )
+        SELECT
+            user_name,
+            user_image,
+            user_role,
+            all_tasks,
+            tasks_completed,
+            onTimeTasks,
+            averageTaskDuration,
+            task_completion_rate,
+            ROUND(COALESCE(bugFixesResolved * 100.0 / NULLIF(allBugs, 0), 0), 2) AS bugFixResolutionRate,
+            ROUND(COALESCE(criticalTasksSolved * 100.0 / NULLIF(allCriticalTasks, 0), 0), 2) AS criticalTaskResolutionRate,
+            all_achievements
+        FROM UserTaskDetails
+        ORDER BY tasks_completed DESC, task_completion_rate DESC;
+        """, nativeQuery = true)
+  List<Object[]> getAllTeamMemberMetricsByTeamName(@Param("teamName") String teamName,
+                                                   @Param("projectName") String projectName,
+                                                   @Param("startDate") LocalDateTime startDate,
+                                                   @Param("endDate") LocalDateTime endDate);
+
+  /**
    * Retrieves the daily task completion rates for a specific user, project, and team within a given date range.
    * The completion rate is calculated as the percentage of tasks marked as "APPROVED"
    * relative to the total number of tasks.

@@ -26,7 +26,7 @@ public interface ReportDataService {
    * @return An array of objects representing the task metrics for the specified user, team, project, and date range.
    *         The array may include various metrics like completed tasks, completion rate, etc.
    */
-  Object[] fetchUserTaskMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
+  Object[] fetchUserPerformanceMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
 
   /**
    * Fetches the list of achievements for a user within a specified team and project.
@@ -68,4 +68,18 @@ public interface ReportDataService {
    *         These metrics may include task completion rates, milestones achieved, etc.
    */
   List<Object[]> fetchProgressMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
+
+  /**
+   * Fetches the team performance metrics for a specified team, project, and date range.
+   * This includes metrics such as the total number of tasks completed by the team, the overall task completion rate,
+   * total achievements, and other key performance indicators for the entire team.
+   *
+   * @param team The team for which the report metrics are to be fetched.
+   * @param project The project associated with the team for which the metrics are being retrieved.
+   * @param startDate The start date of the time period for which the team metrics are being calculated.
+   * @param endDate The end date of the time period for which the team metrics are being calculated.
+   *
+   * @return A list of Object arrays representing the team’s overall performance metrics during the specified period.
+   */
+  List<Object[]> fetchTeamPerformanceMetrics(Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
 }

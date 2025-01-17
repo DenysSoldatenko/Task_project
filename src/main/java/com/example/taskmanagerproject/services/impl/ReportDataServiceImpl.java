@@ -24,7 +24,7 @@ public class ReportDataServiceImpl implements ReportDataService {
   private final AchievementRepository achievementRepository;
 
   @Override
-  public Object[] fetchUserTaskMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
+  public Object[] fetchUserPerformanceMetrics(User user, Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
     List<Object[]> taskMetricsList = taskRepository.getTaskMetricsByAssignedUser(user.getId(), startDate, endDate, project.getName(), team.getName());
     return taskMetricsList.get(0);
   }
@@ -48,5 +48,10 @@ public class ReportDataServiceImpl implements ReportDataService {
     } else {
       return taskRepository.getDailyCompletionRates(startDate, endDate, user.getId(), project.getName(), team.getName());
     }
+  }
+
+  @Override
+  public List<Object[]> fetchTeamPerformanceMetrics(Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
+    return taskRepository.getAllTeamMemberMetricsByTeamName(team.getName(), project.getName(), startDate, endDate);
   }
 }

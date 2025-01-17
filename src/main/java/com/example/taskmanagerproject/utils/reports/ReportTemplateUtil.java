@@ -4,6 +4,7 @@ import static java.lang.Double.parseDouble;
 import static java.util.stream.Collectors.joining;
 
 import com.example.taskmanagerproject.entities.achievements.Achievement;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -57,7 +58,7 @@ public class ReportTemplateUtil {
 
   /**
    * Generates an HTML representation of a user's image.
-   * If the image URL is a placeholder (i.e., it contains "dummyimage.com"), the URL is returned as-is.
+   * If the image URL is a placeholder (in other words, it contains "dummyimage.com"), the URL is returned as-is.
    * Otherwise, the method constructs a full URL to fetch the image from the local server.
    *
    * @param userImageUrl The image URL of the user.
@@ -142,6 +143,61 @@ public class ReportTemplateUtil {
   private static String createCompletionBars(int left, String percentage, String taskClass) {
     return "<div class=\"chart-bar task-created\" style=\"height: 100px; left: " + left + "px;\"></div>" + "<div class=\"chart-bar " + taskClass
            + "\" style=\"height: " + percentage + "px; left: " + left + "px;\">" + "<div class=\"percentage\">" + percentage + "%</div></div>";
+  }
+
+  /**
+   * Generates HTML for a team member's report, including image, name, role, task metrics,
+   * progress bars for task completion, bug fixes, critical tasks, and achievements count.
+   *
+   * @param data An array of team member metrics.
+   * @return A String representing the HTML content for the team member's report.
+   */
+  public String generateTeamMemberHtml(Object[] data) {
+    return String.format("""
+        <div class="team-member">
+            %s
+            <div>
+                <h2>%s</h2>
+                <p>%s</p>
+
+                <table class="stats-table">
+                    <tr><th>Tasks Completed</th><th>On-Time Completion</th><th>Avg Task Duration</th></tr>
+                    <tr><td>%s</td><td>%s</td><td>%s</td></tr>
+                </table>
+
+                <div class="metrics">
+                    %s %s %s
+                </div>
+
+                <div class="achievements">
+                    <p><strong>Achievements:</strong> %s</p>
+                </div>
+            </div>
+        </div>
+        """,
+      ReportTemplateUtil.generateImageUser((String) data[1]),
+      data[0], // Member Name
+      ReportMetricUtil.formatRoleName(data[2]),
+      data[4] + "/" + data[3], // Tasks Completed
+      data[5] + "/" + data[4], // On-Time Tasks
+      ReportMetricUtil.formatDuration(Double.parseDouble(data[6].toString())), // Avg Task Duration
+      generateProgressBar("Task Completion", "task-progress", data[7]),
+      generateProgressBar("Bugfix Progress", "bug-progress", data[8]),
+      generateProgressBar("Critical Task Completion", "critical-progress", data[9]),
+      data[10] // Number of Achievements
+    );
+  }
+
+  private String generateProgressBar(String title, String cssClass, Object percentage) {
+    String progress = ReportMetricUtil.formatPercentage(((BigDecimal) percentage).doubleValue());
+    return String.format("""
+        <div class="metric">
+            <h3>%s</h3>
+            <div class="progress-bar">
+                <div class="progress %s" style="width: %s%%;">%s%%</div>
+            </div>
+        </div>
+        """, title, cssClass, progress, progress);
   }
 
   /**

@@ -25,9 +25,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-  private static final String USER_TEMPLATE_PATH = "src/main/resources/report_templates/user_template.html";
+  private static final String USER_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/user_performance_template.html";
   private static final String TOP_PERFORMERS_TEMPLATE_PATH = "src/main/resources/report_templates/top_performers_template.html";
   private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_template.html";
+  private static final String TEAM_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/team_performance_template.html";
 
   private final ReportValidator reportValidator;
   private final ReportDataService reportDataService;
@@ -37,8 +38,8 @@ public class ReportServiceImpl implements ReportService {
   public byte[] buildUserReport(String username, String teamName, String projectName, String startDate, String endDate) {
     ReportData reportData = reportValidator.validateUserData(username, teamName, projectName, startDate, endDate);
     return generateReport(
-      () -> reportDataService.fetchUserTaskMetrics(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
-      taskMetrics -> htmlProcessor.populateUserTemplate(loadTemplate(USER_TEMPLATE_PATH), reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate(), taskMetrics),
+      () -> reportDataService.fetchUserPerformanceMetrics(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
+      taskMetrics -> htmlProcessor.populateUserPerformanceTemplate(loadTemplate(USER_PERFORMANCE_TEMPLATE_PATH), reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate(), taskMetrics),
       format(TASK_METRICS_NOT_FOUND_ERROR, username, projectName, startDate, endDate)
     );
   }
@@ -60,6 +61,16 @@ public class ReportServiceImpl implements ReportService {
       () -> reportDataService.fetchProgressMetrics(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
       metrics -> htmlProcessor.populateTaskProgressTemplate(loadTemplate(TASK_PROGRESS_TEMPLATE_PATH), reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate(), metrics),
       format(TASK_METRICS_NOT_FOUND_ERROR, username, projectName, startDate, endDate)
+    );
+  }
+
+  @Override
+  public byte[] buildTeamReport(String teamName, String projectName, String startDate, String endDate) {
+    ReportData reportData = reportValidator.validateTeamData(teamName, projectName, startDate, endDate);
+    return generateReport(
+      () -> reportDataService.fetchTeamPerformanceMetrics(reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
+      metrics -> htmlProcessor.populateTeamPerformanceTemplate(loadTemplate(TEAM_PERFORMANCE_TEMPLATE_PATH), reportData.team(), reportData.startDate(), reportData.endDate(), metrics),
+      format(TEAM_PERFORMANCE_NOT_FOUND_ERROR, teamName, startDate, endDate)
     );
   }
 

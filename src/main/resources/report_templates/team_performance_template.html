@@ -6,121 +6,156 @@
     <title>Team Performance Report</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             color: #333;
+            text-align: center;
+            font-size: 6px;
+            line-height: 1.2;
         }
 
         .container {
-            width: 40%;
-            margin: 40px auto;
+            width: 90%;
+            max-width: 1200px;
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            padding: 5px;
+            margin: 20px auto;
         }
 
         h1 {
             text-align: center;
-            font-size: 28px;
+            font-size: 16px;
             color: #333;
             border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .stats-table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            text-align: center;
+            font-size: 12px;
+            padding: 6px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .stats-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
         }
 
         .team-member {
             background-color: #ffffff;
-            padding: 20px;
+            padding: 5px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .team-member img {
-            width: 80px;
-            height: 80px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ddd;
         }
 
         .team-member h2 {
-            font-size: 22px;
+            font-size: 15px;
             color: #333;
             margin-bottom: 5px;
         }
 
         .team-member p {
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: 13px;
             color: #666;
-            margin: 5px 0;
+            margin: 2px 0;
         }
 
         .metrics {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: space-between;
+            margin-top: 15px;
         }
 
         .metric {
             flex: 1;
-            background-color: #f4f4f4;
-            padding: 15px;
+            min-width: 80px;
+            background: linear-gradient(135deg, #f9f9f9, #e3e3e3);
+            padding: 5px;
             border-radius: 8px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            transition: transform 0.2s ease-in-out;
+            font-size: 15px;
+        }
+
+        .metric:hover {
+            transform: translateY(-3px);
         }
 
         .metric h3 {
-            font-size: 18px;
+            font-size: 10px;
             color: #444;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
         }
 
         .metric p {
-            font-size: 16px;
+            font-size: 6px;
             color: #555;
         }
 
         .progress-bar {
             background-color: #ddd;
-            border-radius: 10px;
-            height: 10px;
-            margin-top: 10px;
+            border-radius: 15px;
+            width: 90%;
+            height: 12px;
+            margin: 2px auto;
+            overflow: hidden;
         }
 
         .progress {
             height: 100%;
-            border-radius: 10px;
+            text-align: center;
+            color: white;
+            line-height: 13px;
+            font-size: 10px;
+            border-radius: 15px;
+        }
+
+        .task-progress {
             background-color: #3498db;
         }
 
-        .achievements {
-            margin-top: 15px;
-            font-size: 16px;
-            color: #555;
-            text-align: center;
+        .bug-progress {
+            background-color: #e67e22;
+        }
+
+        .critical-progress {
+            background-color: #2ecc71;
         }
 
         .footer {
             text-align: center;
-            font-size: 14px;
+            font-size: 9px;
             color: #777;
-            margin-top: 40px;
-        }
-
-        /* Adjust "Avg Task Duration" for better fit */
-        .avg-duration {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-top: 9px;
         }
     </style>
 </head>
@@ -129,109 +164,11 @@
 <div class="container">
     <h1>Team Performance Report</h1>
 
-    <!-- Team Member 1 -->
-    <div class="team-member">
-        <img src="team-member1.jpg" alt="Team Member 1">
-        <div>
-            <h2>{team_member_name}</h2>
-            <p><strong>Role:</strong> {team_member_role}</p>
-            <p><strong>Email:</strong> {team_member_email}</p>
-
-            <div class="metrics">
-                <div class="metric">
-                    <h3>Tasks Completed</h3>
-                    <p>{tasks_completed}</p>
-                </div>
-                <div class="metric">
-                    <h3>On-Time Completion</h3>
-                    <p>{on_time_tasks}%</p>
-                </div>
-                <div class="metric avg-duration">
-                    <h3>Avg Task Duration</h3>
-                    <p>{average_task_duration}</p>
-                </div>
-            </div>
-
-            <div class="metrics">
-                <div class="metric">
-                    <h3>Task Completion</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {task_completion_progress}%"></div>
-                    </div>
-                </div>
-                <div class="metric">
-                    <h3>Bug Fix Progress</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {bug_fix_progress}%"></div>
-                    </div>
-                </div>
-                <div class="metric">
-                    <h3>Critical Task Completion</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {critical_task_resolution}%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="achievements">
-                <p><strong>Achievements:</strong> {number_of_achievements}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Team Member 2 (Replicate the section above for each member) -->
-    <div class="team-member">
-        <img src="team-member2.jpg" alt="Team Member 2">
-        <div>
-            <h2>{team_member_name}</h2>
-            <p><strong>Role:</strong> {team_member_role}</p>
-            <p><strong>Email:</strong> {team_member_email}</p>
-
-            <div class="metrics">
-                <div class="metric">
-                    <h3>Tasks Completed</h3>
-                    <p>{tasks_completed}</p>
-                </div>
-                <div class="metric">
-                    <h3>On-Time Completion</h3>
-                    <p>{on_time_tasks}%</p>
-                </div>
-                <div class="metric avg-duration">
-                    <h3>Avg Task Duration</h3>
-                    <p>{average_task_duration}</p>
-                </div>
-            </div>
-
-            <div class="metrics">
-                <div class="metric">
-                    <h3>Task Completion</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {task_completion_progress}%"></div>
-                    </div>
-                </div>
-                <div class="metric">
-                    <h3>Bug Fix Progress</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {bug_fix_progress}%"></div>
-                    </div>
-                </div>
-                <div class="metric">
-                    <h3>Critical Task Completion</h3>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: {critical_task_resolution}%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="achievements">
-                <p><strong>Achievements:</strong> {number_of_achievements}</p>
-            </div>
-        </div>
-    </div>
+    {team_members}
 
     <div class="footer">
-        <p>Generated by Task Management System</p>
-        <p>&copy; 2025 Team Performance Reports</p>
+        <p>Generated by the system</p>
+        <p>&copy; 2025 Task Management System</p>
     </div>
 </div>
 
