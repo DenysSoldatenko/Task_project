@@ -236,7 +236,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                 AND t.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
                 AND t.created_at BETWEEN :startDate AND :endDate
             WHERE tu.team_id = (SELECT id FROM task_list.teams WHERE name = :teamName)
-            GROUP BY u.full_name, ui.image, r.name, tt.total_tasks, tt.tasks_completed, ua.achievement_count, ub.allBugs, ub.bugFixesResolved, uct.allCriticalTasks, uct.criticalTasksSolved
+            GROUP BY u.full_name, ui.image, r.name, tt.total_tasks, tt.tasks_completed,
+                     ua.achievement_count, ub.allBugs, ub.bugFixesResolved, uct.allCriticalTasks, uct.criticalTasksSolved
         )
         SELECT
             user_name,

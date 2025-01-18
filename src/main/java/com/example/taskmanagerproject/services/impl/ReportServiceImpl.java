@@ -39,7 +39,7 @@ public class ReportServiceImpl implements ReportService {
     ReportData reportData = reportValidator.validateUserData(username, teamName, projectName, startDate, endDate);
     return generateReport(
       () -> reportDataService.fetchUserPerformanceMetrics(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
-      taskMetrics -> htmlProcessor.populateUserPerformanceTemplate(loadTemplate(USER_PERFORMANCE_TEMPLATE_PATH), reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate(), taskMetrics),
+      taskMetrics -> htmlProcessor.populateUserPerformanceTemplate(loadTemplate(USER_PERFORMANCE_TEMPLATE_PATH), reportData, taskMetrics),
       format(TASK_METRICS_NOT_FOUND_ERROR, username, projectName, startDate, endDate)
     );
   }
@@ -49,7 +49,7 @@ public class ReportServiceImpl implements ReportService {
     ReportData reportData = reportValidator.validateTeamData(teamName, projectName, startDate, endDate);
     return generateReport(
       () -> reportDataService.fetchTopPerformersInTeamMetrics(reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
-      metrics -> htmlProcessor.populateTopPerformersInTeamTemplate(loadTemplate(TOP_PERFORMERS_TEMPLATE_PATH), reportData.team(), reportData.startDate(), reportData.endDate(), metrics),
+      metrics -> htmlProcessor.populateTopPerformersInTeamTemplate(loadTemplate(TOP_PERFORMERS_TEMPLATE_PATH), reportData, metrics),
       format(TEAM_PERFORMANCE_NOT_FOUND_ERROR, teamName, startDate, endDate)
     );
   }
@@ -59,7 +59,7 @@ public class ReportServiceImpl implements ReportService {
     ReportData reportData = reportValidator.validateUserData(username, teamName, projectName, startDate, endDate);
     return generateReport(
       () -> reportDataService.fetchProgressMetrics(reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
-      metrics -> htmlProcessor.populateTaskProgressTemplate(loadTemplate(TASK_PROGRESS_TEMPLATE_PATH), reportData.user(), reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate(), metrics),
+      metrics -> htmlProcessor.populateTaskProgressTemplate(loadTemplate(TASK_PROGRESS_TEMPLATE_PATH), reportData, metrics),
       format(TASK_METRICS_NOT_FOUND_ERROR, username, projectName, startDate, endDate)
     );
   }
@@ -69,7 +69,7 @@ public class ReportServiceImpl implements ReportService {
     ReportData reportData = reportValidator.validateTeamData(teamName, projectName, startDate, endDate);
     return generateReport(
       () -> reportDataService.fetchTeamPerformanceMetrics(reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
-      metrics -> htmlProcessor.populateTeamPerformanceTemplate(loadTemplate(TEAM_PERFORMANCE_TEMPLATE_PATH), reportData.team(), reportData.startDate(), reportData.endDate(), metrics),
+      metrics -> htmlProcessor.populateTeamPerformanceTemplate(loadTemplate(TEAM_PERFORMANCE_TEMPLATE_PATH), reportData, metrics),
       format(TEAM_PERFORMANCE_NOT_FOUND_ERROR, teamName, startDate, endDate)
     );
   }
