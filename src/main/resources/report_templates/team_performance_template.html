@@ -14,6 +14,11 @@
             line-height: 1.2;
         }
 
+        .report-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
         .container {
             width: 90%;
             max-width: 1200px;
@@ -66,8 +71,8 @@
         }
 
         .team-member img {
-            width: 160px;
-            height: 160px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
         }
 
@@ -162,7 +167,12 @@
 <body>
 
 <div class="container">
-    <h1>Team Performance Report</h1>
+    <div class="report-header">
+        <h1>
+            Team Performance Report: {teamName} <br>
+            <span style="font-size: 9px; color: #7f8c8d;">({startDate} – {endDate})</span>
+        </h1>
+    </div>
 
     {team_members}
 
