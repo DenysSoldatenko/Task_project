@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.services.impl;
 
+import static com.example.taskmanagerproject.utils.MessageUtil.PROJECT_PERFORMANCE_NOT_FOUND_ERROR;
 import static com.example.taskmanagerproject.utils.MessageUtil.TASK_METRICS_NOT_FOUND_ERROR;
 import static com.example.taskmanagerproject.utils.MessageUtil.TEAM_PERFORMANCE_NOT_FOUND_ERROR;
 import static com.example.taskmanagerproject.utils.factories.PdfGenerationFactory.loadTemplate;
@@ -29,6 +30,7 @@ public class ReportServiceImpl implements ReportService {
   private static final String TOP_PERFORMERS_TEMPLATE_PATH = "src/main/resources/report_templates/top_performers_template.html";
   private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_template.html";
   private static final String TEAM_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/team_performance_template.html";
+  private static final String PROJECT_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/project_performance_template.html";
 
   private final ReportValidator reportValidator;
   private final ReportDataService reportDataService;
@@ -71,6 +73,16 @@ public class ReportServiceImpl implements ReportService {
       () -> reportDataService.fetchTeamPerformanceMetrics(reportData.team(), reportData.project(), reportData.startDate(), reportData.endDate()),
       metrics -> htmlProcessor.populateTeamPerformanceTemplate(loadTemplate(TEAM_PERFORMANCE_TEMPLATE_PATH), reportData, metrics),
       format(TEAM_PERFORMANCE_NOT_FOUND_ERROR, teamName, startDate, endDate)
+    );
+  }
+
+  @Override
+  public byte[] buildProjectReport(String projectName, String startDate, String endDate) {
+    ReportData reportData = reportValidator.validateProjectData(projectName, startDate, endDate);
+    return generateReport(
+      () -> reportDataService.fetchProjectPerformanceMetrics(reportData.project(), reportData.startDate(), reportData.endDate()),
+      metrics -> htmlProcessor.populateProjectPerformanceTemplate(loadTemplate(PROJECT_PERFORMANCE_TEMPLATE_PATH), reportData, metrics),
+      format(PROJECT_PERFORMANCE_NOT_FOUND_ERROR, projectName, startDate, endDate)
     );
   }
 

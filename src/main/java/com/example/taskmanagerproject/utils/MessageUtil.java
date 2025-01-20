@@ -56,6 +56,8 @@ public class MessageUtil {
       = "No task metrics found for user %s in project %s in the date range from %s to %s.";
   public static final String TEAM_PERFORMANCE_NOT_FOUND_ERROR
       = "No team performance metrics found for team %s in the date range from %s to %s.";
+  public static final String PROJECT_PERFORMANCE_NOT_FOUND_ERROR
+      = "No project performance metrics found for project %s in the date range from %s to %s.";
 
   public static final String ROLE_NOT_FOUND_WITH_NAME
       = "Role not found with name: ";

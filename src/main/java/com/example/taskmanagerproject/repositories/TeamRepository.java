@@ -24,7 +24,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
       SELECT t
       FROM Team t
       LEFT JOIN FETCH t.creator c
-      LEFT JOIN FETCH t.teamUsers ut
+      LEFT JOIN FETCH c.role r
+      LEFT JOIN FETCH t.teamUsers tu
+      LEFT JOIN FETCH tu.user u
+      LEFT JOIN FETCH u.role ur
       WHERE t.name = :name
       """)
   Optional<Team> findByName(@Param("name") String name);

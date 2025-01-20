@@ -40,7 +40,7 @@ public class ReportController {
    * @return A {@link ResponseEntity} containing the generated PDF report.
    */
   @GetMapping("/user")
-  @PreAuthorize("@expressionService.canAccessReport(#username, #teamName)")
+  @PreAuthorize("@expressionService.canAccessUserReport(#username, #teamName)")
   @Operation(
       summary = "Generate a PDF report for the user with additional filters",
       description = "Generates a PDF report with user tasks and performance",
@@ -92,7 +92,7 @@ public class ReportController {
    * @return A {@link ResponseEntity} containing the generated PDF report.
    */
   @GetMapping("/team-report")
-  @PreAuthorize("@expressionService.canAccessReport(#teamName)")
+  @PreAuthorize("@expressionService.canAccessTeamReport(#teamName)")
   @Operation(
       summary = "Generate a PDF report for team performance and progress",
       description = "Generates a PDF report displaying the overall performance and progress of the team for a given date range",
@@ -132,6 +132,51 @@ public class ReportController {
   }
 
   /**
+   * Generates a PDF report for a project's overall performance and progress within a specified date range.
+   *
+   * @param projectName The name of the project for which the report is generated.
+   * @param startDate   The start date (inclusive) of the date range for which the report is generated.
+   * @param endDate     The end date (inclusive) of the date range for which the report is generated.
+   * @return A {@link ResponseEntity} containing the generated PDF report.
+   */
+  @GetMapping("/project-report")
+  @PreAuthorize("@expressionService.canAccessProjectReport(#projectName)")
+  @Operation(
+      summary = "Generate a PDF report for project performance and progress",
+      description = "Generates a PDF report displaying the overall performance and progress of the project for a given date range",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
+          content = @Content(mediaType = "application/pdf")),
+        @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  public ResponseEntity<byte[]> generateProjectReport(
+      @Parameter(description = "The name of the project", example = "Hoppe, Jacobson and Cole116c")
+      @RequestParam String projectName,
+
+      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
+      @RequestParam String startDate,
+
+      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
+      @RequestParam String endDate
+  ) {
+    byte[] pdfData = reportService.buildProjectReport(projectName, startDate, endDate);
+    String fileName = "project_report_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
+
+    return ResponseEntity.ok()
+      .header("Content-Type", "application/pdf")
+      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+      .body(pdfData);
+  }
+
+  /**
    * Generates a PDF report for the top performers of a team.
    *
    * @param teamName  The name of the team.
@@ -140,7 +185,7 @@ public class ReportController {
    * @return A {@link ResponseEntity} containing the generated PDF report.
    */
   @GetMapping("/top-performers")
-  @PreAuthorize("@expressionService.canAccessReport(#teamName)")
+  @PreAuthorize("@expressionService.canAccessTeamReport(#teamName)")
   @Operation(
       summary = "Generate a PDF report for top performers",
       description = "Generates a PDF report displaying the top performers in the team for a given date range",
@@ -191,7 +236,7 @@ public class ReportController {
    * @return A {@link ResponseEntity} containing the generated PDF report.
    */
   @GetMapping("/task-progress")
-  @PreAuthorize("@expressionService.canAccessReport(#username, #teamName)")
+  @PreAuthorize("@expressionService.canAccessUserReport(#username, #teamName)")
   @Operation(
       summary = "Generate a PDF report for task progress",
       description = "Generates a PDF report showing the task progress within a team for a given date range",

@@ -95,14 +95,16 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean isProjectCreator(String projectName, String username) {
-    return userRepository.isProjectCreator(projectName, username);
-  }
-
-  @Override
   public boolean hasTeamAccess(String teamName, String username) {
     boolean isCreator = userRepository.isTeamCreator(teamName, username);
     boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPositionInTeam(teamName, username);
+    return isCreator || isUserInLeadershipPosition;
+  }
+
+  @Override
+  public boolean hasProjectAccess(String projectName, String username) {
+    boolean isCreator = userRepository.isProjectCreator(projectName, username);
+    boolean isUserInLeadershipPosition = userRepository.isUserInLeadershipPositionInProject(projectName, username);
     return isCreator || isUserInLeadershipPosition;
   }
 

@@ -34,7 +34,7 @@ public final class ReportTemplateProcessor {
    * @param template The HTML template to populate with data.
    * @param reportData The report data containing the user and team information.
    * @param metrics The metrics data for the user, including task counts and performance metrics.
-   * @return The populated HTML template with replaced placeholders.
+   * @return The populated HTML template.
    */
   public String populateUserPerformanceTemplate(String template, ReportData reportData, Object[] metrics) {
     List<Achievement> achievements = reportDataService.fetchAchievements(reportData.user(), reportData.team(), reportData.project());
@@ -78,7 +78,7 @@ public final class ReportTemplateProcessor {
    * @param template The HTML template to populate with data.
    * @param reportData The report data containing the team information.
    * @param metrics The metrics for each team member, including their performance and achievements.
-   * @return The populated HTML template with placeholders replaced with actual data.
+   * @return The populated HTML template.
    */
   public String populateTopPerformersInTeamTemplate(String template, ReportData reportData, List<Object[]> metrics) {
     Map<String, String> placeholders = new HashMap<>();
@@ -106,7 +106,7 @@ public final class ReportTemplateProcessor {
    * @param template The HTML template to populate with data.
    * @param reportData The report data containing the user or team information.
    * @param metrics The task progress data for the user or team.
-   * @return The populated HTML template with task progress data inserted.
+   * @return The populated HTML template.
    */
   public String populateTaskProgressTemplate(String template, ReportData reportData, List<Object[]> metrics) {
     Map<String, String> placeholders = Map.of(
@@ -124,13 +124,13 @@ public final class ReportTemplateProcessor {
   }
 
   /**
-   * Populates the team performance template with data for the entire team, including member performance metrics
-   * and team information.
+   * Populates the team performance template with data for the entire team,
+   * including member performance metrics and team information.
    *
    * @param template The HTML template to populate with data.
    * @param reportData The report data containing the team information.
    * @param metrics The performance metrics for each team member.
-   * @return The populated HTML template with placeholders replaced with actual team and member data.
+   * @return The populated HTML template.
    */
   public String populateTeamPerformanceTemplate(String template, ReportData reportData, List<Object[]> metrics) {
     Map<String, String> placeholders = Map.of(
@@ -138,6 +138,26 @@ public final class ReportTemplateProcessor {
         "{endDate}", reportData.endDate().format(DATE_FORMATTER),
         "{teamName}", reportData.team().getName(),
         "{team_members}", metrics.stream().map(ReportTemplateUtil::generateTeamMemberHtml).collect(joining())
+    );
+
+    return ReportTemplateUtil.replacePlaceholders(template, placeholders);
+  }
+
+  /**
+   * Populates the project performance template with project and member metrics.
+   * Replaces placeholders in the template with project data, including member performance.
+   *
+   * @param template The HTML template.
+   * @param reportData The project report data.
+   * @param metrics The performance metrics for project members.
+   * @return The populated HTML template.
+   */
+  public String populateProjectPerformanceTemplate(String template, ReportData reportData, List<Object[]> metrics) {
+    Map<String, String> placeholders = Map.of(
+        "{startDate}", reportData.startDate().format(DATE_FORMATTER),
+        "{endDate}", reportData.endDate().format(DATE_FORMATTER),
+        "{projectName}", reportData.project().getName(),
+        "{project_data}", ReportTemplateUtil.generateProjectMemberHtml(metrics)
     );
 
     return ReportTemplateUtil.replacePlaceholders(template, placeholders);

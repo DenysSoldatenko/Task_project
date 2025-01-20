@@ -54,4 +54,9 @@ public class ReportDataServiceImpl implements ReportDataService {
   public List<Object[]> fetchTeamPerformanceMetrics(Team team, Project project, LocalDateTime startDate, LocalDateTime endDate) {
     return taskRepository.getAllTeamMemberMetricsByTeamName(team.getName(), project.getName(), startDate, endDate);
   }
+
+  @Override
+  public List<Object[]> fetchProjectPerformanceMetrics(Project project, LocalDateTime startDate, LocalDateTime endDate) {
+    return taskRepository.getProjectMetricsByProjectName(project.getName(), startDate, endDate);
+  }
 }

@@ -77,6 +77,20 @@ public final class ReportValidator {
     return new ReportData(null, team, project, toStartOfDay(startDate), toEndOfDay(endDate));
   }
 
+  /**
+   * Validates the data for generating a report for a specific project within a date range.
+   *
+   * @param projectName The name of the project.
+   * @param startDate   The report's start date (yyyy-MM-dd).
+   * @param endDate     The report's end date (yyyy-MM-dd).
+   * @return A `ReportData` object with a validated project, and timestamps.
+   */
+  public ReportData validateProjectData(String projectName, String startDate, String endDate) {
+    Project project = getProject(projectName);
+    validateDates(startDate, endDate);
+    return new ReportData(null, null, project, toStartOfDay(startDate), toEndOfDay(endDate));
+  }
+
   private User getUser(String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new ValidationException(USER_NOT_FOUND_WITH_USERNAME + username));

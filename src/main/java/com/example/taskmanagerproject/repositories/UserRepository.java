@@ -109,6 +109,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
   boolean isUserInLeadershipPositionInTeam(@Param("teamName") String teamName, @Param("username") String username);
 
   /**
+   * Checks if the given user has one of the specified roles (ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, PROJECT_LEAD)
+   * in the context of the given project.
+   *
+   * @param projectName the name of the project to check the user's roles for
+   * @param username the username of the user to check
+   * @return true if the user has one of the specified roles in the given project, false otherwise
+   */
+  @Query(value = """
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+      FROM task_list.users u
+      JOIN task_list.teams_users tu ON u.id = tu.user_id
+      JOIN task_list.projects_teams pt ON tu.team_id = pt.team_id
+      JOIN task_list.roles r ON r.id = tu.role_id
+      WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'PROJECT_LEAD')
+      AND u.username = :username
+      AND pt.project_id = (SELECT p.id FROM task_list.projects p WHERE p.name = :projectName)
+      """, nativeQuery = true)
+  boolean isUserInLeadershipPositionInProject(@Param("projectName") String projectName, @Param("username") String username);
+
+  /**
    * Checks if the given user has one of the specified roles (ADMIN, PRODUCT_OWNER, SCRUM_MASTER, MANAGER, TEAM_LEAD).
    *
    * @param username the username of the user to check

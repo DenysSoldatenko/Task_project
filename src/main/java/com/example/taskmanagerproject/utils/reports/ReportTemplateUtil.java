@@ -201,6 +201,39 @@ public class ReportTemplateUtil {
   }
 
   /**
+   * Generates an HTML table row for each project team member displaying their metrics.
+   * The metrics include completed tasks, on-time deliveries, critical issues,
+   * total defects, and key achievements.
+   *
+   * @param memberData a list of object arrays where each array contains metrics for a team member.
+   * @return a string of HTML table rows for all team members.
+   */
+  public String generateProjectMemberHtml(List<Object[]> memberData) {
+    StringBuilder html = new StringBuilder();
+
+    for (Object[] data : memberData) {
+      html.append(String.format("""
+          <tr>
+              <td><strong>%s</strong></td>
+              <td>
+                  <div class="metric"><img src="https://img.icons8.com/?id=40318&format=png" alt="Done Tasks"/><strong>Completed Tasks:</strong> %s</div>
+                  <div class="metric"><img src="https://img.icons8.com/?id=63256&format=png" alt="Schedule"/><strong>On-Time Deliveries:</strong> %s</div>
+                  <div class="metric"><img src="https://img.icons8.com/?id=ocWODnkQ9bjZ&format=png" alt="Critical"/><strong>Critical Issues:</strong> %s</div>
+              </td>
+              <td>
+                  <div class="metric"><img src="https://img.icons8.com/?id=PhEAsgstvfAw&format=png" alt="Defects"/><strong>Total Defects:</strong> %s</div>
+                  <div class="metric"><img src="https://img.icons8.com/?id=VUt5dWfcfFzt&format=png" alt="Achievements"/><strong>Key Achievements:</strong> %s</div>
+              </td>
+          </tr>
+          """,
+          data[0], data[3] + "/" + data[2], data[4] + "/" + data[3], data[6] + "/" + data[5], data[8] + "/" + data[7], data[1]
+        )
+      );
+    }
+    return html.toString();
+  }
+
+  /**
    * Replaces placeholders in the given template string with values from a map.
    * The placeholders are expected to be in the form of keys in the template, which will be replaced with corresponding
    * values from the provided map.

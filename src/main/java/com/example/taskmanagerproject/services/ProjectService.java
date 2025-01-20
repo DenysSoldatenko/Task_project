@@ -2,6 +2,7 @@ package com.example.taskmanagerproject.services;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
+import com.example.taskmanagerproject.entities.users.Role;
 import java.util.List;
 
 /**
@@ -77,4 +78,22 @@ public interface ProjectService {
    * @return a list of projects associated with the team
    */
   List<ProjectTeamDto> getProjectsForTeam(String teamName);
+
+  /**
+   * Retrieves the role of a user in a specific project by the project name and the user's username.
+   *
+   * @param name the name of the project to check the user's role for.
+   * @param username the username of the user to check the role for.
+   * @return the {@link Role} of the user within the specified project.
+   */
+  Role getRoleByProjectNameAndUsername(String name, String username);
+
+  /**
+   * Checks if a user is related to a project by being part of a team associated with the project.
+   *
+   * @param userId the ID of the user to check.
+   * @param projectId the ID of the project to check.
+   * @return true, if the user is related to the project (in other words, is part of a team linked to the project), false otherwise.
+   */
+  boolean existsByUserIdAndProjectId(Long userId, Long projectId);
 }

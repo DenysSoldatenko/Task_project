@@ -6,6 +6,7 @@ import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.projects.ProjectTeam;
+import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.ProjectTeamRepository;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Implementation of the ProjectService interface.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
@@ -37,7 +39,6 @@ public class ProjectServiceImpl implements ProjectService {
   private final ProjectTeamRepository projectTeamRepository;
 
   @Override
-  @Transactional
   public ProjectDto createProject(ProjectDto projectDto) {
     projectValidator.validateProjectDto(projectDto);
     Project newProject = projectFactory.createProjectFromRequest(projectDto);
@@ -63,13 +64,22 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
+  public Role getRoleByProjectNameAndUsername(String name, String username) {
+    return projectRepository.findRoleByProjectNameAndUsername(name, username);
+  }
+
+  @Override
+  public boolean existsByUserIdAndProjectId(Long userId, Long projectId) {
+    return projectRepository.existsByUserIdAndProjectId(userId, projectId);
+  }
+
+  @Override
   public List<ProjectDto> getProjectsBySlug(String slug) {
     List<Project> projectDtoList = projectRepository.findByUserSlug(slug);
     return projectDtoList.stream().map(projectMapper::toDto).toList();
   }
 
   @Override
-  @Transactional
   public ProjectDto updateProject(String projectName, ProjectDto projectDto) {
     Project existingProject = projectRepository.findByName(projectName)
         .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
@@ -84,7 +94,6 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  @Transactional
   public void deleteProject(String projectName) {
     Project existingProject = projectRepository.findByName(projectName)
         .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_WITH_NAME + projectName));
@@ -93,7 +102,6 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  @Transactional
   public ProjectDto addTeamToProject(String projectName, List<ProjectTeamDto> projectTeamDtoList) {
     List<ProjectTeam> projectTeamList = projectTeamFactory.createProjectTeamAssociations(projectTeamDtoList);
     projectTeamRepository.saveAll(projectTeamList);

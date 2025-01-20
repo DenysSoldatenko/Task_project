@@ -82,4 +82,17 @@ public interface ReportDataService {
    * @return A list of Object arrays representing the team’s overall performance metrics during the specified period.
    */
   List<Object[]> fetchTeamPerformanceMetrics(Team team, Project project, LocalDateTime startDate, LocalDateTime endDate);
+
+  /**
+   * Fetches the project performance metrics for a specified project and date range.
+   * This includes metrics such as the total number of tasks completed, overall task completion rate, achievements,
+   * and other key performance indicators at the project level.
+   *
+   * @param project The project for which performance metrics are to be fetched.
+   * @param startDate The start date of the time period for which the project metrics are being calculated.
+   * @param endDate The end date of the time period for which the project metrics are being calculated.
+   *
+   * @return A list of Object arrays containing various performance metrics for the project during the specified period.
+   */
+  List<Object[]> fetchProjectPerformanceMetrics(Project project, LocalDateTime startDate, LocalDateTime endDate);
 }

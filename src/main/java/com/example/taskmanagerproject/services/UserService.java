@@ -59,15 +59,6 @@ public interface UserService {
   void deleteUserBySlug(String slug);
 
   /**
-   * Checks if a user is the creator of a specific project.
-   *
-   * @param projectName the name of the project
-   * @param username the username of the user
-   * @return true if the user is the creator of the project, false otherwise
-   */
-  boolean isProjectCreator(String projectName, String username);
-
-  /**
    * Checks if the user has access to a specific team.
    *
    * @param teamName the name of the team to check access for
@@ -75,6 +66,15 @@ public interface UserService {
    * @return true if the user has access to the team, false otherwise
    */
   boolean hasTeamAccess(String teamName, String username);
+
+  /**
+   * Checks if the user has access to a specific project.
+   *
+   * @param projectName the name of the project to check access for
+   * @param username the username of the user whose access status is being checked
+   * @return true if the user has access to the project, false otherwise
+   */
+  boolean hasProjectAccess(String projectName, String username);
 
   /**
    * Checks if the user is assigned to a specific task.

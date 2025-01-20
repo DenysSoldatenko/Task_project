@@ -154,6 +154,64 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                   @Param("endDate") LocalDateTime endDate);
 
   /**
+   * Retrieves project metrics for teams associated with a specific project within a given date range.
+   * The metrics include achievements, total tasks, completed tasks, critical tasks, and bugs.
+   *
+   * @param projectName the name of the project.
+   * @param startDate the start date for filtering tasks and achievements.
+   * @param endDate the end date for filtering tasks and achievements.
+   * @return a list of Object arrays containing the team name and their respective metrics.
+   */
+  @Query(value = """
+      SELECT
+          t.name AS team_name,
+          COALESCE(achievements.total_achievements, 0) AS achievement_count,
+          COALESCE(tasks.total_tasks, 0) AS total_tasks,
+          COALESCE(tasks.completed_tasks, 0) AS completed_tasks,
+          COALESCE(tasks.on_time_tasks, 0) AS on_time_tasks,
+          COALESCE(tasks.total_critical_tasks, 0) AS total_critical_tasks,
+          COALESCE(tasks.critical_tasks_completed, 0) AS critical_tasks_completed,
+          COALESCE(tasks.total_bugs, 0) AS total_bugs,
+          COALESCE(tasks.bugs_completed, 0) AS bugs_completed
+      FROM task_list.teams t
+      LEFT JOIN (
+          SELECT
+              t.name AS team_name,
+              COUNT(au.achievement_id) AS total_achievements
+          FROM task_list.teams t
+                   LEFT JOIN task_list.achievements_users au ON t.id = au.team_id
+              AND au.project_id IN (SELECT id FROM task_list.projects WHERE name = :projectName)
+          GROUP BY t.name
+      ) achievements ON t.name = achievements.team_name
+      LEFT JOIN (
+          SELECT
+              t1.name AS team_name,
+              COUNT(DISTINCT t2.id) AS total_tasks,
+              COUNT(DISTINCT t2.id) FILTER (WHERE t2.task_status = 'APPROVED') AS completed_tasks,
+              COUNT(DISTINCT CASE WHEN t2.task_status = 'APPROVED' AND t2.approved_at <= t2.expiration_date THEN t2.id END) AS on_time_tasks,
+              COUNT(DISTINCT CASE WHEN t2.priority = 'CRITICAL' THEN t2.id END) AS total_critical_tasks,
+              COUNT(DISTINCT CASE WHEN t2.priority = 'CRITICAL' AND t2.task_status = 'APPROVED' THEN t2.id END) AS critical_tasks_completed,
+              COUNT(DISTINCT tc.task_id) AS total_bugs,
+              COUNT(DISTINCT CASE WHEN t2.task_status = 'APPROVED' THEN tc.task_id END) AS bugs_completed
+          FROM task_list.teams t1
+                   LEFT JOIN task_list.teams_users tu ON t1.id = tu.team_id
+                   LEFT JOIN task_list.tasks t2 ON tu.user_id = t2.assigned_to AND t2.team_id = t1.id
+                   LEFT JOIN task_list.task_comments tc ON t2.id = tc.task_id
+          WHERE t2.project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+            AND t2.created_at BETWEEN :startDate AND :endDate
+          GROUP BY t1.name
+      ) tasks ON t.name = tasks.team_name
+      WHERE t.id IN (
+          SELECT team_id
+          FROM task_list.projects_teams
+          WHERE project_id = (SELECT id FROM task_list.projects WHERE name = :projectName)
+      );
+      """, nativeQuery = true)
+  List<Object[]> getProjectMetricsByProjectName(@Param("projectName") String projectName,
+                                                @Param("startDate") LocalDateTime startDate,
+                                                @Param("endDate") LocalDateTime endDate);
+
+  /**
    * Retrieves task metrics for all team members in a specific team, including those with no tasks.
    * Metrics include task counts, completed tasks, task completion rate, achievements,
    * on-time task completion, and average task duration.
