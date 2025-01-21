@@ -1,4 +1,4 @@
-INSERT INTO roles (name, description)
+INSERT INTO task_list.roles (name, description)
 VALUES ('ADMIN', 'Administrator with full access'),
        ('PRODUCT_OWNER', 'Product Owner responsible for product vision and requirements'),
        ('SCRUM_MASTER', 'Scrum Master ensuring agile practices and team coordination'),
@@ -15,89 +15,89 @@ VALUES ('ADMIN', 'Administrator with full access'),
        ('USER', 'Default user with the lowest access level');
 
 
-INSERT INTO role_hierarchy (higher_role, lower_role)
+INSERT INTO task_list.role_hierarchy (higher_role, lower_role)
 VALUES
--- ADMIN має найвищий рівень доступу і може керувати всіма іншими ролями
-((SELECT id FROM roles WHERE name = 'ADMIN'), (SELECT id FROM roles WHERE name = 'PRODUCT_OWNER')),
-((SELECT id FROM roles WHERE name = 'ADMIN'), (SELECT id FROM roles WHERE name = 'SCRUM_MASTER')),
-((SELECT id FROM roles WHERE name = 'ADMIN'), (SELECT id FROM roles WHERE name = 'MANAGER')),
+-- ADMIN has the highest level of access and can manage all other roles
+((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER')),
+((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER')),
+((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
 
--- PRODUCT_OWNER керує SCRUM_MASTER, TEAM_LEAD та MANAGER
-((SELECT id FROM roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM roles WHERE name = 'SCRUM_MASTER')),
-((SELECT id FROM roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM roles WHERE name = 'TEAM_LEAD')),
-((SELECT id FROM roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM roles WHERE name = 'MANAGER')),
+-- PRODUCT_OWNER manages SCRUM_MASTER, TEAM_LEAD, and MANAGER
+((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER')),
+((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
+((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
 
--- SCRUM_MASTER координує TEAM_LEAD та QA_ENGINEER
-((SELECT id FROM roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM roles WHERE name = 'TEAM_LEAD')),
-((SELECT id FROM roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
+-- SCRUM_MASTER coordinates TEAM_LEAD and QA_ENGINEER
+((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
+((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 
--- MANAGER має контроль над QA_ENGINEER, TEAM_LEAD і TESTER
-((SELECT id FROM roles WHERE name = 'MANAGER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'MANAGER'), (SELECT id FROM roles WHERE name = 'TEAM_LEAD')),
-((SELECT id FROM roles WHERE name = 'MANAGER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- MANAGER has control over QA_ENGINEER, TEAM_LEAD, and TESTER
+((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
+((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- TEAM_LEAD делегує завдання
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- TEAM_LEAD delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- SENIOR_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- SENIOR_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- MIDDLE_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- MIDDLE_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- JUNIOR_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER'), (SELECT id FROM roles WHERE name = 'USER')),
+-- JUNIOR_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'USER')),
 
--- FULLSTACK_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- FULLSTACK_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- BACKEND_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- BACKEND_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- FRONTEND_DEVELOPER делегує завдання
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'SENIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'MIDDLE_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'JUNIOR_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'FULLSTACK_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'BACKEND_DEVELOPER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'QA_ENGINEER')),
-((SELECT id FROM roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM roles WHERE name = 'TESTER')),
+-- FRONTEND_DEVELOPER delegates tasks
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
 
--- QA_ENGINEER керує TESTER
-((SELECT id FROM roles WHERE name = 'QA_ENGINEER'), (SELECT id FROM roles WHERE name = 'TESTER'));
+-- QA_ENGINEER manages TESTER
+((SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER'));
 
 
-INSERT INTO achievements (title, description, image_url)
+INSERT INTO task_list.achievements (title, description, image_url)
 VALUES ('First Milestone', 'Completed 10 tasks in total.', 'https://img.icons8.com/ios/452/medal.png'),
        ('Second Milestone', 'Completed 100 tasks in total.', 'https://img.icons8.com/ios/452/gold-medal.png'),
        ('Third Milestone', 'Completed 500 tasks in total.', 'https://img.icons8.com/ios/452/trophy.png'),

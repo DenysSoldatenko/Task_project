@@ -42,6 +42,8 @@ public class TaskGeneratorService {
   private static final int MIN_COMMENTS = 1;
   private static final int MAX_COMMENTS = 5;
   private static final int BATCH_SIZE = 500;
+  private static final int CREATED_AT_VARIANCE_DAYS = 180;
+  private static final int EXPIRATION_DATE_VARIANCE_DAYS = 180;
 
   private final Faker faker = new Faker();
   private final TaskRepository taskRepository;
@@ -91,8 +93,8 @@ public class TaskGeneratorService {
       .priority(faker.options().option(TaskPriority.values()))
       .assignedTo(teamUser.getUser())
       .assignedBy(assignedBy)
-      .createdAt(now().minusDays(RANDOM.nextInt(7)))
-      .expirationDate(now().plusDays(RANDOM.nextInt(7)))
+      .createdAt(now().minusDays(RANDOM.nextInt(CREATED_AT_VARIANCE_DAYS)))
+      .expirationDate(now().plusDays(RANDOM.nextInt(EXPIRATION_DATE_VARIANCE_DAYS)))
       .build();
   }
 
