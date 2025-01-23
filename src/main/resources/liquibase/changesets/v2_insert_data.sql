@@ -17,24 +17,23 @@ VALUES ('ADMIN', 'Administrator with full access'),
 
 INSERT INTO task_list.role_hierarchy (higher_role, lower_role)
 VALUES
--- ADMIN has the highest level of access and can manage all other roles
-((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER')),
-((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER')),
-((SELECT id FROM task_list.roles WHERE name = 'ADMIN'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
-
 -- PRODUCT_OWNER manages SCRUM_MASTER, TEAM_LEAD, and MANAGER
 ((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER')),
 ((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
 ((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
+((SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER'), (SELECT id FROM task_list.roles WHERE name = 'PRODUCT_OWNER')),
 
 -- SCRUM_MASTER coordinates TEAM_LEAD and QA_ENGINEER
 ((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
 ((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
+((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
+((SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER'), (SELECT id FROM task_list.roles WHERE name = 'SCRUM_MASTER')),
 
 -- MANAGER has control over QA_ENGINEER, TEAM_LEAD, and TESTER
 ((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
 ((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'MANAGER'), (SELECT id FROM task_list.roles WHERE name = 'MANAGER')),
 
 -- TEAM_LEAD delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
@@ -45,6 +44,7 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD'), (SELECT id FROM task_list.roles WHERE name = 'TEAM_LEAD')),
 
 -- SENIOR_DEVELOPER delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
@@ -54,6 +54,7 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
 
 -- MIDDLE_DEVELOPER delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
@@ -62,9 +63,10 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'MIDDLE_DEVELOPER')),
 
 -- JUNIOR_DEVELOPER delegates tasks
-((SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'USER')),
+((SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'JUNIOR_DEVELOPER')),
 
 -- FULLSTACK_DEVELOPER delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
@@ -74,6 +76,7 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FULLSTACK_DEVELOPER')),
 
 -- BACKEND_DEVELOPER delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
@@ -83,6 +86,7 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
 
 -- FRONTEND_DEVELOPER delegates tasks
 ((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'SENIOR_DEVELOPER')),
@@ -92,9 +96,11 @@ VALUES
 ((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'BACKEND_DEVELOPER')),
 ((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER')),
 ((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER'), (SELECT id FROM task_list.roles WHERE name = 'FRONTEND_DEVELOPER')),
 
 -- QA_ENGINEER manages TESTER
-((SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER'));
+((SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER'), (SELECT id FROM task_list.roles WHERE name = 'TESTER')),
+((SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER'), (SELECT id FROM task_list.roles WHERE name = 'QA_ENGINEER'));
 
 
 INSERT INTO task_list.achievements (title, description, image_url)

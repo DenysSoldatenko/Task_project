@@ -61,6 +61,7 @@ public interface TeamUserRepository extends JpaRepository<TeamUser, TeamUserId> 
                 )
             )
         )
+        AND u.id != :userId
         ORDER BY RANDOM()
         LIMIT 1;
         """, nativeQuery = true)

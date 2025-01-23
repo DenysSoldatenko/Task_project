@@ -47,7 +47,7 @@ public class TaskStatusGeneratorService {
    */
   public int changeTaskStatusForAllUsers() {
     List<Task> tasksToApprove = taskRepository.findAll().stream()
-        .filter(task -> !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS, CANCELLED).contains(task.getTaskStatus()))
+        .filter(task -> task.getId() % 10 < 7 && !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS).contains(task.getTaskStatus()))
         .peek(task -> {
           task.setTaskStatus(APPROVED);
           task.setApprovedAt(calculateApprovedAt(task));

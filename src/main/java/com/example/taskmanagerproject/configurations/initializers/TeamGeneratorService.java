@@ -95,6 +95,6 @@ public class TeamGeneratorService {
   }
 
   private Role getRandomRole() {
-    return roleRepository.findAll().get(faker.number().numberBetween(0, roleRepository.findAll().size()));
+    return roleRepository.findAll().get(faker.number().numberBetween(1, roleRepository.findAll().size() - 1));
   }
 }
