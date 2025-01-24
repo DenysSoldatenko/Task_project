@@ -2,7 +2,6 @@ package com.example.taskmanagerproject.configurations.initializers;
 
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.ASSIGNED;
-import static com.example.taskmanagerproject.entities.tasks.TaskStatus.CANCELLED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.IN_PROGRESS;
 import static java.lang.Math.min;
 

@@ -11,39 +11,42 @@ volumes:
     driver: local
 
 services:
-  app:
+  application:
     build:
       context: .
-    container_name: task_project
+    container_name: task-project
     networks:
       - app-network
     depends_on:
       - postgres
       - minio
       - redis
-    env_file:
-      - .env
     ports:
       - '8080:8080'
+    env_file:
+      - .env
     environment:
-      MINIO_URL: http://minio:9000
-      SPRING_DATA_REDIS_HOST: redis
-      SPRING_DATASOURCE_HOST: postgres
+      MINIO_URL: ${DOCKER_MINIO_URL}
+      REDIS_HOST: ${DOCKER_REDIS_HOST}
+      DATASOURCE_HOST: ${DOCKER_DATASOURCE_HOST}
+      BOOTSTRAP_SERVER: ${DOCKER_BOOTSTRAP_SERVER}
 
   postgres:
     image: postgres:15.1-alpine
     container_name: postgres
     networks:
       - app-network
-    environment:
-      POSTGRES_USER: ${DATASOURCE_USERNAME}
-      POSTGRES_PASSWORD: ${DATASOURCE_USERNAME}
-      POSTGRES_DB: ${DATASOURCE_DATABASE}
     ports:
       - '5432:5432'
     volumes:
       - ./src/main/resources/preliquibase/init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
       - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
+      POSTGRES_DB: ${DATASOURCE_DATABASE}
 
   redis:
     image: redis:7.2-rc-alpine
@@ -62,15 +65,17 @@ services:
     container_name: minio
     networks:
       - app-network
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
     command: server ~/minio --console-address :9090
     ports:
       - '9090:9090'
       - '9000:9000'
     volumes:
       - minio_data:/minio
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${DOCKER_MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${DOCKER_MINIO_SECRET_KEY}
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
@@ -79,9 +84,16 @@ services:
       - app-network
     ports:
       - '22181:2181'
+    env_file:
+      - .env
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: ${DOCKER_ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_TICK_TIME: ${DOCKER_ZOOKEEPER_TICK_TIME}
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.4.4
@@ -89,16 +101,19 @@ services:
     networks:
       - app-network
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - '29092:29092'
+    env_file:
+      - .env
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_BROKER_ID: ${DOCKER_KAFKA_BROKER_ID}
+      KAFKA_ZOOKEEPER_CONNECT: ${DOCKER_KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_ADVERTISED_LISTENERS: ${DOCKER_KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${DOCKER_KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${DOCKER_KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${DOCKER_KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
 
   kafdrop:
     image: obsidiandynamics/kafdrop:3.27.0
@@ -109,5 +124,61 @@ services:
       - kafka
     ports:
       - '9080:9000'
+    env_file:
+      - .env
     environment:
-      KAFKA_BROKERCONNECT: kafka:9092
+      KAFKA_BROKERCONNECT: ${DOCKER_KAFKA_BROKERCONNECT}
+
+  loki:
+    image: grafana/loki:3.5.0
+    container_name: loki
+    networks:
+      - app-network
+    volumes:
+      - ./src/main/resources/grafana/loki-config.yaml:/etc/loki/loki-config.yaml
+    ports:
+      - '3100:3100'
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: promtail
+    networks:
+      - app-network
+    volumes:
+      - ./src/main/resources/grafana/promtail-config.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+
+  prometheus:
+    image: prom/prometheus:v3.3.1
+    container_name: prometheus
+    networks:
+      - app-network
+    ports:
+      - '9091:9090'
+    volumes:
+      - ./src/main/resources/grafana/prometheus-config.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:12.0.0
+    container_name: grafana
+    networks:
+      - app-network
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src/main/resources/grafana/grafana-config.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        /run.sh
+    env_file:
+      - .env
+    environment:
+      GF_PATHS_PROVISIONING: ${DOCKER_GF_PATHS_PROVISIONING}
+      GF_AUTH_ANONYMOUS_ENABLED: ${DOCKER_GF_AUTH_ANONYMOUS_ENABLED}
+      GF_AUTH_ANONYMOUS_ORG_ROLE: ${DOCKER_GF_AUTH_ANONYMOUS_ORG_ROLE}
+      GF_FEATURE_TOGGLES_ENABLE: ${DOCKER_GF_FEATURE_TOGGLES_ENABLE}

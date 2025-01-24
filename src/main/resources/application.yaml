@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: "application"
   config:
     import: optional:file:.env[.properties]
   cache:
@@ -6,13 +8,13 @@ spring:
     cache-names: redis-cache
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST}
-      port: ${SPRING_DATA_REDIS_PORT}
-      database: ${SPRING_DATA_REDIS_DATABASE}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: ${REDIS_DATABASE}
   datasource:
-    url: jdbc:postgresql://${SPRING_DATASOURCE_HOST}:5432/${SPRING_DATASOURCE_DATABASE}?currentSchema=${SPRING_DATASOURCE_SCHEMA}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://${DATASOURCE_HOST}:5432/${DATASOURCE_DATABASE}?currentSchema=${DATASOURCE_SCHEMA}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:liquibase/db.changelog.yaml
@@ -58,6 +60,21 @@ minio:
   accessKey: ${MINIO_ACCESS_KEY}
   secretKey: ${MINIO_SECRET_KEY}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 springdoc:
   override-with-generic-response: false

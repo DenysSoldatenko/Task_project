@@ -40,7 +40,8 @@ public class TaskManagerSecurityConfig {
     "/swagger-resources/**",
     "/swagger-ui.html",
     "/webjars/**",
-    "/graphiql"
+    "/graphiql",
+    "/actuator/**"
   };
 
   /**
