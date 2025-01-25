@@ -89,11 +89,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: ${DOCKER_ZOOKEEPER_CLIENT_PORT}
       ZOOKEEPER_TICK_TIME: ${DOCKER_ZOOKEEPER_TICK_TIME}
-    healthcheck:
-      test: ["CMD", "sh", "-c", "echo ruok | nc localhost 2181 | grep imok"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.4.4

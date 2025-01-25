@@ -32,6 +32,7 @@ dependencies {
 	implementation "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
 	implementation "org.springframework:spring-test:${springTestVersion}"
 	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerRegistryPrometheusVersion}"
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
 
 	implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
 	implementation "org.mapstruct:mapstruct:${mapStructVersion}"

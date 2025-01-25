@@ -29,7 +29,6 @@ public class MessageUtil {
   public static final String PASSWORD_MISMATCH
       = "Password and password confirmation do not match!";
 
-
   public static final String TASK_NOT_FOUND_WITH_ID
       = "Task not found with id: ";
   public static final String TASK_COMMENT_INVALID_SENDER_RECEIVER
@@ -68,7 +67,6 @@ public class MessageUtil {
   public static final String ROLE_DISCREPANCY_FOUND
       = "Discrepancy found between roles: the higher role %s cannot be assigned to the lower role %s!";
 
-
   public static final String PROJECT_NOT_FOUND_WITH_NAME
       = "Project not found with name: ";
   public static final String PROJECT_ALREADY_EXISTS
@@ -99,4 +97,6 @@ public class MessageUtil {
       = "Data initialization completed successfully!";
   public static final String DATA_INITIALIZATION_FAIL_MESSAGE
       = "Data initialization completed with errors!";
+  public static final String RATE_LIMIT_EXCEEDED
+      = "Request rate exceeded. Please slow down and try again shortly.";
 }

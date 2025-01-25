@@ -12,7 +12,7 @@ import org.springframework.kafka.config.TopicBuilder;
  * <p>Defines the Kafka topics used in the application.
  */
 @Configuration
-public class KafkaTopicConfiguration {
+public class KafkaTopicConfig {
 
   @Value("${spring.kafka.topic.name}")
   private String topic;
