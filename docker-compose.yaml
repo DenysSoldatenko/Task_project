@@ -177,3 +177,18 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: ${DOCKER_GF_AUTH_ANONYMOUS_ENABLED}
       GF_AUTH_ANONYMOUS_ORG_ROLE: ${DOCKER_GF_AUTH_ANONYMOUS_ORG_ROLE}
       GF_FEATURE_TOGGLES_ENABLE: ${DOCKER_GF_FEATURE_TOGGLES_ENABLE}
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    container_name: keycloak
+    networks:
+      - app-network
+    ports:
+      - '8081:8080'
+    command: start-dev
+    env_file:
+      - .env
+    environment:
+      KEYCLOAK_ADMIN: ${DOCKER_KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${DOCKER_KEYCLOAK_ADMIN_PASSWORD}
+
