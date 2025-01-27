@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Data
 @AllArgsConstructor
-public final class JwtEntity implements UserDetails {
+public final class Jwt2AuthenticationToken implements UserDetails {
 
   private final Long id;
   private final String name;

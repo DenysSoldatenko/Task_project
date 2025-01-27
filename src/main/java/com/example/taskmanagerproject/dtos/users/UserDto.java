@@ -9,10 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.Builder;
 
 /**
  * Represents a user DTO (Data Transfer Object) in the project.
  */
+@Builder
 @Schema(description = "Data Transfer Object representing a user")
 public record UserDto(
 
@@ -41,6 +43,15 @@ public record UserDto(
     )
     String username,
 
+    @NotNull(message = "Slug cannot be null!")
+    @NotBlank(message = "Slug cannot be blank!")
+    @Size(min = 5, max = 100, message = "Slug must be between 5 and 100 characters long!")
+    @Schema(
+      description = "The slug of the user, URL-friendly identifier",
+      example = "alice-johnson-1234"
+    )
+    String slug,
+
     @NotNull(message = "Password cannot be null!")
     @NotBlank(message = "Password cannot be blank!")
     @Size(min = 6, max = 25, message = "Password must be between 6 and 25 characters long!")
@@ -50,16 +61,6 @@ public record UserDto(
       example = "password123"
     )
     String password,
-
-    @NotNull(message = "Confirm password cannot be null!")
-    @NotBlank(message = "Confirm password cannot be blank!")
-    @Size(min = 6, max = 25, message = "Confirm password must be between 6 and 25 characters long!")
-    @JsonProperty(access = WRITE_ONLY)
-    @Schema(
-      description = "The confirmation password of the user",
-      example = "password123"
-    )
-    String confirmPassword,
 
     @JsonProperty(access = READ_ONLY)
     @Schema(

@@ -1,10 +1,9 @@
 package com.example.taskmanagerproject.configurations;
 
 import static java.util.Locale.ENGLISH;
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import com.example.taskmanagerproject.security.JwtTokenFilter;
-import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Configuration class for Task Manager security.
@@ -29,8 +27,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class TaskManagerSecurityConfig {
-
-  private final JwtTokenProvider tokenProvider;
 
   private static final String[] PUBLIC_ROUTES = {
     "/api/v*/auth/**",
@@ -105,8 +101,9 @@ public class TaskManagerSecurityConfig {
               .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-        .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
 
     return http.build();
   }
+
 }

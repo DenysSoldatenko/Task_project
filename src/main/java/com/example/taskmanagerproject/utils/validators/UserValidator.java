@@ -41,14 +41,7 @@ public final class UserValidator extends BaseValidator<UserDto> {
     Set<String> errorMessages = new HashSet<>();
     validateConstraints(userDto, errorMessages);
     validateUserExists(userDto, errorMessages);
-    validatePasswordMatching(userDto, errorMessages);
     throwIfErrorsExist(errorMessages);
-  }
-
-  private void validatePasswordMatching(UserDto userDto, Set<String> errorMessages) {
-    if (!userDto.password().equals(userDto.confirmPassword())) {
-      errorMessages.add(PASSWORD_MISMATCH);
-    }
   }
 
   private void validateUserExists(UserDto userDto, Set<String> errorMessages) {

@@ -3,17 +3,17 @@ package com.example.taskmanagerproject.configurations.initializers;
 import static java.util.List.of;
 import static java.util.stream.IntStream.range;
 
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.repositories.RoleRepository;
 import com.example.taskmanagerproject.repositories.UserRepository;
+import com.example.taskmanagerproject.utils.factories.UserFactory;
+import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.github.slugify.Slugify;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,10 +28,9 @@ public class UserGeneratorService {
   private static final Random RANDOM = new Random();
   private final Faker faker = new Faker();
 
+  private final UserFactory userFactory;
   private final Slugify slugGenerator;
-  private final RoleRepository roleRepository;
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
 
   /**
    * Generates a batch of users.
@@ -49,23 +48,23 @@ public class UserGeneratorService {
    * @return the created global admin user
    */
   public User createGlobalAdminUser() {
-    return userRepository.save(buildUser("Alice Johnson", "alice12345@gmail.com", getRandomRole()));
+    return userRepository.save(buildUser("Alice Johnson", "alice12345@gmail.com", "password"));
   }
 
   private User createUser() {
     String fullName = faker.name().fullName();
-    return buildUser(fullName, generateUsername(fullName), getRandomRole());
+    String username = generateUsername(fullName);
+    String password = "password";
+    return buildUser(fullName, username, password);
   }
 
-  private User buildUser(String fullName, String username, Role role) {
-    return User.builder()
+  private User buildUser(String fullName, String username, String password) {
+    return userFactory.createUserFromRequest(UserDto.builder()
       .fullName(fullName)
       .username(username)
       .slug(generateSlug(fullName))
-      .password(hashPassword())
-      .confirmPassword(hashPassword())
-      .role(role)
-      .build();
+      .password(password)
+      .build());
   }
 
   private String generateUsername(String fullName) {
@@ -83,14 +82,5 @@ public class UserGeneratorService {
 
   private String generateSlug(String fullName) {
     return slugGenerator.slugify(fullName) + "-" + UUID.randomUUID().toString().substring(0, 8);
-  }
-
-  private Role getRandomRole() {
-    List<Role> roles = roleRepository.findAll();
-    return roles.isEmpty() ? null : roles.get(RANDOM.nextInt(roles.size()));
-  }
-
-  private String hashPassword() {
-    return passwordEncoder.encode("password123");
   }
 }

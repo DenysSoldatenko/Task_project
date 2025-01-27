@@ -185,9 +185,11 @@ services:
       - app-network
     ports:
       - '8081:8080'
-    command: start-dev
+    command: start-dev --import-realm
     env_file:
       - .env
+    volumes:
+      - ./src/main/resources/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     environment:
       KEYCLOAK_ADMIN: ${DOCKER_KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${DOCKER_KEYCLOAK_ADMIN_PASSWORD}

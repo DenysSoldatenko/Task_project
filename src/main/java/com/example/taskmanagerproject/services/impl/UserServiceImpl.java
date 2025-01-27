@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,6 @@ public class UserServiceImpl implements UserService {
   private final ImageService imageService;
   private final UserValidator userValidator;
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   @Transactional(readOnly = true)
@@ -62,8 +60,6 @@ public class UserServiceImpl implements UserService {
 
     user.setFullName(userDto.fullName());
     user.setUsername(userDto.username());
-    user.setPassword(passwordEncoder.encode(userDto.password()));
-    user.setConfirmPassword(passwordEncoder.encode(userDto.confirmPassword()));
 
     User updatedUser = userRepository.save(user);
     return userMapper.toDto(updatedUser);

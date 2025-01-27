@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.utils.mappers;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper interface for converting User entities to UserDto objects and vice versa.
@@ -16,6 +17,7 @@ public interface UserMapper {
    * @param user The User entity to convert.
    * @return The corresponding UserDto object.
    */
+  @Mapping(target = "password", ignore = true)
   UserDto toDto(User user);
 
   /**

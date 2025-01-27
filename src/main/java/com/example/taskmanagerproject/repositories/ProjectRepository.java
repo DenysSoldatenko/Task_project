@@ -28,7 +28,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
       LEFT JOIN FETCH p.projectTeams pt
       LEFT JOIN FETCH pt.team t
       LEFT JOIN FETCH t.creator tc
-      LEFT JOIN FETCH tc.role r
       WHERE p.name = :name
       """)
   Optional<Project> findByName(@Param("name") String name);

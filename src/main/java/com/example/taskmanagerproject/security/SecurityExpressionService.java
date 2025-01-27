@@ -21,11 +21,13 @@ import com.example.taskmanagerproject.services.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for security expressions related to user and task access.
+ * Service for evaluating user permissions and access rights across users, teams, tasks, and projects.
+ * Used in Spring Security expressions (for example `@PreAuthorize`).
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -43,76 +45,54 @@ public class SecurityExpressionService {
   );
 
   /**
-   * Checks if the current user can access the specified user's data by slug.
-   *
-   * @param slug The slug of the user to check.
-   * @return true if the current user matches the user's slug, false otherwise.
+   * Checks if the current user can access data of a user identified by slug.
    */
   public boolean canAccessUserDataBySlug(String slug) {
-    JwtEntity jwtEntity = (JwtEntity) getContext().getAuthentication().getPrincipal();
+    Jwt jwt = getJwt();
     UserDto user = userService.getUserBySlug(slug);
-    boolean hasAccess = jwtEntity.getId().equals(user.id());
+    boolean hasAccess = jwt.getClaimAsString("email").equals(user.username());
     log.info("Checking access for user slug: {} - hasAccess: {}", slug, hasAccess);
     return hasAccess;
   }
 
   /**
-   * Checks if the current user has the necessary permissions to access a project.
-   * The user must either be the creator of the project.
-   *
-   * @param projectName the name of the project to check access for
-   * @return true if the user has access to the project, false otherwise
+   * Checks if the current user has access to the specified project.
    */
   public boolean canAccessProject(String projectName) {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasProjectAccess = userService.hasProjectAccess(projectName, user.getUsername());
-    log.info(
-        "Checking access for user ID: {} on project: {} - hasAccess: {}, hasTeamAccess: {}",
-        user.getId(), projectName, hasProjectAccess, hasProjectAccess
-    );
+    Jwt jwt = getJwt();
+    String email = jwt.getClaimAsString("email");
+    boolean hasProjectAccess = userService.hasProjectAccess(projectName, email);
+    log.info("Checking access for user email: {} on project: {} - hasAccess: {}", email, projectName, hasProjectAccess);
     return hasProjectAccess;
   }
 
   /**
-   * Checks if the current user has the necessary permissions to access a team.
-   * The user must either be the creator of the team or be a member of the team.
-   *
-   * @param teamName the name of the team to check access for
-   * @return true if the user has access to the project, false otherwise
+   * Checks if the current user has access to the specified team.
    */
   public boolean canAccessTeam(String teamName) {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean hasTeamAccess = userService.hasTeamAccess(teamName, user.getUsername());
-    log.info(
-        "Checking access for user ID: {} on team: {} - hasAccess: {}, hasTeamAccess: {}",
-        user.getId(), teamName, hasTeamAccess, hasTeamAccess
-    );
+    Jwt jwt = getJwt();
+    String email = jwt.getClaimAsString("email");
+    boolean hasTeamAccess = userService.hasTeamAccess(teamName, email);
+    log.info("Checking access for user email: {} on team: {} - hasAccess: {}", email, teamName, hasTeamAccess);
     return hasTeamAccess;
   }
 
   /**
-   * Checks if the current user can access the specified task's data.
-   *
-   * @param taskId The ID of the task to check access for.
-   * @return true if the current user can access the specified task's data, false otherwise.
+   * Checks if the current user is the owner of or assigned to the given task.
    */
   public boolean canAccessTask(Long taskId) {
-    JwtEntity user = (JwtEntity) getContext().getAuthentication().getPrincipal();
-    boolean isTaskOwner = userService.isUserTaskOwner(user.getId(), taskId);
-    boolean isTaskAssignedToUser = userService.isUserAssignedToTask(user.getId(), taskId);
+    Jwt jwt = getJwt();
+    String email = jwt.getClaimAsString("email");
+    Long userId = userService.getUserByUsername(email).getId();
+    boolean isTaskOwner = userService.isUserTaskOwner(userId, taskId);
+    boolean isTaskAssignedToUser = userService.isUserAssignedToTask(userId, taskId);
     boolean hasAccess = isTaskOwner || isTaskAssignedToUser;
-    log.info(
-        "Checking task access for task ID: {} - hasAccess: {}, isTaskOwner: {}, isTaskAssignedToUser: {}",
-        taskId, hasAccess, isTaskOwner, isTaskAssignedToUser
-    );
+    log.info("Checking task access for user email: {}, task ID: {}, hasAccess: {}", email, taskId, hasAccess);
     return hasAccess;
   }
 
   /**
-   * Checks if the current user can access the task data associated with the specified task comment slug.
-   *
-   * @param slug The slug of the task comment for which access is to be checked.
-   * @return true if the current user can access the task data associated with the given slug, false otherwise.
+   * Checks access to a task comment using its slug.
    */
   public boolean canAccessTaskComment(String slug) {
     Long taskId = taskCommentService.getTaskIdBySlug(slug);
@@ -120,10 +100,7 @@ public class SecurityExpressionService {
   }
 
   /**
-   * Checks if the current user can access the task data associated with the specified task comment ID.
-   *
-   * @param taskCommentId The ID of the task comment for which access is to be checked.
-   * @return true if the current user can access the task data associated with the given task comment ID, false otherwise.
+   * Checks access to a task comment using its ID.
    */
   public boolean canAccessTaskComment(Long taskCommentId) {
     Long taskId = taskCommentService.getTaskIdByTaskCommentId(taskCommentId);
@@ -131,60 +108,63 @@ public class SecurityExpressionService {
   }
 
   /**
-   * Checks if the current user can access the report for a specific user and team.
-   *
-   * @param username the username of the user requesting access to the report.
-   * @param teamName the name of the team associated with the report.
-   * @return true if the user has the necessary permissions to access the report, false otherwise.
+   * Checks if a user can access a report related to another user in a team.
    */
   public boolean canAccessUserReport(String username, String teamName) {
     return hasAccess(username, teamName, false);
   }
 
   /**
-   * Checks if the current user can access the report for a specific team.
-   *
-   * @param teamName the name of the team for which the report is requested.
-   * @return true if the user has the necessary permissions to access the team report, false otherwise.
+   * Checks if a user can access a report related to a team.
    */
   public boolean canAccessTeamReport(String teamName) {
     return hasAccess(null, teamName, false);
   }
 
   /**
-   * Checks if the current user can access the report for a specific project.
-   *
-   * @param projectName the name of the project for which the report is requested.
-   * @return true if the user has the necessary permissions to access the project report, false otherwise.
+   * Checks if a user can access a report related to a project.
    */
   public boolean canAccessProjectReport(String projectName) {
     return hasAccess(null, projectName, true);
   }
 
+  /**
+   * Core permission check logic based on user-role and relation to the entity.
+   */
   private boolean hasAccess(String username, String entityName, boolean isProject) {
-    JwtEntity jwt = (JwtEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    Long userId = (username != null) ? userService.getUserByUsername(username).getId() : jwt.getId();
+    Jwt jwt = getJwt();
+    String email = jwt.getClaimAsString("email");
+    Long userId = (username != null) ? userService.getUserByUsername(username).getId() : userService.getUserByUsername(email).getId();
+
     Role userRole;
     boolean isUserRelated;
 
     if (isProject) {
       ProjectDto project = projectService.getProjectByName(entityName);
-      userRole = projectService.getRoleByProjectNameAndUsername(entityName, jwt.getUsername());
-      isUserRelated = projectService.existsByUserIdAndProjectId(jwt.getId(), project.id());
+      userRole = projectService.getRoleByProjectNameAndUsername(entityName, email);
+      isUserRelated = projectService.existsByUserIdAndProjectId(userId, project.id());
     } else {
       TeamDto team = teamService.getTeamByName(entityName);
-      userRole = teamUserService.getRoleByTeamNameAndUsername(team.name(), jwt.getUsername());
-      isUserRelated = teamUserService.existsByUserIdAndTeamId(jwt.getId(), team.id());
+      userRole = teamUserService.getRoleByTeamNameAndUsername(team.name(), email);
+      isUserRelated = teamUserService.existsByUserIdAndTeamId(userId, team.id());
     }
 
     boolean hasPermission = ALLOWED_ROLES_FOR_TEAM_PROJECT_AND_REPORT_ACCESS.stream().anyMatch(role -> role.name().equals(userRole.getName()));
-    boolean canAccess = (username != null) ? ((jwt.getId().equals(userId)) || (hasPermission && isUserRelated)) : (hasPermission && isUserRelated);
+    boolean canAccess = (username != null) ? (email.equals(username) || (hasPermission && isUserRelated)) : (hasPermission && isUserRelated);
 
     log.info(
-        "Access check - Type: {}, Name: {}, User: {}, Role: {}, Has permission: {}, Related: {}, Access granted: {}",
-        isProject ? "Project" : "Team", entityName, jwt.getUsername(), userRole.getName(), hasPermission, isUserRelated, canAccess
+        "Access check - Type: {}, Name: {}, User email: {}, Role: {}, Has permission: {}, Related: {}, Access granted: {}",
+        isProject ? "Project" : "Team", entityName, email, userRole.getName(), hasPermission, isUserRelated, canAccess
     );
 
     return canAccess;
+  }
+
+  /**
+   * Extracts the current user's JWT token from the security context.
+   */
+  private Jwt getJwt() {
+    JwtAuthenticationToken authentication = (JwtAuthenticationToken) getContext().getAuthentication();
+    return authentication.getToken();
   }
 }

@@ -1,0 +1,23 @@
+{
+  "realm": "task-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "task-project-cc",
+      "name": "Task project",
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "secret": "7OrbhFIsfmcvnHrs6GLFOnx9ylgXxBo3",
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://application:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080",
+        "http://application:8080/*"
+      ],
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true
+    }
+  ]
+}

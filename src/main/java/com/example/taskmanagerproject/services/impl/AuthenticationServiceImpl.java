@@ -60,9 +60,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private void authenticateUser(AuthenticationRequest request) {
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
   }
-
+// TODO: REMOVE AUTH LOGIC
   private AuthenticationResponse createAuthenticationResponse(User user) {
-    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getRole().getName());
+    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), "user.getRole().getName()");
     return new AuthenticationResponse(jwtToken);
   }
 }

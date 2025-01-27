@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.entities.users;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.example.taskmanagerproject.entities.teams.TeamUser;
@@ -11,9 +10,6 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -47,20 +43,6 @@ public class User {
 
   @Column(name = "slug")
   private String slug;
-
-  @Column(name = "password")
-  private String password;
-
-  @Column(name = "confirm_password")
-  private String confirmPassword;
-
-  @ManyToOne(fetch = EAGER)
-  @JoinTable(
-      name = "users_roles",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
-  private Role role;
 
   @JsonManagedReference
   @OneToMany(mappedBy = "user")

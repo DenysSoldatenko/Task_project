@@ -116,10 +116,9 @@ public final class ReportTemplateProcessor {
         "{projectName}", reportData.project().getName(),
         "{fullName}", reportData.user().getFullName(),
         "{email}", reportData.user().getUsername(),
-        "{role}", ReportMetricUtil.formatRoleName(reportData.user().getRole().getName()),
         "{chart_bars}", ReportTemplateUtil.generateChartHtml(metrics)
     );
-
+//todo: refactor template with role bar
     return ReportTemplateUtil.replacePlaceholders(template, placeholders);
   }
 

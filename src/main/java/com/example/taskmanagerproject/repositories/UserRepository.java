@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * @param username The username of the user.
    * @return An Optional containing the User if found, or empty if not.
    */
-  @Query("SELECT u FROM User u JOIN FETCH u.role r JOIN FETCH u.teamUsers t WHERE u.username = :username")
+  @Query("SELECT u FROM User u JOIN FETCH u.teamUsers t WHERE u.username = :username")
   Optional<User> findByUsername(String username);
 
   /**
@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * @param slug The slug of the user.
    * @return An Optional containing the User if found, or empty if not.
    */
-  @Query("SELECT u FROM User u LEFT JOIN FETCH u.role r LEFT JOIN FETCH u.teamUsers t WHERE u.slug = :slug")
+  @Query("SELECT u FROM User u LEFT JOIN FETCH u.teamUsers t WHERE u.slug = :slug")
   Optional<User> findBySlug(String slug);
 
   /**

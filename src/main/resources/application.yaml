@@ -46,12 +46,39 @@ spring:
           json:
             trusted:
               packages: '*'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+      authorizationserver:
+        endpoint:
+          token-uri: ${KEYCLOAK_TOKEN_URI}
+          authorization-uri: ${KEYCLOAK_AUTH_URI}
+      client:
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI}
 
 
 jwt:
- token:
-  secret: ${JWT_TOKEN_SECRET}
-  expired: ${JWT_TOKEN_EXPIRED}
+  token:
+    secret: ${JWT_TOKEN_SECRET}
+    expired: ${JWT_TOKEN_EXPIRED}
+
+keycloak:
+  admin-server-url: ${KEYCLOAK_ADMIN_SERVER_URL}
+  admin-realm: ${KEYCLOAK_ADMIN_REALM}
+  target-realm: ${KEYCLOAK_TARGET_REALM}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD}
 
 
 minio:
@@ -80,3 +107,7 @@ management:
 
 springdoc:
   override-with-generic-response: false
+  swagger-ui:
+    oauth:
+      client-id: ${KEYCLOAK_CLIENT_ID}
+      client-secret: ${KEYCLOAK_CLIENT_SECRET}

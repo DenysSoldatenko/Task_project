@@ -3,11 +3,7 @@ CREATE TABLE IF NOT EXISTS users
     id               BIGSERIAL PRIMARY KEY,
     full_name        VARCHAR(255) NOT NULL,
     username         VARCHAR(255) NOT NULL UNIQUE,
-    slug             VARCHAR(255) NOT NULL UNIQUE,
-    password         VARCHAR(255) NOT NULL,
-    confirm_password VARCHAR(255) NOT NULL,
-    CONSTRAINT chk_password_length CHECK (LENGTH(password) >= 6),
-    CONSTRAINT chk_confirm_password_length CHECK (LENGTH(confirm_password) >= 6)
+    slug             VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS users_images
@@ -33,17 +29,6 @@ CREATE TABLE IF NOT EXISTS role_hierarchy
     CONSTRAINT fk_higher_role FOREIGN KEY (higher_role) REFERENCES roles (id)
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT fk_lower_role FOREIGN KEY (lower_role) REFERENCES roles (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION
-);
-
-CREATE TABLE IF NOT EXISTS users_roles
-(
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    CONSTRAINT fk_users_roles_users FOREIGN KEY (user_id) REFERENCES users (id)
-        ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT fk_users_roles_roles FOREIGN KEY (role_id) REFERENCES roles (id)
         ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
