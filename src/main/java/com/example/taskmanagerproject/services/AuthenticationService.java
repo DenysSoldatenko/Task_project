@@ -1,27 +1,17 @@
 package com.example.taskmanagerproject.services;
 
-import com.example.taskmanagerproject.dtos.users.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.users.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.users.UserDto;
+import org.springframework.security.core.Authentication;
 
 /**
- * Service class for handling user authentication and registration.
+ * Service interface for handling authentication-related operations.
  */
 public interface AuthenticationService {
 
   /**
-   * Registers a new user with the provided user data.
+   * Logs and returns a textual summary of the currently authenticated user's identity and credentials.
    *
-   * @param request The UserDto containing the user's registration details.
-   * @return The AuthenticationResponse containing the user's authentication token and details.
+   * @param authentication the Spring Security {@link Authentication} object representing the current user.
+   * @return a formatted string containing user identity and token claims; or a message indicating no user is authenticated.
    */
-  AuthenticationResponse registerUser(UserDto request);
-
-  /**
-   * Authenticates a user with the provided credentials.
-   *
-   * @param request The AuthenticationRequest containing the user's credentials.
-   * @return The AuthenticationResponse containing the authentication token.
-   */
-  AuthenticationResponse authenticate(AuthenticationRequest request);
+  String logAuthenticationInfo(Authentication authentication);
 }

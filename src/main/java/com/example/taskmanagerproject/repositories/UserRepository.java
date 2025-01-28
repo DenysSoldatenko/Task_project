@@ -137,8 +137,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query(value = """
       SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
       FROM task_list.users u
-               JOIN task_list.users_roles ur on u.id = ur.user_id
-               JOIN task_list.roles r ON r.id = ur.role_id
+               JOIN task_list.teams_users tr on u.id = tr.user_id
+               JOIN task_list.roles r ON r.id = tr.role_id
       WHERE r.name IN ('ADMIN', 'PRODUCT_OWNER', 'SCRUM_MASTER', 'MANAGER', 'TEAM_LEAD')
       AND u.username = :username
       """, nativeQuery = true)

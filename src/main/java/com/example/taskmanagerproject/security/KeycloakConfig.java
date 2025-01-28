@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for setting up the Keycloak Admin client.
+ */
 @Configuration
 public class KeycloakConfig {
 
@@ -25,6 +28,11 @@ public class KeycloakConfig {
   @Value("${keycloak.admin-password}")
   private String password;
 
+  /**
+   * Creates and configures a {@link Keycloak} instance for admin operations.
+   *
+   * @return a configured Keycloak admin client
+   */
   @Bean
   public Keycloak keycloak() {
     return KeycloakBuilder.builder()

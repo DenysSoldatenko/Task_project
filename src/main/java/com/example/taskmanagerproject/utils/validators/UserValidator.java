@@ -1,6 +1,5 @@
 package com.example.taskmanagerproject.utils.validators;
 
-import static com.example.taskmanagerproject.utils.MessageUtil.PASSWORD_MISMATCH;
 import static com.example.taskmanagerproject.utils.MessageUtil.USER_ALREADY_EXISTS_WITH_USERNAME;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;

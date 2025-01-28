@@ -1,68 +1,53 @@
 package com.example.taskmanagerproject.services.impl;
 
-import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WITH_USERNAME;
-
-import com.example.taskmanagerproject.dtos.users.AuthenticationRequest;
-import com.example.taskmanagerproject.dtos.users.AuthenticationResponse;
-import com.example.taskmanagerproject.dtos.users.UserDto;
-import com.example.taskmanagerproject.entities.users.User;
-import com.example.taskmanagerproject.repositories.UserRepository;
-import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.AuthenticationService;
-import com.example.taskmanagerproject.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of the AuthenticationService interface.
+ * Handles authentication-related business logic.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-  private final UserService userService;
-  private final UserRepository userRepository;
-  private final JwtTokenProvider jwtTokenProvider;
-  private final AuthenticationManager authenticationManager;
-
   /**
-   * Registers a new user based on the provided registration request.
+   * Logs detailed authentication information for debugging or auditing.
    *
-   * @param request The registration request containing user details.
-   * @return AuthenticationResponse containing the JWT token.
+   * @param authentication the current Spring Security authentication object
    */
   @Override
-  @Transactional
-  public AuthenticationResponse registerUser(UserDto request) {
-    User user = userService.createUser(request);
-    return createAuthenticationResponse(user);
-  }
+  public String logAuthenticationInfo(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+      log.warn("No authenticated user found.");
+      return "User not authenticated.";
+    }
 
-  /**
-   * Authenticates a user based on the provided authentication request.
-   *
-   * @param request The authentication request containing user credentials.
-   * @return AuthenticationResponse containing the JWT token.
-   */
-  @Override
-  @Transactional
-  public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    User user = userRepository.findByUsername(request.username())
-        .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + request.username()));
-    authenticateUser(request);
-    return createAuthenticationResponse(user);
-  }
+    StringBuilder info = new StringBuilder();
+    String username = authentication.getName();
+    String authType = authentication.getClass().getSimpleName();
 
-  private void authenticateUser(AuthenticationRequest request) {
-    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-  }
-// TODO: REMOVE AUTH LOGIC
-  private AuthenticationResponse createAuthenticationResponse(User user) {
-    String jwtToken = jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), "user.getRole().getName()");
-    return new AuthenticationResponse(jwtToken);
+    info.append("Authenticated user: ").append(username).append("\n");
+    info.append("Authentication type: ").append(authType).append("\n");
+
+    if (authentication instanceof JwtAuthenticationToken jwtAuthToken) {
+      Jwt jwt = jwtAuthToken.getToken();
+      info.append("JWT Subject: ").append(jwt.getSubject()).append("\n");
+      info.append("JWT Claims:\n");
+      jwt.getClaims().forEach((key, value) -> info.append("  ").append(key).append(": ").append(value).append("\n"));
+    } else {
+      String principalType = authentication.getPrincipal().getClass().getSimpleName();
+      info.append("Principal class: ").append(principalType).append("\n");
+    }
+
+    // Also log to server logs for traceability
+    log.info(info.toString());
+
+    return info.toString();
   }
 }
