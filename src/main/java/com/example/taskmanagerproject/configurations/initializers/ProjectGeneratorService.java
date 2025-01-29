@@ -54,7 +54,7 @@ public class ProjectGeneratorService {
     projectTeam.setTeam(team);
     return projectTeam;
   }
-
+//todo remove randomUUID
   private Project createProject(User user) {
     Project project = new Project();
     project.setName(faker.company().name() + randomUUID().toString().substring(0, 4));

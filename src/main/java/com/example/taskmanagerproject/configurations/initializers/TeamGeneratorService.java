@@ -41,7 +41,7 @@ public class TeamGeneratorService {
   public List<Team> generateTeams(User user, int batchSize) {
     return teamRepository.saveAll(range(0, batchSize).mapToObj(i -> createTeam(user)).toList());
   }
-
+  //todo remove randomUUID
   private Team createTeam(User user) {
     Team team = new Team();
     team.setName(faker.team().name() + randomUUID().toString().substring(0, 4));

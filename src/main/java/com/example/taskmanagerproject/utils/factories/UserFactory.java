@@ -1,12 +1,16 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import static java.util.Collections.singletonList;
+import static com.example.taskmanagerproject.utils.MessageUtil.KEYCLOAK_ERROR_FAILED_TO_CREATE_USER;
+import static com.example.taskmanagerproject.utils.MessageUtil.KEYCLOAK_ERROR_GENERIC_CREATION;
+import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
+import com.example.taskmanagerproject.exceptions.KeycloakUserCreationException;
 import com.github.slugify.Slugify;
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -21,51 +25,72 @@ import org.springframework.stereotype.Component;
 @Component
 public final class UserFactory {
 
-  private final Slugify slugGenerator;
-  private final Keycloak keycloak;
-
   @Value("${keycloak.target-realm}")
   private String keycloakRealm;
 
+  private final Keycloak keycloak;
+  private final Slugify slugGenerator;
+
+  /**
+   * Constructs a {@code UserFactory} with the given slug generator and Keycloak client.
+   *
+   * @param slugGenerator the slug generator used to create unique slugs
+   * @param keycloak the Keycloak client for user management operations
+   */
   public UserFactory(Slugify slugGenerator, Keycloak keycloak) {
     this.slugGenerator = slugGenerator;
     this.keycloak = keycloak;
   }
-// todo add custom exception + constant
+
   /**
-   * Creates a user in Keycloak and returns a corresponding local User entity (without password).
+   * Creates a user in Keycloak and returns the corresponding local User entity.
    *
-   * @param request DTO containing user registration details.
-   * @return A local User entity with full name, username, and a generated slug.
-   * @throws RuntimeException if user creation in Keycloak fails.
+   * @param request DTO with registration data.
+   * @return Local User entity without password.
+   * @throws KeycloakUserCreationException if Keycloak creation fails.
    */
   public User createUserFromRequest(UserDto request) {
-    log.info("Attempting to create user '{}' in Keycloak for realm '{}'.", request.username(), keycloakRealm);
+    log.info("Creating user '{}' in Keycloak for realm '{}'.", request.username(), keycloakRealm);
 
-    UserRepresentation kcUser = new UserRepresentation();
-    kcUser.setUsername(request.username());
-    kcUser.setEmail(request.username());
-    kcUser.setEnabled(true);
-
-    CredentialRepresentation credential = new CredentialRepresentation();
-    credential.setTemporary(false);
-    credential.setType(CredentialRepresentation.PASSWORD);
-    credential.setValue(request.password());
-    kcUser.setCredentials(singletonList(credential));
+    UserRepresentation kcUser = mapToKeycloakUser(request);
 
     try (Response response = keycloak.realm(keycloakRealm).users().create(kcUser)) {
-      if (response.getStatus() == 201) {
-        log.info("Successfully created user '{}' in Keycloak. Status: {}", request.username(), response.getStatus());
-      } else {
-        String errorMessage = response.readEntity(String.class);
-        log.error("Failed to create user '{}' in Keycloak. Status: {}. Error: {}", request.username(), response.getStatus(), errorMessage);
-        throw new RuntimeException("Failed to create user in Keycloak. Status: " + response.getStatus() + ". Details: " + errorMessage);
-      }
+      handleKeycloakResponse(response, request.username());
     } catch (Exception e) {
-      log.error("An unexpected error occurred during Keycloak user creation for '{}': {}", request.username(), e.getMessage(), e);
-      throw new RuntimeException("An error occurred during Keycloak user creation for " + request.username(), e);
+      log.error("Unexpected error creating user '{}': {}", request.username(), e.getMessage(), e);
+      throw new KeycloakUserCreationException(format(KEYCLOAK_ERROR_GENERIC_CREATION, request.username(), e));
     }
 
+    return buildLocalUser(request);
+  }
+
+  private UserRepresentation mapToKeycloakUser(UserDto request) {
+    CredentialRepresentation credential = new CredentialRepresentation();
+    credential.setType(CredentialRepresentation.PASSWORD);
+    credential.setValue(request.password());
+    credential.setTemporary(false);
+
+    UserRepresentation user = new UserRepresentation();
+    user.setUsername(request.username());
+    user.setEmail(request.username());
+    user.setEnabled(true);
+    user.setCredentials(List.of(credential));
+
+    return user;
+  }
+
+  private void handleKeycloakResponse(Response response, String username) {
+    int status = response.getStatus();
+    if (status == 201) {
+      log.info("Successfully created user '{}' in Keycloak.", username);
+    } else {
+      String errorBody = response.readEntity(String.class);
+      log.error("Failed to create user '{}'. Status: {}, Error: {}", username, status, errorBody);
+      throw new KeycloakUserCreationException(format(KEYCLOAK_ERROR_FAILED_TO_CREATE_USER, status, errorBody));
+    }
+  }
+
+  private User buildLocalUser(UserDto request) {
     return User.builder()
       .fullName(request.fullName())
       .username(request.username())
@@ -73,12 +98,6 @@ public final class UserFactory {
       .build();
   }
 
-  /**
-   * Generates a unique slug from a full name.
-   *
-   * @param fullName The full name to slugify.
-   * @return A unique slug.
-   */
   private String generateSlug(String fullName) {
     return slugGenerator.slugify(fullName) + "-" + randomUUID().toString().substring(0, 8);
   }

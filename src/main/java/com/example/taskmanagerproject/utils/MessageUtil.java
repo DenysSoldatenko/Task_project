@@ -99,4 +99,11 @@ public class MessageUtil {
       = "Data initialization completed with errors!";
   public static final String RATE_LIMIT_EXCEEDED
       = "Request rate exceeded. Please slow down and try again shortly.";
+
+
+  public static final String KEYCLOAK_ERROR_FAILED_TO_CREATE_USER
+      = "Failed to create user in Keycloak. Status: %d. Details: %s";
+  public static final String KEYCLOAK_ERROR_GENERIC_CREATION
+      = "An error occurred during Keycloak user creation for %s. Details: %s";
+
 }
