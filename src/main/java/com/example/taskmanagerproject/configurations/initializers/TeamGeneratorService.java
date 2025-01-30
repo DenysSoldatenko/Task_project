@@ -2,7 +2,6 @@ package com.example.taskmanagerproject.configurations.initializers;
 
 import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
 import static java.time.LocalDateTime.now;
-import static java.util.UUID.randomUUID;
 import static java.util.stream.IntStream.range;
 
 import com.example.taskmanagerproject.entities.teams.Team;
@@ -41,10 +40,10 @@ public class TeamGeneratorService {
   public List<Team> generateTeams(User user, int batchSize) {
     return teamRepository.saveAll(range(0, batchSize).mapToObj(i -> createTeam(user)).toList());
   }
-  //todo remove randomUUID
+
   private Team createTeam(User user) {
     Team team = new Team();
-    team.setName(faker.team().name() + randomUUID().toString().substring(0, 4));
+    team.setName(faker.team().name());
     team.setDescription(faker.lorem().sentence(10));
     team.setCreatedAt(now());
     team.setCreator(user);

@@ -26,8 +26,6 @@ public class MessageUtil {
       = "The user does not have the necessary role to create or update a project! Username: ";
   public static final String USER_DOES_NOT_HAVE_ROLE_TO_CREATE_OR_UPDATE_TEAM
       = "The user does not have the necessary role to create or update a team! Username: ";
-  public static final String PASSWORD_MISMATCH
-      = "Password and password confirmation do not match!";
 
   public static final String TASK_NOT_FOUND_WITH_ID
       = "Task not found with id: ";

@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.configurations.initializers;
 
 import static java.time.LocalDateTime.now;
-import static java.util.UUID.randomUUID;
 import static java.util.stream.IntStream.range;
 
 import com.example.taskmanagerproject.entities.projects.Project;
@@ -54,10 +53,10 @@ public class ProjectGeneratorService {
     projectTeam.setTeam(team);
     return projectTeam;
   }
-//todo remove randomUUID
+
   private Project createProject(User user) {
     Project project = new Project();
-    project.setName(faker.company().name() + randomUUID().toString().substring(0, 4));
+    project.setName(faker.company().name());
     project.setDescription(faker.lorem().sentence());
     project.setCreator(user);
     project.setCreatedAt(now());
