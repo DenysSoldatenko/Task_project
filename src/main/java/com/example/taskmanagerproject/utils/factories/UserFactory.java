@@ -50,8 +50,6 @@ public final class UserFactory {
    * @throws KeycloakUserCreationException if Keycloak creation fails.
    */
   public User createUserFromRequest(UserDto request) {
-    log.info("Creating user '{}' in Keycloak for realm '{}'.", request.username(), keycloakRealm);
-
     UserRepresentation kcUser = mapToKeycloakUser(request);
 
     try (Response response = keycloak.realm(keycloakRealm).users().create(kcUser)) {
@@ -81,9 +79,7 @@ public final class UserFactory {
 
   private void handleKeycloakResponse(Response response, String username) {
     int status = response.getStatus();
-    if (status == 201) {
-      log.info("Successfully created user '{}' in Keycloak.", username);
-    } else {
+    if (status != 201) {
       String errorBody = response.readEntity(String.class);
       log.error("Failed to create user '{}'. Status: {}, Error: {}", username, status, errorBody);
       throw new KeycloakUserCreationException(format(KEYCLOAK_ERROR_FAILED_TO_CREATE_USER, status, errorBody));
