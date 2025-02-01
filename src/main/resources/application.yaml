@@ -67,11 +67,6 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI}
 
 
-jwt:
-  token:
-    secret: ${JWT_TOKEN_SECRET}
-    expired: ${JWT_TOKEN_EXPIRED}
-
 keycloak:
   admin-server-url: ${KEYCLOAK_ADMIN_SERVER_URL}
   admin-realm: ${KEYCLOAK_ADMIN_REALM}

@@ -13,7 +13,6 @@ import com.example.taskmanagerproject.dtos.users.AuthenticationResponse;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.repositories.UserRepository;
-import com.example.taskmanagerproject.security.JwtTokenProvider;
 import com.example.taskmanagerproject.services.UserService;
 import java.util.Collections;
 import java.util.Optional;
@@ -39,9 +38,6 @@ class AuthenticationServiceImplTest {
 
   @Mock
   private UserRepository userRepository;
-
-  @Mock
-  private JwtTokenProvider jwtTokenProvider;
 
   @Mock
   private UserService userService;
