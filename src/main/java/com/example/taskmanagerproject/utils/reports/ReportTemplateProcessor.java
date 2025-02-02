@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 
 import com.example.taskmanagerproject.dtos.reports.ReportData;
 import com.example.taskmanagerproject.entities.achievements.Achievement;
+import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import com.example.taskmanagerproject.services.ReportDataService;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,7 @@ public final class ReportTemplateProcessor {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   private final ReportDataService reportDataService;
+  private final TeamUserRepository teamUserRepository;
 
   /**
    * Populates the user performance template with relevant data including tasks completed, task completion rate,
@@ -109,6 +111,10 @@ public final class ReportTemplateProcessor {
    * @return The populated HTML template.
    */
   public String populateTaskProgressTemplate(String template, ReportData reportData, List<Object[]> metrics) {
+    String role = teamUserRepository
+        .findRoleByTeamNameAndUsername(reportData.team().getName(), reportData.user().getUsername())
+        .getName();
+
     Map<String, String> placeholders = Map.of(
         "{startDate}", reportData.startDate().format(DATE_FORMATTER),
         "{endDate}", reportData.endDate().format(DATE_FORMATTER),
@@ -116,9 +122,10 @@ public final class ReportTemplateProcessor {
         "{projectName}", reportData.project().getName(),
         "{fullName}", reportData.user().getFullName(),
         "{email}", reportData.user().getUsername(),
+        "{role}", ReportMetricUtil.formatRoleName(role),
         "{chart_bars}", ReportTemplateUtil.generateChartHtml(metrics)
     );
-//todo: refactor template with role bar
+
     return ReportTemplateUtil.replacePlaceholders(template, placeholders);
   }
 
