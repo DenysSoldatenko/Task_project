@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,22 +51,22 @@ public class ReportController {
           content = @Content(mediaType = "application/pdf")),
         @ApiResponse(responseCode = "400", description = "Invalid input parameters",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateUserReport(
-      @Parameter(description = "The username of the user for whom the report is to be generated", example = "katy.zboncak@gmail.com")
+      @Parameter(description = "The username of the user for whom the report is to be generated")
       @RequestParam String username,
 
-      @Parameter(description = "The name of the team the user belongs to", example = "Tennessee cats86c5")
+      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
 
-      @Parameter(description = "The name of the project the user is associated with", example = "Hoppe, Jacobson and Cole116c")
+      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
 
       @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
@@ -74,12 +76,7 @@ public class ReportController {
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildUserReport(username, teamName, projectName, startDate, endDate);
-    String fileName = "user_report_" + username + "_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
-
-    return ResponseEntity.ok()
-      .header("Content-Type", "application/pdf")
-      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-      .body(pdfData);
+    return buildPdfResponse(pdfData, formatFileName("user_report", username, teamName, projectName, startDate, endDate));
   }
 
   /**
@@ -101,19 +98,19 @@ public class ReportController {
           content = @Content(mediaType = "application/pdf")),
         @ApiResponse(responseCode = "400", description = "Invalid input parameters",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateTeamReport(
-      @Parameter(description = "The name of the team", example = "Tennessee cats86c5")
+      @Parameter(description = "The name of the team")
       @RequestParam String teamName,
 
-      @Parameter(description = "The name of the project the team is associated with", example = "Hoppe, Jacobson and Cole116c")
+      @Parameter(description = "The name of the project the team is associated with")
       @RequestParam String projectName,
 
       @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
@@ -123,12 +120,7 @@ public class ReportController {
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTeamReport(teamName, projectName, startDate, endDate);
-    String fileName = "team_report_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
-
-    return ResponseEntity.ok()
-      .header("Content-Type", "application/pdf")
-      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-      .body(pdfData);
+    return buildPdfResponse(pdfData, formatFileName("team_report", teamName, projectName, startDate, endDate));
   }
 
   /**
@@ -149,16 +141,16 @@ public class ReportController {
           content = @Content(mediaType = "application/pdf")),
         @ApiResponse(responseCode = "400", description = "Invalid input parameters",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateProjectReport(
-      @Parameter(description = "The name of the project", example = "Hoppe, Jacobson and Cole116c")
+      @Parameter(description = "The name of the project")
       @RequestParam String projectName,
 
       @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
@@ -168,12 +160,7 @@ public class ReportController {
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildProjectReport(projectName, startDate, endDate);
-    String fileName = "project_report_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
-
-    return ResponseEntity.ok()
-      .header("Content-Type", "application/pdf")
-      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-      .body(pdfData);
+    return buildPdfResponse(pdfData, formatFileName("project_report", projectName, startDate, endDate));
   }
 
   /**
@@ -194,19 +181,19 @@ public class ReportController {
           content = @Content(mediaType = "application/pdf")),
         @ApiResponse(responseCode = "400", description = "Invalid input parameters",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateTopPerformersInTeamReport(
-      @Parameter(description = "The name of the team", example = "Hawaii chickensd2f9")
+      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
 
-      @Parameter(description = "The name of the project", example = "Moen, Kreiger and Kunze67a6")
+      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
 
       @Parameter(description = "The start date of the report's date range", example = "2025-01-01")
@@ -216,12 +203,7 @@ public class ReportController {
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTopPerformersInTeamReport(teamName, projectName, startDate, endDate);
-    String fileName = "top_performers_report_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
-
-    return ResponseEntity.ok()
-      .header("Content-Type", "application/pdf")
-      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-      .body(pdfData);
+    return buildPdfResponse(pdfData, formatFileName("top_performers_report", teamName, projectName, startDate, endDate));
   }
 
   /**
@@ -245,22 +227,22 @@ public class ReportController {
           content = @Content(mediaType = "application/pdf")),
         @ApiResponse(responseCode = "400", description = "Invalid input parameters",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
+        @ApiResponse(responseCode = "401", description = "Unauthorized - authentication required",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "Resource not found",
+        @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateTaskProgressReport(
-      @Parameter(description = "The username of the user for whom the report is to be generated", example = "katy.zboncak@gmail.com")
+      @Parameter(description = "The username of the user for whom the report is to be generated")
       @RequestParam String username,
 
-      @Parameter(description = "The name of the team the user belongs to", example = "Tennessee cats86c5")
+      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
 
-      @Parameter(description = "The name of the project the user is associated with", example = "Hoppe, Jacobson and Cole116c")
+      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
 
       @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
@@ -270,11 +252,18 @@ public class ReportController {
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTaskProgressReport(username, teamName, projectName, startDate, endDate);
-    String fileName = "task_progress_report_" + username + "_" + teamName + "_" + projectName + "_" + startDate + "_to_" + endDate + ".pdf";
+    return buildPdfResponse(pdfData, formatFileName("task_progress_report", username, teamName, projectName, startDate, endDate));
+  }
 
+
+  private ResponseEntity<byte[]> buildPdfResponse(byte[] pdfData, String fileName) {
     return ResponseEntity.ok()
-      .header("Content-Type", "application/pdf")
-      .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+      .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
       .body(pdfData);
+  }
+
+  private String formatFileName(String prefix, String... parts) {
+    return prefix + "_" + String.join("_", parts).replaceAll("\\s+", "_") + ".pdf";
   }
 }
