@@ -47,9 +47,10 @@ public class TaskStatusGeneratorService {
   public int changeTaskStatusForAllUsers() {
     List<Task> tasksToApprove = taskRepository.findAll().stream()
         .filter(task -> task.getId() % 10 < 7 && !EnumSet.of(APPROVED, ASSIGNED, IN_PROGRESS).contains(task.getTaskStatus()))
-        .peek(task -> {
+        .map(task -> {
           task.setTaskStatus(APPROVED);
           task.setApprovedAt(calculateApprovedAt(task));
+          return task;
         })
         .toList();
 
@@ -77,7 +78,10 @@ public class TaskStatusGeneratorService {
    */
   public int updateTaskHistoryUpdatedAtForAllUsers() {
     List<TaskHistory> updatedHistories = taskHistoryRepository.findAllByNewValue(APPROVED).stream()
-        .peek(history -> history.setUpdatedAt(history.getTask().getApprovedAt()))
+        .map(history -> {
+          history.setUpdatedAt(history.getTask().getApprovedAt());
+          return history;
+        })
         .toList();
 
     saveInBatches(updatedHistories, taskHistoryRepository::saveAll);
@@ -94,7 +98,7 @@ public class TaskStatusGeneratorService {
   }
 
   private LocalDateTime calculateApprovedAt(Task task) {
-    LocalDateTime approvedAt = task.getExpirationDate().plusDays(RANDOM.nextInt(MAX_EXPIRATION_DAYS) + MIN_EXPIRATION_DAYS);
+    LocalDateTime approvedAt = task.getExpirationDate().plusDays((long) RANDOM.nextInt(MAX_EXPIRATION_DAYS) + MIN_EXPIRATION_DAYS);
     return approvedAt.isBefore(task.getCreatedAt().plusMinutes(MIN_APPROVED_TIME_DIFFERENCE))
       ? task.getCreatedAt().plusMinutes(MIN_APPROVED_TIME_DIFFERENCE)
       : approvedAt;

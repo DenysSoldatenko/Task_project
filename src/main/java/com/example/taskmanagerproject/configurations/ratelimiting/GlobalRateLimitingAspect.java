@@ -1,26 +1,30 @@
 package com.example.taskmanagerproject.configurations.ratelimiting;
 
 import static com.example.taskmanagerproject.utils.MessageUtil.RATE_LIMIT_EXCEEDED;
+import static com.example.taskmanagerproject.utils.MessageUtil.RATE_LIMIT_EXECUTION_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.RATE_LIMIT_UNEXPECTED_ERROR;
 
+import com.example.taskmanagerproject.exceptions.RateLimitExceededException;
+import com.example.taskmanagerproject.exceptions.RateLimitingExecutionException;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import java.util.concurrent.Callable;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
  * Aspect for applying global rate limiting to all methods within Spring web controllers.
  */
+
+@Slf4j
 @Aspect
 @Component
 public class GlobalRateLimitingAspect {
 
-  private static final Logger log = LoggerFactory.getLogger(GlobalRateLimitingAspect.class);
   private final RateLimiter rateLimiter;
 
   /**
@@ -46,7 +50,7 @@ public class GlobalRateLimitingAspect {
       try {
         return pjp.proceed();
       } catch (Throwable throwable) {
-        throw new RuntimeException(throwable);
+        throw new RateLimitingExecutionException(RATE_LIMIT_EXECUTION_ERROR, throwable);
       }
     });
 
@@ -54,10 +58,10 @@ public class GlobalRateLimitingAspect {
       return restrictedCall.call();
     } catch (RequestNotPermitted ex) {
       log.warn("Rate limit exceeded for request to {}. Message: {}", pjp.getSignature().toShortString(), ex.getMessage());
-      throw new RuntimeException(RATE_LIMIT_EXCEEDED);
+      throw new RateLimitExceededException(RATE_LIMIT_EXCEEDED);
     } catch (Exception e) {
-      log.error("An unexpected error occurred during rate limiting for {}: {}", pjp.getSignature().toShortString(), e.getMessage(), e);
-      throw new RuntimeException(e);
+      log.error("Unexpected error during rate limiting for {}: {}", pjp.getSignature().toShortString(), e.getMessage(), e);
+      throw new RateLimitingExecutionException(RATE_LIMIT_UNEXPECTED_ERROR, e);
     }
   }
 }

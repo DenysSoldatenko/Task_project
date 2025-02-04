@@ -10,10 +10,13 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import com.example.taskmanagerproject.exceptions.ImageProcessingException;
 import com.example.taskmanagerproject.exceptions.KeycloakUserCreationException;
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
+import com.example.taskmanagerproject.exceptions.RateLimitExceededException;
+import com.example.taskmanagerproject.exceptions.RateLimitingExecutionException;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Date;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
@@ -31,101 +34,6 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
   private static final int DESCRIPTION_START_INDEX = 4;
-
-  /**
-   * Handles the exception when a {@link ResourceNotFoundException} occurs.
-   *
-   * @param exception  the exception that was thrown.
-   * @param webRequest the web request where the exception occurred.
-   * @return a ResponseEntity containing details of the error response.
-   */
-  @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<ErrorDetails> handlePostNotFoundException(ResourceNotFoundException exception, WebRequest webRequest) {
-    ErrorDetails errorDetails = new ErrorDetails(
-        new Date(),
-        valueOf(NOT_FOUND.value()),
-        NOT_FOUND.getReasonPhrase(),
-        exception.getMessage(),
-        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
-    );
-    return new ResponseEntity<>(errorDetails, NOT_FOUND);
-  }
-
-  /**
-   * Handles the exception when a {@link ValidationException} occurs.
-   *
-   * @param exception  the exception that was thrown.
-   * @param webRequest the web request where the exception occurred.
-   * @return a ResponseEntity containing details of the error response.
-   */
-  @ExceptionHandler(ValidationException.class)
-  public ResponseEntity<ErrorDetails> handleAuthException(ValidationException exception, WebRequest webRequest) {
-    ErrorDetails errorDetails = new ErrorDetails(
-        new Date(),
-        valueOf(BAD_REQUEST.value()),
-        BAD_REQUEST.getReasonPhrase(),
-        exception.getMessage(),
-        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
-    );
-    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
-  }
-
-  /**
-   * Handles the exception when a {@link KeycloakUserCreationException} occurs.
-   *
-   * @param exception  the exception that was thrown.
-   * @param webRequest the web request where the exception occurred.
-   * @return a ResponseEntity containing details of the error response.
-   */
-  @ExceptionHandler(KeycloakUserCreationException.class)
-  public ResponseEntity<ErrorDetails> handleAuthException(KeycloakUserCreationException exception, WebRequest webRequest) {
-    ErrorDetails errorDetails = new ErrorDetails(
-        new Date(),
-        valueOf(BAD_REQUEST.value()),
-        BAD_REQUEST.getReasonPhrase(),
-        exception.getMessage(),
-        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
-    );
-    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
-  }
-
-  /**
-   * Handles the exception when a {@link ImageProcessingException} occurs.
-   *
-   * @param exception  the exception that was thrown.
-   * @param webRequest the web request where the exception occurred.
-   * @return a ResponseEntity containing details of the error response.
-   */
-  @ExceptionHandler(ImageProcessingException.class)
-  public ResponseEntity<ErrorDetails> handleImageUploadException(ImageProcessingException exception, WebRequest webRequest) {
-    ErrorDetails errorDetails = new ErrorDetails(
-        new Date(),
-        valueOf(BAD_REQUEST.value()),
-        BAD_REQUEST.getReasonPhrase(),
-        exception.getMessage(),
-        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
-    );
-    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
-  }
-
-  /**
-   * Handles the exception when a {@link PdfGenerationException} occurs.
-   *
-   * @param exception  the exception that was thrown.
-   * @param webRequest the web request where the exception occurred.
-   * @return a ResponseEntity containing details of the error response.
-   */
-  @ExceptionHandler(PdfGenerationException.class)
-  public ResponseEntity<ErrorDetails> handlePdfGenerationException(PdfGenerationException exception, WebRequest webRequest) {
-    ErrorDetails errorDetails = new ErrorDetails(
-        new Date(),
-        valueOf(BAD_REQUEST.value()),
-        BAD_REQUEST.getReasonPhrase(),
-        exception.getMessage(),
-        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
-    );
-    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
-  }
 
   /**
    * Handles global exceptions that are not explicitly caught by other methods.
@@ -172,6 +80,7 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
 
+
   /**
    * Handles IllegalStateException and returns a BAD_REQUEST response.
    *
@@ -192,6 +101,7 @@ public class GlobalExceptionHandler {
     );
     return new ResponseEntity<>(errorDetails, BAD_REQUEST);
   }
+
 
   /**
    * Handles AccessDeniedException and returns a FORBIDDEN response.
@@ -214,6 +124,7 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, FORBIDDEN);
   }
 
+
   /**
    * Handles ConstraintViolationException and returns a BAD_REQUEST response.
    *
@@ -233,5 +144,141 @@ public class GlobalExceptionHandler {
         webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
     );
     return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+
+
+
+  /**
+   * Handles the exception when a {@link ImageProcessingException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(ImageProcessingException.class)
+  public ResponseEntity<ErrorDetails> handleImageUploadException(ImageProcessingException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link KeycloakUserCreationException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(KeycloakUserCreationException.class)
+  public ResponseEntity<ErrorDetails> handleAuthException(KeycloakUserCreationException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link ValidationException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<ErrorDetails> handleAuthException(ValidationException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link PdfGenerationException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(PdfGenerationException.class)
+  public ResponseEntity<ErrorDetails> handlePdfGenerationException(PdfGenerationException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(BAD_REQUEST.value()),
+        BAD_REQUEST.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, BAD_REQUEST);
+  }
+
+  /**
+   * Handles the exception when a {@link RateLimitExceededException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(RateLimitExceededException.class)
+  public ResponseEntity<ErrorDetails> handleRateLimitExceededException(RateLimitExceededException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        String.valueOf(HttpStatus.TOO_MANY_REQUESTS.value()),
+        HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, HttpStatus.TOO_MANY_REQUESTS);
+  }
+
+  /**
+   * Handles the exception when a {@link RateLimitingExecutionException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(RateLimitingExecutionException.class)
+  public ResponseEntity<ErrorDetails> handleRateLimitingExecutionException(RateLimitingExecutionException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   * Handles the exception when a {@link ResourceNotFoundException} occurs.
+   *
+   * @param exception  the exception that was thrown.
+   * @param webRequest the web request where the exception occurred.
+   * @return a ResponseEntity containing details of the error response.
+   */
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<ErrorDetails> handlePostNotFoundException(ResourceNotFoundException exception, WebRequest webRequest) {
+    ErrorDetails errorDetails = new ErrorDetails(
+        new Date(),
+        valueOf(NOT_FOUND.value()),
+        NOT_FOUND.getReasonPhrase(),
+        exception.getMessage(),
+        webRequest.getDescription(false).substring(DESCRIPTION_START_INDEX)
+    );
+    return new ResponseEntity<>(errorDetails, NOT_FOUND);
   }
 }

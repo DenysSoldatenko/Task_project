@@ -97,7 +97,10 @@ public class MessageUtil {
       = "Data initialization completed with errors!";
   public static final String RATE_LIMIT_EXCEEDED
       = "Request rate exceeded. Please slow down and try again shortly.";
-
+  public static final String RATE_LIMIT_EXECUTION_ERROR
+      = "Error during rate-limited execution.";
+  public static final String RATE_LIMIT_UNEXPECTED_ERROR
+      = "Unexpected error during rate-limited execution.";
 
   public static final String KEYCLOAK_ERROR_FAILED_TO_CREATE_USER
       = "Failed to create user in Keycloak. Status: %d. Details: %s";
