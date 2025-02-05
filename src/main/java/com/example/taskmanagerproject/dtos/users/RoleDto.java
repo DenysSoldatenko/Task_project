@@ -27,7 +27,7 @@ public record RoleDto(
     @NotBlank(message = "Role name cannot be blank!")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters long!")
     @Pattern(
-      regexp = "^[a-zA-Z0-9_]+$",
+      regexp = "^\\w+$",
       message = "Role name must be alphanumeric and may contain underscores"
     )
     @Schema(

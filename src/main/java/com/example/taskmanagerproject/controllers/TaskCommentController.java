@@ -50,7 +50,7 @@ public class TaskCommentController {
    * @param taskCommentDto The TaskCommentDto object containing the necessary data to create the comment.
    * @return The created TaskCommentDto object.
    */
-  @PostMapping({"", "/{slug}"})
+  @PostMapping()
   @PreAuthorize("@expressionService.canAccessTask(#taskCommentDto.task().id())")
   @Operation(
       summary = "Create a new comment on a task",

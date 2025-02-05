@@ -21,7 +21,6 @@ import com.example.taskmanagerproject.utils.validators.RoleValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -110,11 +109,11 @@ public class RoleServiceImpl implements RoleService {
 
     List<RoleDto> higherRoles = roleHierarchyRepository.findByLowerRole(role).stream()
         .map(roleHierarchy -> roleMapper.toDto(roleHierarchy.getHigherRole()))
-        .collect(Collectors.toList());
+        .toList();
 
     List<RoleDto> lowerRoles = roleHierarchyRepository.findByHigherRole(role).stream()
         .map(roleHierarchy -> roleMapper.toDto(roleHierarchy.getLowerRole()))
-        .collect(Collectors.toList());
+        .toList();
 
     return new RoleHierarchyListDto(role.getName(), higherRoles, lowerRoles);
   }
