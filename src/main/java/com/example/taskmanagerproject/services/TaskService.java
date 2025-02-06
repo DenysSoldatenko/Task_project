@@ -45,12 +45,17 @@ public interface TaskService {
   void deleteTaskById(Long taskId);
 
   /**
-   * Retrieves a list of tasks that are soon expiring within a given duration.
+   * Retrieves all tasks that are set to expire within the specified duration from the current time,
+   * filtered by project and team name.
    *
-   * @param duration The duration within which tasks are considered soon to expire.
-   * @return A list of TaskDto objects representing tasks that will expire soon.
+   * <p>Only tasks with non-null expiration dates that fall within the calculated time window are returned.
+   *
+   * @param duration     the time window (starting from now) during which tasks are considered to be expiring soon
+   * @param projectName  the name of the project to filter tasks by
+   * @param teamName     the name of the team to filter tasks by
+   * @return a list of {@link TaskDto} instances representing tasks that will expire within the given duration
    */
-  List<TaskDto> findAllSoonExpiringTasks(Duration duration);
+  List<TaskDto> findAllSoonExpiringTasks(Duration duration, String projectName, String teamName);
 
   /**
    * Retrieves a paginated list of tasks assigned to a specific user for a specific project and team.

@@ -5,6 +5,7 @@ import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_DELET
 import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_UPDATE;
 import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
@@ -15,10 +16,12 @@ import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.TaskRepository;
 import com.example.taskmanagerproject.services.ImageService;
 import com.example.taskmanagerproject.services.TaskService;
+import com.example.taskmanagerproject.services.UserService;
 import com.example.taskmanagerproject.utils.factories.TaskFactory;
 import com.example.taskmanagerproject.utils.mappers.TaskMapper;
 import com.example.taskmanagerproject.utils.validators.TaskValidator;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,6 +30,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
   private static final String ACHIEVEMENT_TOPIC = "achievement-topic";
 
   private final TaskMapper taskMapper;
+  private final UserService userService;
   private final TaskFactory taskFactory;
   private final ImageService imageService;
   private final TaskValidator taskValidator;
@@ -104,11 +109,13 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> findAllSoonExpiringTasks(Duration duration) {
-    // TODO
-//    List<Task> taskList = taskRepository.findExpiringTasksBetween(valueOf(now()), valueOf(now().plus(duration)));
-//    return taskList.stream().map(taskMapper::toDto).toList();
-    return null;
+  public List<TaskDto> findAllSoonExpiringTasks(Duration duration, String projectName, String teamName) {
+    LocalDateTime now = LocalDateTime.now();
+    String email = ((JwtAuthenticationToken) getContext().getAuthentication()).getToken().getClaimAsString("email");
+    Long userId = userService.getUserByUsername(email).getId();
+    return taskRepository.findExpiringTasksForUser(now, now.plus(duration), projectName, teamName, userId).stream()
+      .map(taskMapper::toDto)
+      .toList();
   }
 
   @Override

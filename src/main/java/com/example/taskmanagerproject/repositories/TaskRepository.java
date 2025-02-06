@@ -471,17 +471,33 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
       """, nativeQuery = true)
   List<Task> findRandomApprovedTasksForUserByTeamAndProject();
 
+  /**
+   * Retrieves tasks assigned to a specific user that are set to expire within a specified time range.
+   * Only tasks with a non-null expiration date are considered. Results are filtered by project and team names.
+   *
+   * @param start        the start of the expiration window (inclusive)
+   * @param end          the end of the expiration window (inclusive)
+   * @param projectName  the name of the project to filter tasks by
+   * @param teamName     the name of the team to filter tasks by
+   * @param userId       the ID of the user to whom the tasks are assigned
+   * @return a list of tasks that match the expiration window, project, team, and assignee
+   */
   @Query(value = """
-      SELECT * FROM task_list.tasks
-      WHERE expiration_date IS NOT NULL
-        AND expiration_date BETWEEN :start AND :end
-        AND project_name = :projectName
-        AND team_name = :teamName
+      SELECT t.*
+      FROM task_list.tasks t
+      JOIN task_list.projects p ON t.project_id = p.id
+      JOIN task_list.teams tm ON t.team_id = tm.id
+      WHERE t.expiration_date IS NOT NULL
+        AND t.expiration_date BETWEEN :start AND :end
+        AND p.name = :projectName
+        AND tm.name = :teamName
+        AND t.assigned_to = :userId
       """, nativeQuery = true)
-  List<Task> findExpiringTasksBetween(@Param("start") LocalDateTime start,
+  List<Task> findExpiringTasksForUser(@Param("start") LocalDateTime start,
                                       @Param("end") LocalDateTime end,
                                       @Param("projectName") String projectName,
-                                      @Param("teamName") String teamName);
+                                      @Param("teamName") String teamName,
+                                      @Param("userId") Long userId);
 
   /**
    * Finds tasks where the task history indicates it has been canceled at any point.

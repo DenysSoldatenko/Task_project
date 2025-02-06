@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.Duration;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -126,8 +128,42 @@ public class TaskController {
   @ResponseStatus(OK)
   @MutationMapping(name = "updateTask")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public TaskDto updateTask(@Valid @RequestBody @Argument TaskDto taskDto, @PathVariable(name = "id") @Argument Long id) {
+  public TaskDto updateTask(@Valid @RequestBody @Argument TaskDto taskDto,
+                            @PathVariable(name = "id") @Argument Long id) {
     return taskService.updateTask(taskDto, id);
+  }
+
+  /**
+   * Retrieves all tasks that are set to expire within the specified duration from now,
+   * filtered by project and team name.
+   *
+   * @param duration    the time window during which tasks are considered soon to expire
+   * @param projectName the name of the project to filter tasks by
+   * @param teamName    the name of the team to filter tasks by
+   * @return a list of TaskDto objects representing tasks expiring soon
+   */
+  @GetMapping("/expiring-soon")
+  @Operation(
+      summary = "Get tasks expiring soon",
+      description = "Retrieves tasks that will expire within the given duration, filtered by project and team",
+      responses = {
+        @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "500", description = "Internal server error",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+      }
+  )
+  @ResponseStatus(OK)
+  @QueryMapping(name = "findAllSoonExpiringTasks")
+  @PreAuthorize("@expressionService.canAccessProjectAndTeam(#projectName, #teamName)")
+  public List<TaskDto> findAllSoonExpiringTasks(@Argument Duration duration,
+                                                @Argument String projectName,
+                                                @Argument String teamName) {
+    return taskService.findAllSoonExpiringTasks(duration, projectName, teamName);
   }
 
   /**
@@ -180,7 +216,8 @@ public class TaskController {
   )
   @ResponseStatus(CREATED)
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void uploadImage(@Valid @ModelAttribute TaskImageDto imageDto, @PathVariable(name = "id") Long id) {
+  public void uploadImage(@Valid @ModelAttribute TaskImageDto imageDto,
+                          @PathVariable(name = "id") Long id) {
     taskService.uploadImage(id, imageDto);
   }
 
@@ -207,7 +244,9 @@ public class TaskController {
       }
   )
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void updateImage(@Valid @ModelAttribute TaskImageDto imageDto, @PathVariable(name = "id") Long id, @PathVariable String imageName) {
+  public void updateImage(@Valid @ModelAttribute TaskImageDto imageDto,
+                          @PathVariable(name = "id") Long id,
+                          @PathVariable String imageName) {
     taskService.updateImage(id, imageDto, imageName);
   }
 
