@@ -1,6 +1,9 @@
 spring:
   application:
     name: "application"
+    version: 0.0.1-SNAPSHOT
+  banner:
+    location: application-banner.txt
   config:
     import: optional:file:.env[.properties]
   cache:
