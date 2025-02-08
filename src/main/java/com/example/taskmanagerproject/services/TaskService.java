@@ -50,12 +50,13 @@ public interface TaskService {
    *
    * <p>Only tasks with non-null expiration dates that fall within the calculated time window are returned.
    *
+   * @param username     the username of the user
    * @param duration     the time window (starting from now) during which tasks are considered to be expiring soon
    * @param projectName  the name of the project to filter tasks by
    * @param teamName     the name of the team to filter tasks by
    * @return a list of {@link TaskDto} instances representing tasks that will expire within the given duration
    */
-  List<TaskDto> findAllSoonExpiringTasks(Duration duration, String projectName, String teamName);
+  List<TaskDto> findAllSoonExpiringTasks(String username, Duration duration, String projectName, String teamName);
 
   /**
    * Retrieves a paginated list of tasks assigned to a specific user for a specific project and team.

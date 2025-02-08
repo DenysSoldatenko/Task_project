@@ -137,6 +137,7 @@ public class TaskController {
    * Retrieves all tasks that are set to expire within the specified duration from now,
    * filtered by project and team name.
    *
+   * @param username    the username of the user
    * @param duration    the time window during which tasks are considered soon to expire
    * @param projectName the name of the project to filter tasks by
    * @param teamName    the name of the team to filter tasks by
@@ -159,11 +160,12 @@ public class TaskController {
   )
   @ResponseStatus(OK)
   @QueryMapping(name = "findAllSoonExpiringTasks")
-  @PreAuthorize("@expressionService.canAccessProjectAndTeam(#projectName, #teamName)")
-  public List<TaskDto> findAllSoonExpiringTasks(@Argument Duration duration,
+  @PreAuthorize("@expressionService.canAccessExpiringTasks(#username, #projectName, #teamName)")
+  public List<TaskDto> findAllSoonExpiringTasks(@Argument String username,
+                                                @Argument Duration duration,
                                                 @Argument String projectName,
                                                 @Argument String teamName) {
-    return taskService.findAllSoonExpiringTasks(duration, projectName, teamName);
+    return taskService.findAllSoonExpiringTasks(username, duration, projectName, teamName);
   }
 
   /**

@@ -129,27 +129,19 @@ public class SecurityExpressionService {
   }
 
   /**
-   * Checks if the current authenticated user has access to both the specified project and team.
+   * Determines whether the specified user has access to view expiring tasks
+   * by verifying their access to both the given project and team.
    *
-   * @param projectName the project to check access for
-   * @param teamName the team to check access for
-   * @return true if the user has access to both; false otherwise
+   * @param username    the username of the user whose access is being verified
+   * @param projectName the name of the project associated with the expiring tasks
+   * @param teamName    the name of the team responsible for the tasks
+   * @return {@code true} if the user has access to both the specified project and team; {@code false} otherwise
    */
-  public boolean canAccessProjectAndTeam(String projectName, String teamName) {
+  public boolean canAccessExpiringTasks(String username, String projectName, String teamName) {
     Jwt jwt = getJwt();
     String email = jwt.getClaimAsString("email");
-    Long userId = userService.getUserByUsername(email).getId();
-
-    ProjectDto project = projectService.getProjectByName(projectName);
-    TeamDto team = teamService.getTeamByName(teamName);
-
-    if (project == null || team == null) {
-      log.warn("Project or team not found: project='{}', team='{}'", projectName, teamName);
-      return false;
-    }
-
-    boolean hasProjectAccess = projectService.existsByUserIdAndProjectId(userId, project.id());
-    boolean hasTeamAccess = teamUserService.existsByUserIdAndTeamId(userId, team.id());
+    boolean hasProjectAccess = hasAccess(username, projectName, true);
+    boolean hasTeamAccess = hasAccess(username, teamName, false);
     boolean canAccess = hasProjectAccess && hasTeamAccess;
     log.info("Access check for user='{}', project='{}', team='{}', granted={}", email, projectName, teamName, canAccess);
     return canAccess;

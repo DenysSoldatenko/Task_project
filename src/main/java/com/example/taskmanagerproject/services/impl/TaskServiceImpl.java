@@ -5,7 +5,6 @@ import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_DELET
 import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_UPDATE;
 import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
 import static java.time.LocalDateTime.now;
-import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.example.taskmanagerproject.dtos.tasks.KafkaTaskCompletionDto;
 import com.example.taskmanagerproject.dtos.tasks.TaskDto;
@@ -109,10 +108,9 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskDto> findAllSoonExpiringTasks(Duration duration, String projectName, String teamName) {
+  public List<TaskDto> findAllSoonExpiringTasks(String username, Duration duration, String projectName, String teamName) {
     LocalDateTime now = LocalDateTime.now();
-    String email = ((JwtAuthenticationToken) getContext().getAuthentication()).getToken().getClaimAsString("email");
-    Long userId = userService.getUserByUsername(email).getId();
+    Long userId = userService.getUserByUsername(username).getId();
     return taskRepository.findExpiringTasksForUser(now, now.plus(duration), projectName, teamName, userId).stream()
       .map(taskMapper::toDto)
       .toList();
