@@ -39,6 +39,8 @@ public class AuthenticationInfoController {
       responses = {
         @ApiResponse(responseCode = "200", description = "User information retrieved successfully",
           content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }

@@ -41,6 +41,8 @@ public class DataInitializationController {
       responses = {
         @ApiResponse(responseCode = "201", description = "Data initialized successfully",
           content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }

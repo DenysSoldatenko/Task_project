@@ -52,6 +52,8 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -76,6 +78,8 @@ public class ProjectController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Project found successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Project not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -99,6 +103,8 @@ public class ProjectController {
       responses = {
         @ApiResponse(responseCode = "200", description = "Teams found successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Project not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -126,6 +132,8 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Project not found",
@@ -150,6 +158,8 @@ public class ProjectController {
       description = "Allows users with specific roles to delete a project",
       responses = {
         @ApiResponse(responseCode = "204", description = "Project deleted successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Project not found",
@@ -178,6 +188,8 @@ public class ProjectController {
       responses = {
         @ApiResponse(responseCode = "201", description = "Team added to project successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Project or team not found",
