@@ -9,8 +9,10 @@ import com.example.taskmanagerproject.dtos.users.RoleHierarchyListDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,7 +91,10 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public RoleDto getRoleByName(@PathVariable String roleName) {
+  public RoleDto getRoleByName(
+      @Parameter(description = "The name of the role to retrieve (e.g., ADMIN, USER)")
+      @PathVariable String roleName
+  ) {
     return roleService.getRoleByName(roleName);
   }
 
@@ -118,7 +122,13 @@ public class RoleController {
       }
   )
   @ResponseStatus(CREATED)
-  public RoleDto createRole(@Valid @RequestBody RoleDto roleDto) {
+  public RoleDto createRole(
+      @RequestBody(
+        description = "Details of the role to be created", required = true,
+        content = @Content(schema = @Schema(implementation = RoleDto.class))
+      )
+      @Valid RoleDto roleDto
+  ) {
     return roleService.createRole(roleDto);
   }
 
@@ -147,7 +157,16 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public RoleDto updateRole(@PathVariable String roleName, @Valid @RequestBody RoleDto roleDto) {
+  public RoleDto updateRole(
+      @Parameter(description = "The name of the role to update (e.g., ADMIN, USER)")
+      @PathVariable String roleName,
+
+      @RequestBody(
+        description = "Updated role details", required = true,
+        content = @Content(schema = @Schema(implementation = RoleDto.class))
+      )
+      @Valid RoleDto roleDto
+  ) {
     return roleService.updateRole(roleName, roleDto);
   }
 
@@ -175,7 +194,10 @@ public class RoleController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteRole(@PathVariable String roleName) {
+  public void deleteRole(
+      @Parameter(description = "The name of the role to delete (e.g., ADMIN, USER)")
+      @PathVariable String roleName
+  ) {
     roleService.deleteRole(roleName);
   }
 
@@ -206,7 +228,13 @@ public class RoleController {
       }
   )
   @ResponseStatus(CREATED)
-  public List<RoleHierarchyDto> createRoleHierarchies(@Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList) {
+  public List<RoleHierarchyDto> createRoleHierarchies(
+      @RequestBody(
+        description = "List of role hierarchies to create", required = true,
+        content = @Content(schema = @Schema(implementation = RoleHierarchyDto.class))
+      )
+      @Valid List<RoleHierarchyDto> roleHierarchyDtoList
+  ) {
     return roleService.createRoleHierarchies(roleHierarchyDtoList);
   }
 
@@ -234,7 +262,13 @@ public class RoleController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteRoleHierarchies(@Valid @RequestBody List<RoleHierarchyDto> roleHierarchyDtoList) {
+  public void deleteRoleHierarchies(
+      @RequestBody(
+        description = "List of role hierarchies to delete", required = true,
+        content = @Content(schema = @Schema(implementation = RoleHierarchyDto.class))
+      )
+      @Valid List<RoleHierarchyDto> roleHierarchyDtoList
+  ) {
     roleService.deleteRoleHierarchies(roleHierarchyDtoList);
   }
 
@@ -261,7 +295,10 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(@PathVariable String roleName) {
+  public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(
+      @Parameter(description = "The name of the role whose hierarchy is to be retrieved (e.g., ADMIN, USER)")
+      @PathVariable String roleName
+  ) {
     return roleService.findRoleWithHierarchy(roleName);
   }
 }

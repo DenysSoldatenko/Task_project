@@ -11,20 +11,22 @@ import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,7 +67,13 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
-  public TeamDto createTeam(@RequestBody @Valid TeamDto teamDto) {
+  public TeamDto createTeam(
+      @RequestBody(
+        description = "Details of the team to be created", required = true,
+        content = @Content(schema = @Schema(implementation = TeamDto.class))
+      )
+      @Valid @Argument TeamDto teamDto
+  ) {
     return teamService.createTeam(teamDto);
   }
 
@@ -90,7 +98,10 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public TeamDto getTeamByName(@PathVariable("teamName") String teamName) {
+  public TeamDto getTeamByName(
+      @Parameter(description = "Name of the team to retrieve")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     return teamService.getTeamByName(teamName);
   }
 
@@ -115,7 +126,10 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public List<TeamUserDto> getUsersWithRolesForTeam(@PathVariable("teamName") String teamName) {
+  public List<TeamUserDto> getUsersWithRolesForTeam(
+      @Parameter(description = "Name of the team to get users and roles for")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     return teamService.getUsersWithRolesForTeam(teamName);
   }
 
@@ -140,7 +154,10 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public List<ProjectTeamDto> getProjectsForTeam(@PathVariable("teamName") String teamName) {
+  public List<ProjectTeamDto> getProjectsForTeam(
+      @Parameter(description = "Name of the team to get projects for")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     return projectService.getProjectsForTeam(teamName);
   }
 
@@ -171,7 +188,16 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public TeamDto updateTeam(@PathVariable("teamName") String teamName, @RequestBody @Valid TeamDto teamDto) {
+  public TeamDto updateTeam(
+      @RequestBody(
+        description = "Updated details of the team", required = true,
+        content = @Content(schema = @Schema(implementation = TeamDto.class))
+      )
+      @Valid @Argument TeamDto teamDto,
+
+      @Parameter(description = "Name of the team to update")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     return teamService.updateTeam(teamName, teamDto);
   }
 
@@ -198,7 +224,10 @@ public class TeamController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteTeam(@PathVariable("teamName") String teamName) {
+  public void deleteTeam(
+      @Parameter(description = "Name of the team to delete")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     teamService.deleteTeam(teamName);
   }
 
@@ -228,7 +257,16 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
-  public List<TeamUserDto> addUsersToTeam(@PathVariable("teamName") String teamName, @RequestBody @Valid List<TeamUserDto> teamUserDtoList) {
+  public List<TeamUserDto> addUsersToTeam(
+      @RequestBody(
+        description = "List of users with roles to add to the team", required = true,
+        content = @Content(schema = @Schema(implementation = TeamUserDto.class))
+      )
+      @Valid List<TeamUserDto> teamUserDtoList,
+
+      @Parameter(description = "Name of the team to add users to")
+      @PathVariable(name = "teamName") @Argument String teamName
+  ) {
     return teamService.addUsersToTeam(teamName, teamUserDtoList);
   }
 }

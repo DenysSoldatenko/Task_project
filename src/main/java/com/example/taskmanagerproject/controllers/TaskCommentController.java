@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -71,7 +71,13 @@ public class TaskCommentController {
       }
   )
   @ResponseStatus(CREATED)
-  public TaskCommentDto createTaskComment(@Valid @RequestBody TaskCommentDto taskCommentDto) {
+  public TaskCommentDto createTaskComment(
+      @RequestBody(
+        description = "Details of the task comment to be created", required = true,
+        content = @Content(schema = @Schema(implementation = TaskCommentDto.class))
+      )
+      @Valid TaskCommentDto taskCommentDto
+  ) {
     return taskCommentService.createComment(taskCommentDto);
   }
 
@@ -103,7 +109,16 @@ public class TaskCommentController {
       }
   )
   @ResponseStatus(OK)
-  public TaskCommentDto updateTaskComment(@Valid @RequestBody TaskCommentDto taskCommentDto, @PathVariable Long id) {
+  public TaskCommentDto updateTaskComment(
+      @RequestBody(
+        description = "Updated task comment details", required = true,
+        content = @Content(schema = @Schema(implementation = TaskCommentDto.class))
+      )
+      @Valid TaskCommentDto taskCommentDto,
+
+      @Parameter(description = "The ID of the task comment to update")
+      @PathVariable Long id
+  ) {
     return taskCommentService.updateTaskComment(taskCommentDto, id);
   }
 
@@ -130,7 +145,10 @@ public class TaskCommentController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteTaskComment(@PathVariable Long id) {
+  public void deleteTaskComment(
+      @Parameter(description = "The ID of the task comment to delete")
+      @PathVariable Long id
+  ) {
     taskCommentService.deleteTaskComment(id);
   }
 
@@ -163,10 +181,17 @@ public class TaskCommentController {
   )
   @ResponseStatus(OK)
   public Page<TaskCommentDto> getTaskCommentsBySlug(
+      @Parameter(description = "The slug of the task whose comments are to be retrieved")
       @PathVariable String slug,
-      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
-      @RequestParam(defaultValue = "10") @Parameter(description = "Number of task comments per page", example = "10") int size,
-      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria (e.g., 'id,asc')", example = "id,asc") String sort
+
+      @Parameter(description = "Page number (0-based)", example = "0")
+      @RequestParam(defaultValue = "0") int page,
+
+      @Parameter(description = "Number of task comments per page", example = "10")
+      @RequestParam(defaultValue = "10") int size,
+
+      @Parameter(description = "Sort criteria (e.g., 'id,asc')", example = "id,asc")
+      @RequestParam(defaultValue = "id,asc") String sort
   ) {
     String[] sortParams = sort.split(",");
     Direction direction = fromString(sortParams[1]);

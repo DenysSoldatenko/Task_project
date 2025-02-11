@@ -9,8 +9,10 @@ import com.example.taskmanagerproject.dtos.tasks.TaskImageDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,7 +29,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,7 +72,13 @@ public class TaskController {
   )
   @ResponseStatus(CREATED)
   @MutationMapping(name = "createTask")
-  public TaskDto createTask(@Valid @RequestBody @Argument TaskDto taskDto) {
+  public TaskDto createTask(
+      @RequestBody(
+        description = "Details of the task to be created", required = true,
+        content = @Content(schema = @Schema(implementation = TaskDto.class))
+      )
+      @Valid @Argument TaskDto taskDto
+  ) {
     return taskService.createTaskForUser(taskDto);
   }
 
@@ -101,7 +108,10 @@ public class TaskController {
   @ResponseStatus(OK)
   @QueryMapping(name = "getTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public TaskDto getTaskById(@PathVariable(name = "id") @Argument Long id) {
+  public TaskDto getTaskById(
+      @Parameter(description = "ID of the task to retrieve")
+      @PathVariable(name = "id") @Argument Long id
+  ) {
     return taskService.getTaskById(id);
   }
 
@@ -134,8 +144,16 @@ public class TaskController {
   @ResponseStatus(OK)
   @MutationMapping(name = "updateTask")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public TaskDto updateTask(@Valid @RequestBody @Argument TaskDto taskDto,
-                            @PathVariable(name = "id") @Argument Long id) {
+  public TaskDto updateTask(
+      @RequestBody(
+        description = "Updated details of the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskDto.class))
+      )
+      @Valid @Argument TaskDto taskDto,
+
+      @Parameter(description = "ID of the task to update")
+      @PathVariable(name = "id") @Argument Long id
+  ) {
     return taskService.updateTask(taskDto, id);
   }
 
@@ -169,10 +187,19 @@ public class TaskController {
   @ResponseStatus(OK)
   @QueryMapping(name = "findAllSoonExpiringTasks")
   @PreAuthorize("@expressionService.canAccessExpiringTasks(#username, #projectName, #teamName)")
-  public List<TaskDto> findAllSoonExpiringTasks(@Argument String username,
-                                                @Argument Duration duration,
-                                                @Argument String projectName,
-                                                @Argument String teamName) {
+  public List<TaskDto> findAllSoonExpiringTasks(
+      @Parameter(description = "Username to filter tasks for")
+      @Argument String username,
+
+      @Parameter(description = "Duration window for tasks expiring soon")
+      @Argument Duration duration,
+
+      @Parameter(description = "Project name to filter tasks")
+      @Argument String projectName,
+
+      @Parameter(description = "Team name to filter tasks")
+      @Argument String teamName
+  ) {
     return taskService.findAllSoonExpiringTasks(username, duration, projectName, teamName);
   }
 
@@ -200,7 +227,10 @@ public class TaskController {
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteTaskById")
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void deleteTaskById(@PathVariable(name = "id") @Argument Long id) {
+  public void deleteTaskById(
+      @Parameter(description = "The ID of the task to delete")
+      @PathVariable(name = "id") @Argument Long id
+  ) {
     taskService.deleteTaskById(id);
   }
 
@@ -230,8 +260,16 @@ public class TaskController {
   )
   @ResponseStatus(CREATED)
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void uploadImage(@Valid @ModelAttribute TaskImageDto imageDto,
-                          @PathVariable(name = "id") Long id) {
+  public void uploadImage(
+      @RequestBody(
+        description = "Image details to upload for the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
+      )
+      @Valid @ModelAttribute TaskImageDto imageDto,
+
+      @Parameter(description = "ID of the task to upload the image for")
+      @PathVariable(name = "id") Long id
+  ) {
     taskService.uploadImage(id, imageDto);
   }
 
@@ -260,9 +298,19 @@ public class TaskController {
       }
   )
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void updateImage(@Valid @ModelAttribute TaskImageDto imageDto,
-                          @PathVariable(name = "id") Long id,
-                          @PathVariable String imageName) {
+  public void updateImage(
+      @RequestBody(
+        description = "Updated image details for the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
+      )
+      @Valid @ModelAttribute TaskImageDto imageDto,
+
+      @Parameter(description = "ID of the task to update the image for")
+      @PathVariable(name = "id") Long id,
+
+      @Parameter(description = "Name of the image to update")
+      @PathVariable String imageName
+  ) {
     taskService.updateImage(id, imageDto, imageName);
   }
 
@@ -290,7 +338,13 @@ public class TaskController {
   )
   @ResponseStatus(NO_CONTENT)
   @PreAuthorize("@expressionService.canAccessTask(#id)")
-  public void deleteImage(@PathVariable Long id, @PathVariable String imageName) {
+  public void deleteImage(
+      @Parameter(description = "ID of the task")
+      @PathVariable Long id,
+
+      @Parameter(description = "Name of the image to delete")
+      @PathVariable String imageName
+  ) {
     taskService.deleteImage(id, imageName);
   }
 }

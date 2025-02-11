@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -38,7 +39,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -82,7 +82,10 @@ public class UserController {
       }
   )
   @QueryMapping(name = "getUserBySlug")
-  public UserDto getUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
+  public UserDto getUserBySlug(
+      @Parameter(description = "Slug of the user to retrieve")
+      @PathVariable(name = "slug") @Argument String slug
+  ) {
     return userService.getUserBySlug(slug);
   }
 
@@ -115,7 +118,13 @@ public class UserController {
   @MutationMapping(name = "updateUser")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public UserDto updateUser(
-      @Valid @RequestBody @Argument UserDto userDto,
+      @RequestBody(
+        description = "Updated details of the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserDto.class))
+      )
+      @Valid @Argument UserDto userDto,
+
+      @Parameter(description = "Slug of the user to update")
       @PathVariable(name = "slug") @Argument String slug
   ) {
     return userService.updateUser(userDto, slug);
@@ -145,7 +154,10 @@ public class UserController {
   @ResponseStatus(NO_CONTENT)
   @MutationMapping(name = "deleteUserBySlug")
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void deleteUserBySlug(@PathVariable(name = "slug") @Argument String slug) {
+  public void deleteUserBySlug(
+      @Parameter(description = "Slug of the user to delete")
+      @PathVariable(name = "slug") @Argument String slug
+  ) {
     userService.deleteUserBySlug(slug);
   }
 
@@ -172,7 +184,10 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public List<ProjectDto> getProjectsByUserSlug(@PathVariable(name = "slug") String slug) {
+  public List<ProjectDto> getProjectsByUserSlug(
+      @Parameter(description = "Slug of the user whose projects are to be retrieved")
+      @PathVariable(name = "slug") String slug
+  ) {
     return projectService.getProjectsBySlug(slug);
   }
 
@@ -199,7 +214,10 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public List<TeamDto> getTeamsByUserSlug(@PathVariable(name = "slug") String slug) {
+  public List<TeamDto> getTeamsByUserSlug(
+      @Parameter(description = "Slug of the user whose teams are to be retrieved")
+      @PathVariable(name = "slug") String slug
+  ) {
     return teamService.getTeamsBySlug(slug);
   }
 
@@ -232,12 +250,23 @@ public class UserController {
   )
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public Page<TaskDto> getTasksAssignedToUser(
+      @Parameter(description = "Slug of the user")
       @PathVariable String slug,
-      @RequestParam(defaultValue = "Project Alpha") String projectName,
-      @RequestParam(defaultValue = "Team A") String teamName,
-      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
-      @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
-      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort
+
+      @Parameter(description = "Name of the project")
+      @RequestParam String projectName,
+
+      @Parameter(description = "Name of the team")
+      @RequestParam String teamName,
+
+      @Parameter(description = "Page number (0-based)", example = "0")
+      @RequestParam(defaultValue = "0") int page,
+
+      @Parameter(description = "Number of tasks per page", example = "10")
+      @RequestParam(defaultValue = "10") int size,
+
+      @Parameter(description = "Sort criteria (e.g. id,asc)", example = "id,asc")
+      @RequestParam(defaultValue = "id,asc") String sort
   ) {
     String[] sortParams = sort.split(",");
     Direction direction = fromString(sortParams[1]);
@@ -275,12 +304,23 @@ public class UserController {
   )
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public Page<TaskDto> getTasksAssignedByUser(
+      @Parameter(description = "Slug of the user")
       @PathVariable String slug,
-      @RequestParam(defaultValue = "Project Alpha") String projectName,
-      @RequestParam(defaultValue = "Team A") String teamName,
-      @RequestParam(defaultValue = "0") @Parameter(description = "Page number (0-based)", example = "0") int page,
-      @RequestParam(defaultValue = "10") @Parameter(description = "Number of tasks per page", example = "10") int size,
-      @RequestParam(defaultValue = "id,asc") @Parameter(description = "Sort criteria", example = "id,asc") String sort
+
+      @Parameter(description = "Name of the project")
+      @RequestParam String projectName,
+
+      @Parameter(description = "Name of the team")
+      @RequestParam String teamName,
+
+      @Parameter(description = "Page number (0-based)", example = "0")
+      @RequestParam(defaultValue = "0") int page,
+
+      @Parameter(description = "Number of tasks per page", example = "10")
+      @RequestParam(defaultValue = "10") int size,
+
+      @Parameter(description = "Sort criteria (e.g. id,asc)", example = "id,asc")
+      @RequestParam(defaultValue = "id,asc") String sort
   ) {
     String[] sortParams = sort.split(",");
     Direction direction = fromString(sortParams[1]);
@@ -314,7 +354,16 @@ public class UserController {
   )
   @ResponseStatus(CREATED)
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void uploadUserPhoto(@Valid @ModelAttribute UserImageDto imageDto, @PathVariable(name = "slug") String slug) {
+  public void uploadUserPhoto(
+      @RequestBody(
+        description = "Image details to upload for the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserImageDto.class))
+      )
+      @Valid @ModelAttribute UserImageDto imageDto,
+
+      @Parameter(description = "Slug of the user to upload the photo for")
+      @PathVariable(name = "slug") String slug
+  ) {
     userService.uploadUserPhoto(slug, imageDto);
   }
 
@@ -343,7 +392,16 @@ public class UserController {
       }
   )
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void updateUserPhoto(@Valid @ModelAttribute UserImageDto imageDto, @PathVariable(name = "slug") String slug) {
+  public void updateUserPhoto(
+      @RequestBody(
+        description = "Updated image details for the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserImageDto.class))
+      )
+      @Valid @ModelAttribute UserImageDto imageDto,
+
+      @Parameter(description = "Slug of the user to update the photo for")
+      @PathVariable(name = "slug") String slug
+  ) {
     userService.updateUserPhoto(slug, imageDto);
   }
 
@@ -372,7 +430,10 @@ public class UserController {
   )
   @ResponseStatus(NO_CONTENT)
   @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public void deleteUserPhoto(@PathVariable(name = "slug") String slug) {
+  public void deleteUserPhoto(
+      @Parameter(description = "Slug of the user whose photo is to be deleted")
+      @PathVariable(name = "slug") String slug
+  ) {
     userService.deleteUserPhoto(slug);
   }
 }

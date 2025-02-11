@@ -8,8 +8,10 @@ import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +62,13 @@ public class ProjectController {
       }
   )
   @ResponseStatus(CREATED)
-  public ProjectDto createProject(@RequestBody @Valid ProjectDto projectDto) {
+  public ProjectDto createProject(
+      @RequestBody(
+        description = "Details of the project to be created", required = true,
+        content = @Content(schema = @Schema(implementation = ProjectDto.class))
+      )
+      @Valid ProjectDto projectDto
+  ) {
     return projectService.createProject(projectDto);
   }
 
@@ -86,7 +93,10 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public ProjectDto getProjectByName(@PathVariable("projectName") String projectName) {
+  public ProjectDto getProjectByName(
+      @Parameter(description = "The name of the project to retrieve")
+      @PathVariable("projectName") String projectName
+  ) {
     return projectService.getProjectByName(projectName);
   }
 
@@ -111,7 +121,10 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public List<ProjectTeamDto> getTeamsForProject(@PathVariable("projectName") String projectName) {
+  public List<ProjectTeamDto> getTeamsForProject(
+      @Parameter(description = "The name of the project whose teams should be retrieved")
+      @PathVariable("projectName") String projectName
+  ) {
     return projectService.getTeamsForProject(projectName);
   }
 
@@ -142,7 +155,16 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  public ProjectDto updateProject(@PathVariable("projectName") String projectName, @RequestBody @Valid ProjectDto projectDto) {
+  public ProjectDto updateProject(
+      @Parameter(description = "The name of the project to update")
+      @PathVariable("projectName") String projectName,
+
+      @RequestBody(
+        description = "Updated project information", required = true,
+        content = @Content(schema = @Schema(implementation = ProjectDto.class))
+      )
+      @Valid ProjectDto projectDto
+  ) {
     return projectService.updateProject(projectName, projectDto);
   }
 
@@ -169,7 +191,10 @@ public class ProjectController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  public void deleteProject(@PathVariable("projectName") String projectName) {
+  public void deleteProject(
+      @Parameter(description = "The name of the project to delete")
+      @PathVariable("projectName") String projectName
+  ) {
     projectService.deleteProject(projectName);
   }
 
@@ -199,7 +224,16 @@ public class ProjectController {
       }
   )
   @ResponseStatus(CREATED)
-  public ProjectDto addTeamToProject(@PathVariable("projectName") String projectName, @RequestBody @Valid List<ProjectTeamDto> projectTeamDtoList) {
+  public ProjectDto addTeamToProject(
+      @Parameter(description = "The name of the project to assign the teams to")
+      @PathVariable("projectName") String projectName,
+
+      @RequestBody(
+        description = "List of teams and roles to assign to the project", required = true,
+        content = @Content(schema = @Schema(implementation = ProjectTeamDto.class))
+      )
+      @Valid List<ProjectTeamDto> projectTeamDtoList
+  ) {
     return projectService.addTeamToProject(projectName, projectTeamDtoList);
   }
 }
