@@ -1,13 +1,13 @@
 type Query {
-    getUserById(id: ID): UserDto
-    getTasksByUserId(id: ID): [TaskDto]
-    getTaskById(id: ID): TaskDto
+    getProjectByName(projectName: String!): ProjectDto!
+    getTeamsForProject(projectName: String!): [ProjectTeamDto!]!
+
 }
 
 type Mutation {
-    updateUser(id: ID userDto: InputUserDto): UserDto
-    deleteUserById(id: ID): Boolean
-    createTaskForUser(id: ID taskDto: InputTaskDto): TaskDto
-    updateTask(id: ID taskDto: InputTaskDto): TaskDto
-    deleteTaskById(id: ID): Boolean
+    createProject(projectDto: ProjectInput!): ProjectDto!
+    updateProject(projectName: String!, projectDto: ProjectInput!): ProjectDto!
+    deleteProject(projectName: String!): Boolean
+    addTeamToProject(projectName: String!, projectTeamDtoList: [ProjectTeamInput!]!): ProjectDto!
+
 }

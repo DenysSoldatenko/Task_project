@@ -1,38 +1,50 @@
 scalar LocalDateTime
 
+type ProjectDto {
+    id: ID!
+    name: String!
+    description: String!
+    creator: UserDto!
+}
+
+type ProjectTeamDto {
+    team: TeamDto!
+    project: ProjectDto!
+}
+
+type TeamDto {
+    id: ID!
+    name: String!
+    description: String!
+    creator: UserDto!
+}
+
 type UserDto {
-    id: ID
-    fullName: String
-    username: String
-    password: String
-    confirmPassword: String
+    id: ID!
+    fullName: String!
+    username: String!
+    slug: String!
+    image: [String]
 }
 
-input InputUserDto {
-    id: ID
-    fullName: String
-    username: String
-    password: String
-    confirmPassword: String
+input ProjectInput {
+    name: String!
+    description: String!
+    creator: UserInput!
 }
 
-type TaskDto {
-    id: ID
-    title: String
-    description: String
-    taskStatus: TaskStatus
-    expirationDate: LocalDateTime
-    images: [String]
+input TeamInput {
+    name: String!
+    description: String!
+    creator: UserInput!
 }
 
-input InputTaskDto {
+input UserInput {
     id: ID
-    title: String
-    description: String
-    taskStatus: TaskStatus
-    expirationDate: LocalDateTime
+    username: String!
 }
 
-enum TaskStatus {
-    NOT_STARTED, IN_PROGRESS, COMPLETED
+input ProjectTeamInput {
+    team: TeamInput!
+    project: ProjectInput!
 }

@@ -1,0 +1,107 @@
+query GetProjectByName {
+    getProjectByName(projectName: "New Project") {
+        id
+        name
+        description
+        creator {
+            id
+            fullName
+            username
+            slug
+            image
+        }
+    }
+}
+
+query GetTeamsForProject {
+    getTeamsForProject(projectName: "New Project") {
+        team {
+            id
+            name
+            description
+            creator {
+                id
+                fullName
+            }
+        }
+        project {
+            id
+            name
+        }
+    }
+}
+
+mutation CreateProject {
+    createProject(projectDto: {
+        name: "New Project"
+        description: "This is a new project created via GraphQL."
+        creator: {
+            id: 1 # <YOUR_ID>
+            username: "alice12345@gmail.com"
+        }
+    }) {
+        id
+        name
+        description
+        creator {
+            id
+            fullName
+        }
+    }
+}
+
+mutation UpdateProject {
+    updateProject(
+        projectName: "New Project"
+        projectDto: {
+            name: "Updated Project Name"
+            description: "Updated project description."
+            creator: {
+                id: 1 # <YOUR_ID>
+                username: "alice12345@gmail.com"
+            }
+        }
+    ) {
+        id
+        name
+        description
+    }
+}
+
+mutation DeleteProject {
+    deleteProject(projectName: "New Project")
+}
+
+mutation AddTeamToProject {
+    addTeamToProject(
+        projectName: "New Project"
+        projectTeamDtoList: [
+            {
+                team: {
+                    name: "New Team"
+                    description: "Handles backend logic"
+                    creator: {
+                        id: 1 # <YOUR_ID>
+                        username: "alice12345@gmail.com"
+                    }
+                }
+                project: {
+                    name: "New Project"
+                    description: "Updated project description"
+                    creator: {
+                        id: 1 # <YOUR_ID>
+                        username: "alice12345@gmail.com"
+                    }
+                }
+            }
+        ]
+    ) {
+        id
+        name
+        description
+    }
+}
+
+
+
+

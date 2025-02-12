@@ -9,20 +9,25 @@ import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +53,10 @@ public class ProjectController {
   @Operation(
       summary = "Create a new project",
       description = "Allows users with specific roles to create a new project in the system",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Details of the project to be created", required = true,
+        content = @Content(schema = @Schema(implementation = ProjectDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "201", description = "Project created successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
@@ -62,12 +71,9 @@ public class ProjectController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "createProject")
   public ProjectDto createProject(
-      @RequestBody(
-        description = "Details of the project to be created", required = true,
-        content = @Content(schema = @Schema(implementation = ProjectDto.class))
-      )
-      @Valid ProjectDto projectDto
+      @Valid @RequestBody @Argument ProjectDto projectDto
   ) {
     return projectService.createProject(projectDto);
   }
@@ -82,6 +88,10 @@ public class ProjectController {
   @Operation(
       summary = "Retrieve a project by name",
       description = "Fetches a project based on its name",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project to retrieve",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Project found successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
@@ -93,9 +103,9 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getProjectByName")
   public ProjectDto getProjectByName(
-      @Parameter(description = "The name of the project to retrieve")
-      @PathVariable("projectName") String projectName
+      @PathVariable("projectName") @Argument String projectName
   ) {
     return projectService.getProjectByName(projectName);
   }
@@ -110,6 +120,10 @@ public class ProjectController {
   @Operation(
       summary = "Retrieve all teams for a specific project",
       description = "Fetches a list of teams for the given project",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project whose teams should be retrieved",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Teams found successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
@@ -121,9 +135,9 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getTeamsForProject")
   public List<ProjectTeamDto> getTeamsForProject(
-      @Parameter(description = "The name of the project whose teams should be retrieved")
-      @PathVariable("projectName") String projectName
+      @PathVariable("projectName") @Argument String projectName
   ) {
     return projectService.getTeamsForProject(projectName);
   }
@@ -140,6 +154,14 @@ public class ProjectController {
   @Operation(
       summary = "Update an existing project",
       description = "Allows users with specific roles to update an existing project",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project to update",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha")
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated project information", required = true,
+        content = @Content(schema = @Schema(implementation = ProjectDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "Project updated successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
@@ -155,15 +177,10 @@ public class ProjectController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @MutationMapping(name = "updateProject")
   public ProjectDto updateProject(
-      @Parameter(description = "The name of the project to update")
-      @PathVariable("projectName") String projectName,
-
-      @RequestBody(
-        description = "Updated project information", required = true,
-        content = @Content(schema = @Schema(implementation = ProjectDto.class))
-      )
-      @Valid ProjectDto projectDto
+      @PathVariable("projectName") @Argument String projectName,
+      @Valid @RequestBody @Argument ProjectDto projectDto
   ) {
     return projectService.updateProject(projectName, projectDto);
   }
@@ -178,6 +195,10 @@ public class ProjectController {
   @Operation(
       summary = "Delete a project",
       description = "Allows users with specific roles to delete a project",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project to delete",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha")
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "Project deleted successfully"),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
@@ -191,9 +212,9 @@ public class ProjectController {
       }
   )
   @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteProject")
   public void deleteProject(
-      @Parameter(description = "The name of the project to delete")
-      @PathVariable("projectName") String projectName
+      @PathVariable("projectName") @Argument String projectName
   ) {
     projectService.deleteProject(projectName);
   }
@@ -210,6 +231,14 @@ public class ProjectController {
   @Operation(
       summary = "Add team to a project",
       description = "Assigns teams to a project with a specific role",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project to assign the teams to",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha")
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "List of teams to assign to the project", required = true,
+        content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProjectTeamDto.class)))
+      ),
       responses = {
         @ApiResponse(responseCode = "201", description = "Team added to project successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
@@ -224,15 +253,10 @@ public class ProjectController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "addTeamToProject")
   public ProjectDto addTeamToProject(
-      @Parameter(description = "The name of the project to assign the teams to")
-      @PathVariable("projectName") String projectName,
-
-      @RequestBody(
-        description = "List of teams and roles to assign to the project", required = true,
-        content = @Content(schema = @Schema(implementation = ProjectTeamDto.class))
-      )
-      @Valid List<ProjectTeamDto> projectTeamDtoList
+      @PathVariable("projectName") @Argument String projectName,
+      @Valid @RequestBody @Argument List<ProjectTeamDto> projectTeamDtoList
   ) {
     return projectService.addTeamToProject(projectName, projectTeamDtoList);
   }
