@@ -4,6 +4,7 @@ import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +34,14 @@ public class ReportController {
    * Generates a PDF report containing the user's task details and performance
    * within a specified team, project, and date range.
    *
+   * <p><strong>Note:</strong> This report is not generated for:</p>
+   * <ul>
+   *   <li><strong>Admin</strong> – excluded in all cases.</li>
+   *   <li><strong>Product Owner</strong> – excluded only if they are the sole Product Owner in the team</li>
+   * </ul>
+   *
+   * <p>If you attempt to generate a report for such users, the system will return a 500 Internal Server Error.</p>
+   *
    * @param username    The email address of the user for whom the report is generated.
    * @param teamName    The name of the team the user belongs to.
    * @param projectName The name of the project the user is associated with.
@@ -46,6 +55,18 @@ public class ReportController {
   @Operation(
       summary = "Generate a PDF report for the user with additional filters",
       description = "Generates a PDF report with user tasks and performance",
+      parameters = {
+        @Parameter(name = "username", description = "The username of the user for whom the report is to be generated",
+          required = true, in = ParameterIn.QUERY, example = "alice12345@gmail.com"),
+        @Parameter(name = "teamName", description = "The name of the team the user belongs to",
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
+        @Parameter(name = "projectName", description = "The name of the project the user is associated with",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "startDate", description = "The start date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-01-01"),
+        @Parameter(name = "endDate", description = "The end date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-12-01")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
           content = @Content(mediaType = "application/pdf")),
@@ -60,19 +81,10 @@ public class ReportController {
       }
   )
   public ResponseEntity<byte[]> generateUserReport(
-      @Parameter(description = "The username of the user for whom the report is to be generated")
       @RequestParam String username,
-
-      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
-
-      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
-
-      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
       @RequestParam String startDate,
-
-      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildUserReport(username, teamName, projectName, startDate, endDate);
@@ -93,6 +105,16 @@ public class ReportController {
   @Operation(
       summary = "Generate a PDF report for team performance and progress",
       description = "Generates a PDF report displaying the overall performance and progress of the team for a given date range",
+      parameters = {
+        @Parameter(name = "teamName", description = "The name of the team",
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
+        @Parameter(name = "projectName", description = "The name of the project the team is associated with",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "startDate", description = "The start date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-01-01"),
+        @Parameter(name = "endDate", description = "The end date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-12-31")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
           content = @Content(mediaType = "application/pdf")),
@@ -107,16 +129,9 @@ public class ReportController {
       }
   )
   public ResponseEntity<byte[]> generateTeamReport(
-      @Parameter(description = "The name of the team")
       @RequestParam String teamName,
-
-      @Parameter(description = "The name of the project the team is associated with")
       @RequestParam String projectName,
-
-      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
       @RequestParam String startDate,
-
-      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTeamReport(teamName, projectName, startDate, endDate);
@@ -136,27 +151,30 @@ public class ReportController {
   @Operation(
       summary = "Generate a PDF report for project performance and progress",
       description = "Generates a PDF report displaying the overall performance and progress of the project for a given date range",
+      parameters = {
+        @Parameter(name = "projectName", description = "The name of the project",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "startDate", description = "The start date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-01-01"),
+        @Parameter(name = "endDate", description = "The end date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-12-31")
+      },
       responses = {
-        @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
-          content = @Content(mediaType = "application/pdf")),
-        @ApiResponse(responseCode = "400", description = "Invalid input parameters",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
+          @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
+            content = @Content(mediaType = "application/pdf")),
+          @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+          @ApiResponse(responseCode = "401", description = "Unauthorized access",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+          @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   public ResponseEntity<byte[]> generateProjectReport(
-      @Parameter(description = "The name of the project")
       @RequestParam String projectName,
-
-      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
       @RequestParam String startDate,
-
-      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildProjectReport(projectName, startDate, endDate);
@@ -176,6 +194,16 @@ public class ReportController {
   @Operation(
       summary = "Generate a PDF report for top performers",
       description = "Generates a PDF report displaying the top performers in the team for a given date range",
+      parameters = {
+        @Parameter(name = "teamName", description = "The name of the team the user belongs to",
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
+        @Parameter(name = "projectName", description = "The name of the project the user is associated with",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "startDate", description = "The start date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-01-01"),
+        @Parameter(name = "endDate", description = "The end date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-12-01")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
           content = @Content(mediaType = "application/pdf")),
@@ -190,16 +218,9 @@ public class ReportController {
       }
   )
   public ResponseEntity<byte[]> generateTopPerformersInTeamReport(
-      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
-
-      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
-
-      @Parameter(description = "The start date of the report's date range", example = "2025-01-01")
       @RequestParam String startDate,
-
-      @Parameter(description = "The end date of the report's date range", example = "2025-12-31")
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTopPerformersInTeamReport(teamName, projectName, startDate, endDate);
@@ -222,6 +243,18 @@ public class ReportController {
   @Operation(
       summary = "Generate a PDF report for task progress",
       description = "Generates a PDF report showing the task progress within a team for a given date range",
+      parameters = {
+        @Parameter(name = "username", description = "The username of the user for whom the report is to be generated",
+          required = true, in = ParameterIn.QUERY, example = "alice12345@gmail.com"),
+        @Parameter(name = "teamName", description = "The name of the team the user belongs to",
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
+        @Parameter(name = "projectName", description = "The name of the project the user is associated with",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "startDate", description = "The start date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-01-01"),
+        @Parameter(name = "endDate", description = "The end date of the report's date range (inclusive)",
+          required = true, in = ParameterIn.QUERY, example = "2025-12-01")
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "PDF report generated successfully",
           content = @Content(mediaType = "application/pdf")),
@@ -236,19 +269,10 @@ public class ReportController {
       }
   )
   public ResponseEntity<byte[]> generateTaskProgressReport(
-      @Parameter(description = "The username of the user for whom the report is to be generated")
       @RequestParam String username,
-
-      @Parameter(description = "The name of the team the user belongs to")
       @RequestParam String teamName,
-
-      @Parameter(description = "The name of the project the user is associated with")
       @RequestParam String projectName,
-
-      @Parameter(description = "The start date of the report's date range (inclusive)", example = "2025-01-01")
       @RequestParam String startDate,
-
-      @Parameter(description = "The end date of the report's date range (inclusive)", example = "2025-12-31")
       @RequestParam String endDate
   ) {
     byte[] pdfData = reportService.buildTaskProgressReport(username, teamName, projectName, startDate, endDate);

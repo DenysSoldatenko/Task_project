@@ -25,7 +25,7 @@ public record TeamDto(
 
     @Schema(
       description = "The name of the team",
-      example = "Team A"
+      example = "Team Alpha"
     )
     @NotNull(message = "Team name cannot be null")
     @NotBlank(message = "Team name cannot be blank")
