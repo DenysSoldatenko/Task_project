@@ -2,6 +2,9 @@ type Query {
     getProjectByName(projectName: String!): ProjectDto!
     getTeamsForProject(projectName: String!): [ProjectTeamDto!]!
 
+    getAllRoles: [RoleDto!]!
+    getRoleByName(roleName: String!): RoleDto!
+    getRoleHierarchy(roleName: String!): RoleHierarchyListDto!
 }
 
 type Mutation {
@@ -10,4 +13,9 @@ type Mutation {
     deleteProject(projectName: String!): Boolean
     addTeamToProject(projectName: String!, projectTeamDtoList: [ProjectTeamInput!]!): ProjectDto!
 
+    createRole(roleDto: RoleInput!): RoleDto!
+    updateRole(roleName: String!, roleDto: RoleInput!): RoleDto!
+    deleteRole(roleName: String!): Boolean
+    createRoleHierarchies(roleHierarchyDtoList: [RoleHierarchyInput!]!): [RoleHierarchyDto!]!
+    deleteRoleHierarchies(roleHierarchyDtoList: [RoleHierarchyInput!]!): Boolean
 }

@@ -104,4 +104,121 @@ mutation AddTeamToProject {
 
 
 
+query GetAllRoles {
+    getAllRoles {
+        name
+        description
+    }
+}
+
+query GetRoleByName {
+    getRoleByName(roleName: "PRODUCT_OWNER2") {
+        name
+        description
+    }
+}
+
+query GetRoleHierarchy {
+    getRoleHierarchy(roleName: "PRODUCT_OWNER2") {
+        name
+        higherRoles {
+            name
+        }
+        lowerRoles {
+            name
+        }
+    }
+}
+
+mutation CreateRole {
+    createRole(roleDto: {
+        name: "PRODUCT_OWNER2"
+        description: "Product Owner2 responsible for product vision and requirements"
+    }) {
+        name
+        description
+    }
+}
+
+mutation UpdateRole {
+    updateRole(
+        roleName: "PRODUCT_OWNER2"
+        roleDto: {
+            name: "PRODUCT_OWNER2"
+            description: "Updated description for Product Owner2"
+        }
+    ) {
+        name
+        description
+    }
+}
+
+mutation DeleteRole {
+    deleteRole(roleName: "PRODUCT_OWNER2")
+}
+
+mutation CreateRoleHierarchies {
+    createRoleHierarchies(roleHierarchyDtoList: [
+        {
+            higherRole: {
+                name: "PRODUCT_OWNER2"
+                description: "Product Owner2 responsible for product vision and requirements"
+            }
+            lowerRole: {
+                name: "SCRUM_MASTER"
+                description: "Scrum Master ensuring agile practices and team coordination"
+            }
+        }
+        {
+            higherRole: {
+                name: "PRODUCT_OWNER"
+                description: "Product Owner responsible for product vision and requirements"
+            }
+            lowerRole: {
+                name: "TEAM_LEAD"
+                description: "Team leader, overseeing team members"
+            }
+        }
+    ]) {
+        higherRole {
+            name
+            description
+        }
+        lowerRole {
+            name
+            description
+        }
+    }
+}
+
+mutation DeleteRoleHierarchies {
+    deleteRoleHierarchies(roleHierarchyDtoList: [
+        {
+            higherRole: {
+                name: "PRODUCT_OWNER2"
+                description: "Product Owner2 responsible for product vision and requirements"
+            }
+            lowerRole: {
+                name: "SCRUM_MASTER"
+                description: "Scrum Master ensuring agile practices and team coordination"
+            }
+        }
+        {
+            higherRole: {
+                name: "PRODUCT_OWNER"
+                description: "Product Owner responsible for product vision and requirements"
+            }
+            lowerRole: {
+                name: "TEAM_LEAD"
+                description: "Team leader, overseeing team members"
+            }
+        }
+    ])
+}
+
+
+
+
+
+
 

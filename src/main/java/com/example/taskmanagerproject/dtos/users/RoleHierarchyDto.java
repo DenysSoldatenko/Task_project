@@ -11,17 +11,25 @@ public record RoleHierarchyDto(
 
     @Schema(
       description = "The higher role in the hierarchy",
-      example = "[{\"id\": \"1\", "
-        + "\"name\": {\"ADMIN\"},"
-        + " \"description\": \"Administrator with full access\"}]"
+      example = """
+        {
+          "id": "1",
+          "name": "ADMIN",
+          "description": "Administrator with full access"
+        }
+        """
     )
     RoleDto higherRole,
 
     @Schema(
       description = "The lower role in the hierarchy",
-      example = "[{\"id\": \"14\", "
-      + "\"name\": {\"USER\"},"
-      + " \"description\": \"Default user with the lowest access level\"}]"
+      example = """
+        {
+          "id": "14",
+          "name": "USER",
+          "description": "Default user with the lowest access level"
+        }
+        """
     )
     RoleDto lowerRole
 ) {}

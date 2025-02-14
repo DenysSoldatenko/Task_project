@@ -10,19 +10,24 @@ import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +67,7 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getAllRoles")
   public List<RoleDto> getAllRoles() {
     return roleService.getAllRoles();
   }
@@ -76,6 +82,10 @@ public class RoleController {
   @Operation(
       summary = "Get a role by name",
       description = "Fetches a specific role by its name (e.g., ADMIN, USER)",
+      parameters = {
+        @Parameter(name = "roleName", description = "The name of the role to retrieve (e.g., ADMIN, USER)",
+          required = true, in = ParameterIn.PATH, example = "USER"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Role retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
@@ -91,9 +101,9 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getRoleByName")
   public RoleDto getRoleByName(
-      @Parameter(description = "The name of the role to retrieve (e.g., ADMIN, USER)")
-      @PathVariable String roleName
+      @PathVariable(name = "roleName") @Argument String roleName
   ) {
     return roleService.getRoleByName(roleName);
   }
@@ -108,6 +118,10 @@ public class RoleController {
   @Operation(
       summary = "Create a new role",
       description = "Creates a new role with the provided details",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Details of the role to be created", required = true,
+        content = @Content(schema = @Schema(implementation = RoleDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "201", description = "Role created successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
@@ -122,12 +136,9 @@ public class RoleController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "createRole")
   public RoleDto createRole(
-      @RequestBody(
-        description = "Details of the role to be created", required = true,
-        content = @Content(schema = @Schema(implementation = RoleDto.class))
-      )
-      @Valid RoleDto roleDto
+      @Valid @RequestBody @Argument RoleDto roleDto
   ) {
     return roleService.createRole(roleDto);
   }
@@ -142,6 +153,14 @@ public class RoleController {
   @Operation(
       summary = "Update an existing role",
       description = "Updates an existing role's details with the provided information",
+      parameters = {
+        @Parameter(name = "roleName", description = "The name of the role to update (e.g., ADMIN, USER)",
+          required = true, in = ParameterIn.PATH, example = "USER"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated role details", required = true,
+        content = @Content(schema = @Schema(implementation = RoleDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "Role updated successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
@@ -157,15 +176,10 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @MutationMapping(name = "updateRole")
   public RoleDto updateRole(
-      @Parameter(description = "The name of the role to update (e.g., ADMIN, USER)")
-      @PathVariable String roleName,
-
-      @RequestBody(
-        description = "Updated role details", required = true,
-        content = @Content(schema = @Schema(implementation = RoleDto.class))
-      )
-      @Valid RoleDto roleDto
+      @PathVariable(name = "roleName") @Argument String roleName,
+      @Valid @RequestBody @Argument RoleDto roleDto
   ) {
     return roleService.updateRole(roleName, roleDto);
   }
@@ -179,6 +193,10 @@ public class RoleController {
   @Operation(
       summary = "Delete a role",
       description = "Deletes a specific role by its name",
+      parameters = {
+        @Parameter(name = "roleName", description = "The name of the role to delete (e.g., ADMIN, USER)",
+          required = true, in = ParameterIn.PATH, example = "USER"),
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "Role deleted successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -194,9 +212,9 @@ public class RoleController {
       }
   )
   @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteRole")
   public void deleteRole(
-      @Parameter(description = "The name of the role to delete (e.g., ADMIN, USER)")
-      @PathVariable String roleName
+      @PathVariable(name = "roleName") @Argument String roleName
   ) {
     roleService.deleteRole(roleName);
   }
@@ -212,6 +230,10 @@ public class RoleController {
   @Operation(
       summary = "Create role hierarchies",
       description = "Creates one or more role hierarchies with the provided details",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "List of role hierarchies to create", required = true,
+        content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RoleHierarchyDto.class)))
+      ),
       responses = {
         @ApiResponse(responseCode = "201", description = "Role hierarchies created successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleHierarchyDto.class))),
@@ -228,12 +250,9 @@ public class RoleController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "createRoleHierarchies")
   public List<RoleHierarchyDto> createRoleHierarchies(
-      @RequestBody(
-        description = "List of role hierarchies to create", required = true,
-        content = @Content(schema = @Schema(implementation = RoleHierarchyDto.class))
-      )
-      @Valid List<RoleHierarchyDto> roleHierarchyDtoList
+      @Valid @RequestBody @Argument List<RoleHierarchyDto> roleHierarchyDtoList
   ) {
     return roleService.createRoleHierarchies(roleHierarchyDtoList);
   }
@@ -247,6 +266,10 @@ public class RoleController {
   @Operation(
       summary = "Delete one or more role hierarchies",
       description = "Deletes one or more role hierarchies based on the provided details",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "List of role hierarchies to delete", required = true,
+        content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RoleHierarchyDto.class)))
+      ),
       responses = {
         @ApiResponse(responseCode = "204", description = "Role hierarchies deleted successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -262,12 +285,9 @@ public class RoleController {
       }
   )
   @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteRoleHierarchies")
   public void deleteRoleHierarchies(
-      @RequestBody(
-        description = "List of role hierarchies to delete", required = true,
-        content = @Content(schema = @Schema(implementation = RoleHierarchyDto.class))
-      )
-      @Valid List<RoleHierarchyDto> roleHierarchyDtoList
+      @Valid @RequestBody @Argument List<RoleHierarchyDto> roleHierarchyDtoList
   ) {
     roleService.deleteRoleHierarchies(roleHierarchyDtoList);
   }
@@ -282,9 +302,13 @@ public class RoleController {
   @Operation(
       summary = "Get role with all lower and higher roles",
       description = "Fetches a specific role along with all its roles in the hierarchy",
+      parameters = {
+        @Parameter(name = "roleName", description = "The name of the role whose hierarchy is to be retrieved (e.g., ADMIN, USER)",
+          required = true, in = ParameterIn.PATH, example = "PRODUCT_OWNER"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved role hierarchy",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleDto.class))),
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoleHierarchyListDto.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
@@ -295,9 +319,9 @@ public class RoleController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getRoleHierarchy")
   public RoleHierarchyListDto getRoleWithAllLowerAndHigherRoles(
-      @Parameter(description = "The name of the role whose hierarchy is to be retrieved (e.g., ADMIN, USER)")
-      @PathVariable String roleName
+      @PathVariable(name = "roleName") @Argument String roleName
   ) {
     return roleService.findRoleWithHierarchy(roleName);
   }

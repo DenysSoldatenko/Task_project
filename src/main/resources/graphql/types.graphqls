@@ -48,3 +48,34 @@ input ProjectTeamInput {
     team: TeamInput!
     project: ProjectInput!
 }
+
+
+
+
+
+
+type RoleDto {
+    name: String!
+    description: String
+}
+
+input RoleInput {
+    name: String!
+    description: String!
+}
+
+type RoleHierarchyDto {
+    higherRole: RoleDto!
+    lowerRole: RoleDto!
+}
+
+input RoleHierarchyInput {
+    higherRole: RoleInput!
+    lowerRole: RoleInput!
+}
+
+type RoleHierarchyListDto {
+    name: String!
+    higherRoles: [RoleDto!]!
+    lowerRoles: [RoleDto!]!
+}
