@@ -5,6 +5,8 @@ type Query {
     getAllRoles: [RoleDto!]!
     getRoleByName(roleName: String!): RoleDto!
     getRoleHierarchy(roleName: String!): RoleHierarchyListDto!
+
+    getTaskCommentsBySlug(slug: String!, page: Int = 0, size: Int = 10, sort: String = "id,asc"): TaskCommentPageDto!
 }
 
 type Mutation {
@@ -18,4 +20,8 @@ type Mutation {
     deleteRole(roleName: String!): Boolean
     createRoleHierarchies(roleHierarchyDtoList: [RoleHierarchyInput!]!): [RoleHierarchyDto!]!
     deleteRoleHierarchies(roleHierarchyDtoList: [RoleHierarchyInput!]!): Boolean
+
+    createTaskComment(taskCommentDto: TaskCommentInput!): TaskCommentDto!
+    updateTaskComment(id: ID!, taskCommentDto: TaskCommentInput!): TaskCommentDto!
+    deleteTaskComment(id: ID!): Boolean
 }

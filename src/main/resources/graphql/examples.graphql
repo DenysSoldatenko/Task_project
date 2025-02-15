@@ -36,7 +36,7 @@ mutation CreateProject {
         name: "New Project"
         description: "This is a new project created via GraphQL."
         creator: {
-            id: 1 # <YOUR_ID>
+            id: 1
             username: "alice12345@gmail.com"
         }
     }) {
@@ -57,7 +57,7 @@ mutation UpdateProject {
             name: "Updated Project Name"
             description: "Updated project description."
             creator: {
-                id: 1 # <YOUR_ID>
+                id: 1
                 username: "alice12345@gmail.com"
             }
         }
@@ -81,7 +81,7 @@ mutation AddTeamToProject {
                     name: "New Team"
                     description: "Handles backend logic"
                     creator: {
-                        id: 1 # <YOUR_ID>
+                        id: 1
                         username: "alice12345@gmail.com"
                     }
                 }
@@ -89,7 +89,7 @@ mutation AddTeamToProject {
                     name: "New Project"
                     description: "Updated project description"
                     creator: {
-                        id: 1 # <YOUR_ID>
+                        id: 1
                         username: "alice12345@gmail.com"
                     }
                 }
@@ -218,6 +218,162 @@ mutation DeleteRoleHierarchies {
 
 
 
+
+query GetTaskCommentsBySlug {
+    getTaskCommentsBySlug(slug: "task-28210", page: 0, size: 5, sort: "id,desc") {
+        content {
+            id
+            task {
+                id
+                project {
+                    id
+                    name
+                    description
+                }
+                team {
+                    id
+                    name
+                    description
+                }
+                title
+                description
+                createdAt
+                expirationDate
+                approvedAt
+                taskStatus
+                priority
+                assignedTo {
+                    fullName
+                    username
+                }
+                assignedBy {
+                    fullName
+                    username
+                }
+                images
+            }
+            sender {
+                fullName
+                username
+            }
+            receiver {
+                fullName
+                username
+            }
+            slug
+            message
+            createdAt
+        }
+        totalPages
+        totalElements
+        number
+        size
+        first
+        last
+        empty
+    }
+}
+
+mutation CreateTaskComment {
+    createTaskComment(
+        taskCommentDto: {
+            task: {
+                id: 28210                                             # Replace with actual project name
+                slug: "task-28210"                                    # Replace with actual project name
+                project: {
+                    name: "DuBuque-Medhurst"                          # Replace with actual project name
+                    description: "A sample project description"       # Replace with actual project description
+                    creator: { id: 1, username: "alice12345@gmail.com" }
+                }
+                team: {
+                    name: "Illinois giants"                           # Replace with actual team name
+                    description: "A great team"                       # Replace with actual team description
+                    creator: { id: 1, username: "alice12345@gmail.com" }
+                }
+                title: "Task Title"
+                description: "Optional task description"
+                expirationDate: "2025-12-31T23:59:59"
+                taskStatus: "APPROVED"
+                priority: "CRITICAL"
+                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }   # Replace with actual assignee
+                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" } # Replace with actual assigner
+                images: []
+            }
+            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }         # Replace with actual sender info
+            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }     # Replace with actual receiver info
+            message: "Soluta odit vero nesciunt a blanditiis veniam. (Message #1111)" # Replace with actual message
+        }
+    ) {
+        id
+        message
+        createdAt
+        sender {
+            id
+            fullName
+        }
+        receiver {
+            id
+            fullName
+        }
+        task {
+            id
+            title
+        }
+    }
+}
+
+mutation UpdateTaskComment {
+    updateTaskComment(
+        id: 37381,                                                     # Replace with the actual TaskComment ID to update
+        taskCommentDto: {
+            task: {
+                id: 28210
+                slug: "task-28210"
+                project: {
+                    name: "DuBuque-Medhurst"                           # Replace with actual project name
+                    description: "A sample project description"        # Replace with actual project description
+                    creator: { id: 1, username: "alice12345@gmail.com" }
+                }
+                team: {
+                    name: "Illinois giants"                            # Replace with actual team name
+                    description: "A great team"                        # Replace with actual team description
+                    creator: { id: 1, username: "alice12345@gmail.com" }
+                }
+                title: "Task Title"
+                description: "Updated task description"
+                expirationDate: "2025-12-31T23:59:59"
+                taskStatus: "APPROVED"
+                priority: "HIGH"
+                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }   # Replace with actual assignee
+                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" } # Replace with actual assigner
+                images: []
+            }
+            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }         # Replace with actual sender
+            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }     # Replace with actual receiver
+            message: "🔄 Updated message content"
+        }
+    ) {
+        id
+        message
+        createdAt
+        sender {
+            id
+            fullName
+        }
+        receiver {
+            id
+            fullName
+        }
+        task {
+            id
+            title
+        }
+    }
+}
+
+mutation DeleteTaskComment {
+    deleteTaskComment(id: 37381)
+}
 
 
 

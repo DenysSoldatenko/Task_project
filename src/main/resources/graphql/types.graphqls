@@ -1,5 +1,6 @@
 scalar LocalDateTime
 
+### Project Types ###
 type ProjectDto {
     id: ID!
     name: String!
@@ -51,9 +52,7 @@ input ProjectTeamInput {
 
 
 
-
-
-
+### Role Types ###
 type RoleDto {
     name: String!
     description: String
@@ -78,4 +77,67 @@ type RoleHierarchyListDto {
     name: String!
     higherRoles: [RoleDto!]!
     lowerRoles: [RoleDto!]!
+}
+
+
+
+### Task & Task Comment Types ###
+type TaskCommentDto {
+    id: ID!
+    task: TaskDto!
+    sender: UserDto!
+    receiver: UserDto!
+    slug: String!
+    message: String!
+    createdAt: LocalDateTime!
+}
+
+type TaskDto {
+    id: ID!
+    slug: String!
+    project: ProjectDto!
+    team: TeamDto!
+    title: String!
+    description: String
+    createdAt: LocalDateTime!
+    expirationDate: LocalDateTime!
+    approvedAt: LocalDateTime
+    taskStatus: String!
+    priority: String!
+    assignedTo: UserDto!
+    assignedBy: UserDto!
+    images: [String!]
+}
+
+input TaskInput {
+    id: ID
+    slug: String
+    project: ProjectInput!
+    team: TeamInput!
+    title: String!
+    description: String
+    expirationDate: LocalDateTime!
+    taskStatus: String!
+    priority: String!
+    assignedTo: UserInput!
+    assignedBy: UserInput!
+    images: [String]
+}
+
+input TaskCommentInput {
+    task: TaskInput!
+    sender: UserInput!
+    receiver: UserInput!
+    message: String!
+}
+
+type TaskCommentPageDto {
+    content: [TaskCommentDto!]!
+    totalPages: Int!
+    totalElements: Int!
+    number: Int!
+    size: Int!
+    first: Boolean!
+    last: Boolean!
+    empty: Boolean!
 }
