@@ -10,9 +10,9 @@ import com.example.taskmanagerproject.exceptions.errorhandling.ErrorDetails;
 import com.example.taskmanagerproject.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +57,10 @@ public class TaskController {
   @Operation(
       summary = "Create a new task for a user",
       description = "Allows the creation of a new task",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Details of the task to be created", required = true,
+        content = @Content(schema = @Schema(implementation = TaskDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "201", description = "Task created successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto.class))),
@@ -64,20 +70,15 @@ public class TaskController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "User not found",
+        @ApiResponse(responseCode = "404", description = "Task not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
   @ResponseStatus(CREATED)
-  @MutationMapping(name = "createTask")
   public TaskDto createTask(
-      @RequestBody(
-        description = "Details of the task to be created", required = true,
-        content = @Content(schema = @Schema(implementation = TaskDto.class))
-      )
-      @Valid @Argument TaskDto taskDto
+      @Valid @RequestBody @Argument TaskDto taskDto
   ) {
     return taskService.createTaskForUser(taskDto);
   }
@@ -89,9 +90,14 @@ public class TaskController {
    * @return ResponseEntity containing the task DTO.
    */
   @GetMapping("/{id}")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Get a task by ID",
       description = "Retrieve a task by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "ID of the task to retrieve",
+          required = true, in = ParameterIn.PATH, example = "1"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Task retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto.class))),
@@ -106,10 +112,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
-  @QueryMapping(name = "getTaskById")
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public TaskDto getTaskById(
-      @Parameter(description = "ID of the task to retrieve")
       @PathVariable(name = "id") @Argument Long id
   ) {
     return taskService.getTaskById(id);
@@ -123,9 +126,18 @@ public class TaskController {
    * @return ResponseEntity containing the updated task DTO.
    */
   @PutMapping("/{id}")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Update an existing task",
       description = "Update an existing task by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "ID of the task to update",
+          required = true, in = ParameterIn.PATH, example = "1"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated details of the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "Task updated successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto.class))),
@@ -142,16 +154,8 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
-  @MutationMapping(name = "updateTask")
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public TaskDto updateTask(
-      @RequestBody(
-        description = "Updated details of the task", required = true,
-        content = @Content(schema = @Schema(implementation = TaskDto.class))
-      )
-      @Valid @Argument TaskDto taskDto,
-
-      @Parameter(description = "ID of the task to update")
+      @Valid @RequestBody @Argument TaskDto taskDto,
       @PathVariable(name = "id") @Argument Long id
   ) {
     return taskService.updateTask(taskDto, id);
@@ -168,15 +172,28 @@ public class TaskController {
    * @return a list of TaskDto objects representing tasks expiring soon
    */
   @GetMapping("/expiring-soon")
+  @PreAuthorize("@expressionService.canAccessExpiringTasks(#username, #projectName, #teamName)")
   @Operation(
       summary = "Get tasks expiring soon",
       description = "Retrieves tasks that will expire within the given duration, filtered by project and team",
+      parameters = {
+        @Parameter(name = "username", description = "Username to filter tasks for",
+          required = true, in = ParameterIn.QUERY, example = "alice12345@gmail.com"),
+        @Parameter(name = "duration", description = "Duration window for tasks expiring soon",
+          required = true, in = ParameterIn.QUERY, example = "PT3H"),
+        @Parameter(name = "projectName", description = "Project name to filter tasks",
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
+        @Parameter(name = "teamName", description = "Team name to filter tasks",
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Task not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
@@ -185,20 +202,11 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
-  @QueryMapping(name = "findAllSoonExpiringTasks")
-  @PreAuthorize("@expressionService.canAccessExpiringTasks(#username, #projectName, #teamName)")
   public List<TaskDto> findAllSoonExpiringTasks(
-      @Parameter(description = "Username to filter tasks for")
-      @Argument String username,
-
-      @Parameter(description = "Duration window for tasks expiring soon")
-      @Argument Duration duration,
-
-      @Parameter(description = "Project name to filter tasks")
-      @Argument String projectName,
-
-      @Parameter(description = "Team name to filter tasks")
-      @Argument String teamName
+      @RequestParam(name = "username") @Argument String username,
+      @RequestParam(name = "duration") @Argument Duration duration,
+      @RequestParam(name = "projectName") @Argument String projectName,
+      @RequestParam(name = "teamName") @Argument String teamName
   ) {
     return taskService.findAllSoonExpiringTasks(username, duration, projectName, teamName);
   }
@@ -209,9 +217,14 @@ public class TaskController {
    * @param id The ID of the task to delete.
    */
   @DeleteMapping("/{id}")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Delete a task by ID",
       description = "Delete a task by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "The ID of the task to delete",
+          required = true, in = ParameterIn.PATH, example = "1")
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "Task deleted successfully"),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
@@ -225,10 +238,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  @MutationMapping(name = "deleteTaskById")
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void deleteTaskById(
-      @Parameter(description = "The ID of the task to delete")
       @PathVariable(name = "id") @Argument Long id
   ) {
     taskService.deleteTaskById(id);
@@ -241,9 +251,18 @@ public class TaskController {
    * @param id       The ID of the task to upload the image for.
    */
   @PostMapping("/{id}/image")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Upload an image for a task",
       description = "Upload an image for the task identified by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "ID of the task to upload the image for",
+          required = true, in = ParameterIn.PATH, example = "1"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Image details to upload for the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "204", description = "Image uploaded successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -259,15 +278,8 @@ public class TaskController {
       }
   )
   @ResponseStatus(CREATED)
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void uploadImage(
-      @RequestBody(
-        description = "Image details to upload for the task", required = true,
-        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
-      )
-      @Valid @ModelAttribute TaskImageDto imageDto,
-
-      @Parameter(description = "ID of the task to upload the image for")
+      @Valid @RequestBody @ModelAttribute TaskImageDto imageDto,
       @PathVariable(name = "id") Long id
   ) {
     taskService.uploadImage(id, imageDto);
@@ -280,9 +292,20 @@ public class TaskController {
    * @param id       The ID of the task to update the image for.
    */
   @PutMapping("/{id}/image/{imageName}")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Update an image for a task",
       description = "Update the image for the task identified by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "ID of the task to update the image for",
+          required = true, in = ParameterIn.PATH, example = "1"),
+        @Parameter(name = "imageName", description = "Name of the image to update",
+          required = true, in = ParameterIn.PATH, example = "name.png")
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated image details for the task", required = true,
+        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "Image updated successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -297,18 +320,9 @@ public class TaskController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void updateImage(
-      @RequestBody(
-        description = "Updated image details for the task", required = true,
-        content = @Content(schema = @Schema(implementation = TaskImageDto.class))
-      )
-      @Valid @ModelAttribute TaskImageDto imageDto,
-
-      @Parameter(description = "ID of the task to update the image for")
+      @Valid @RequestBody @ModelAttribute TaskImageDto imageDto,
       @PathVariable(name = "id") Long id,
-
-      @Parameter(description = "Name of the image to update")
       @PathVariable String imageName
   ) {
     taskService.updateImage(id, imageDto, imageName);
@@ -321,9 +335,16 @@ public class TaskController {
    * @param imageName The name of the image to delete.
    */
   @DeleteMapping("/{id}/image/{imageName}")
+  @PreAuthorize("@expressionService.canAccessTask(#id)")
   @Operation(
       summary = "Delete an image for a task",
       description = "Deletes a specific image from the task identified by its ID",
+      parameters = {
+        @Parameter(name = "id", description = "ID of the task",
+          required = true, in = ParameterIn.PATH, example = "1"),
+        @Parameter(name = "imageName", description = "Name of the image to delete",
+          required = true, in = ParameterIn.PATH, example = "name.png")
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "Image deleted successfully"),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
@@ -337,12 +358,8 @@ public class TaskController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  @PreAuthorize("@expressionService.canAccessTask(#id)")
   public void deleteImage(
-      @Parameter(description = "ID of the task")
       @PathVariable Long id,
-
-      @Parameter(description = "Name of the image to delete")
       @PathVariable String imageName
   ) {
     taskService.deleteImage(id, imageName);
