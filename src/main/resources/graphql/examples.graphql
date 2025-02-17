@@ -378,3 +378,121 @@ mutation DeleteTaskComment {
 
 
 
+query GetTaskById {
+    getTaskById(id: 28210) {
+        id
+        title
+        description
+        expirationDate
+        taskStatus
+        priority
+        assignedTo {
+            fullName
+            username
+        }
+        assignedBy {
+            fullName
+            username
+        }
+        project {
+            name
+        }
+        team {
+            name
+        }
+    }
+}
+
+query GetSoonExpiringTasks {
+    getSoonExpiringTasks(
+        username: "aracelis.collier@yahoo.com"
+        duration: "PT350H"
+        projectName: "DuBuque-Medhurst"
+        teamName: "Illinois giants"
+    ) {
+        id
+        title
+        expirationDate
+    }
+}
+
+mutation CreateTask {
+    createTask(
+        taskDto: {
+            title: "New Task"
+            description: "Example description"
+            expirationDate: "2025-12-31T23:59:59"
+            taskStatus: "APPROVED"
+            priority: "CRITICAL"
+            slug: "task-28210"
+            project: {
+                name: "DuBuque-Medhurst"
+                description: "A project description"
+                creator: {
+                    id: 1
+                    username: "alice12345@gmail.com"
+                }
+            }
+            team: {
+                name: "Illinois giants"
+                description: "A team description"
+                creator: {
+                    id: 1
+                    username: "alice12345@gmail.com"
+                }
+            }
+            assignedTo: {
+                id: 131
+                username: "mitsue.steuber@yahoo.com"
+            }
+            assignedBy: {
+                id: 132
+                username: "aracelis.collier@yahoo.com"
+            }
+            images: []
+        }
+    ) {
+        id
+        title
+    }
+}
+
+mutation UpdateTask {
+    updateTask(
+        id: 34144
+        taskDto: {
+            title: "Updated Task Title"
+            description: "Updated description"
+            expirationDate: "2025-12-31T23:59:59"
+            taskStatus: "APPROVED"
+            priority: "HIGH"
+            slug: "task-28210"
+            project: {
+                name: "DuBuque-Medhurst"
+                description: "Updated project description"
+                creator: { id: 1, username: "alice12345@gmail.com" }
+            }
+            team: {
+                name: "Illinois giants"
+                description: "Updated team"
+                creator: { id: 1, username: "alice12345@gmail.com" }
+            }
+            assignedTo: { id: 131, username: "mitsue.steuber@yahoo.com" }
+            assignedBy: { id: 132, username: "aracelis.collier@yahoo.com" }
+            images: []
+        }
+    ) {
+        id
+        title
+        description
+    }
+}
+
+mutation DeleteTask {
+    deleteTask(id: 34144)
+}
+
+
+
+
+

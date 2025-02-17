@@ -77,6 +77,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "createTask")
   public TaskDto createTask(
       @Valid @RequestBody @Argument TaskDto taskDto
   ) {
@@ -112,6 +113,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
+  @QueryMapping(name = "getTaskById")
   public TaskDto getTaskById(
       @PathVariable(name = "id") @Argument Long id
   ) {
@@ -154,6 +156,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
+  @MutationMapping(name = "updateTask")
   public TaskDto updateTask(
       @Valid @RequestBody @Argument TaskDto taskDto,
       @PathVariable(name = "id") @Argument Long id
@@ -202,6 +205,7 @@ public class TaskController {
       }
   )
   @ResponseStatus(OK)
+  @QueryMapping(name = "getSoonExpiringTasks")
   public List<TaskDto> findAllSoonExpiringTasks(
       @RequestParam(name = "username") @Argument String username,
       @RequestParam(name = "duration") @Argument Duration duration,
@@ -238,11 +242,14 @@ public class TaskController {
       }
   )
   @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteTask")
   public void deleteTaskById(
       @PathVariable(name = "id") @Argument Long id
   ) {
     taskService.deleteTaskById(id);
   }
+
+
 
   /**
    * Uploads an image for a task.
