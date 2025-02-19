@@ -22,6 +22,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,6 +75,7 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "createTeam")
   public TeamDto createTeam(
       @Valid @RequestBody @Argument TeamDto teamDto
   ) {
@@ -104,6 +107,7 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getTeamByName")
   public TeamDto getTeamByName(
       @PathVariable(name = "teamName") @Argument String teamName
   ) {
@@ -135,6 +139,7 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getUsersWithRolesForTeam")
   public List<TeamUserDto> getUsersWithRolesForTeam(
       @PathVariable(name = "teamName") @Argument String teamName
   ) {
@@ -166,6 +171,7 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @QueryMapping(name = "getProjectsForTeam")
   public List<ProjectTeamDto> getProjectsForTeam(
       @PathVariable(name = "teamName") @Argument String teamName
   ) {
@@ -207,6 +213,7 @@ public class TeamController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+  @MutationMapping(name = "updateTeam")
   public TeamDto updateTeam(
       @Valid @RequestBody @Argument TeamDto teamDto,
       @PathVariable(name = "teamName") @Argument String teamName
@@ -241,6 +248,7 @@ public class TeamController {
       }
   )
   @ResponseStatus(NO_CONTENT)
+  @MutationMapping(name = "deleteTeam")
   public void deleteTeam(
       @PathVariable(name = "teamName") @Argument String teamName
   ) {
@@ -281,8 +289,9 @@ public class TeamController {
       }
   )
   @ResponseStatus(CREATED)
+  @MutationMapping(name = "addUsersToTeam")
   public List<TeamUserDto> addUsersToTeam(
-      @Valid @RequestBody List<TeamUserDto> teamUserDtoList,
+      @Valid @RequestBody @Argument List<TeamUserDto> teamUserDtoList,
       @PathVariable(name = "teamName") @Argument String teamName
   ) {
     return teamService.addUsersToTeam(teamName, teamUserDtoList);

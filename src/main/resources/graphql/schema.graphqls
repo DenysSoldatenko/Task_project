@@ -10,6 +10,10 @@ type Query {
 
     getTaskById(id: ID!): TaskDto!
     getSoonExpiringTasks(username: String!, duration: String!, projectName: String!, teamName: String!): [TaskDto!]!
+
+    getTeamByName(teamName: String!): TeamDto!
+    getUsersWithRolesForTeam(teamName: String!): [TeamUserDto!]!
+    getProjectsForTeam(teamName: String!): [ProjectTeamDto!]!
 }
 
 type Mutation {
@@ -31,4 +35,9 @@ type Mutation {
     createTask(taskDto: TaskInput!): TaskDto!
     updateTask(id: ID!, taskDto: TaskInput!): TaskDto!
     deleteTask(id: ID!): Boolean
+
+    createTeam(teamDto: TeamInput!): TeamDto!
+    updateTeam(teamName: String!, teamDto: TeamInput!): TeamDto!
+    deleteTeam(teamName: String!): Boolean
+    addUsersToTeam(teamName: String!, teamUserDtoList: [TeamUserInput!]!): [TeamUserDto!]!
 }

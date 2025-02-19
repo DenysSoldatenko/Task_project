@@ -1,6 +1,6 @@
 scalar LocalDateTime
 
-### Project Types ###
+### Project & Team Types ###
 type ProjectDto {
     id: ID!
     name: String!
@@ -50,6 +50,18 @@ input ProjectTeamInput {
     project: ProjectInput!
 }
 
+type TeamUserDto {
+    user: UserDto!
+    team: TeamDto!
+    role: RoleDto!
+}
+
+input TeamUserInput {
+    user: UserInput!
+    team: TeamInput!
+    role: RoleInput!
+}
+
 
 
 ### Role Types ###
@@ -94,7 +106,6 @@ type TaskCommentDto {
 
 type TaskDto {
     id: ID!
-    slug: String!
     project: ProjectDto!
     team: TeamDto!
     title: String!

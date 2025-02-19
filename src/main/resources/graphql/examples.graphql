@@ -496,3 +496,101 @@ mutation DeleteTask {
 
 
 
+query GetTeamByName {
+    getTeamByName(teamName: "Team Alpha") {
+        id
+        name
+        description
+        creator {
+            id
+            fullName
+            username
+        }
+    }
+}
+
+query GetUsersWithRolesForTeam {
+    getUsersWithRolesForTeam(teamName: "Team Alpha") {
+        user {
+            id
+            fullName
+            username
+        }
+        role {
+            name
+            description
+        }
+        team {
+            name
+        }
+    }
+}
+
+query GetProjectsForTeam {
+    getProjectsForTeam(teamName: "Team Alpha") {
+        project {
+            name
+            description
+        }
+        team {
+            name
+        }
+    }
+}
+
+mutation CreateTeam {
+    createTeam(
+        teamDto: {name: "Team Beta", description: "Handles beta testing", creator: {username: "alice12345@gmail.com"}}
+    ) {
+        id
+        name
+        description
+    }
+}
+
+mutation UpdateTeam {
+    updateTeam(
+        teamName: "Team Beta"
+        teamDto: {name: "Team Beta", description: "Updated description", creator: {username: "alice12345@gmail.com"}}
+    ) {
+        id
+        name
+        description
+    }
+}
+
+mutation DeleteTeam {
+    deleteTeam(teamName: "Team Beta")
+}
+
+mutation AddUsersToTeam {
+    addUsersToTeam(
+        teamName: "Team Beta"
+        teamUserDtoList: [
+            {
+                user: {username: "alice12345@gmail.com"},
+                role: {name: "ADMIN", description: ""},
+                team: {name: "Team Beta", description: "",
+                       creator: {username: "alice12345@gmail.com"}}
+            },
+            {
+                user: {username: "aracelis.collier@yahoo.com"},
+                role: {name: "MIDDLE_DEVELOPER", description: ""},
+                team: {name: "Team Beta", description: "",
+                       creator: {username: "alice12345@gmail.com"}}
+            }
+        ]
+    ) {
+        user {
+            username
+        }
+        role {
+            name
+        }
+        team {
+            name
+        }
+    }
+}
+
+
