@@ -18,9 +18,9 @@ import com.example.taskmanagerproject.services.TeamService;
 import com.example.taskmanagerproject.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -68,6 +69,10 @@ public class UserController {
   @Operation(
       summary = "Get user by slug",
       description = "Retrieve user information by slug",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user to retrieve",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "User retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),
@@ -81,9 +86,8 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @QueryMapping(name = "getUserBySlug")
+
   public UserDto getUserBySlug(
-      @Parameter(description = "Slug of the user to retrieve")
       @PathVariable(name = "slug") @Argument String slug
   ) {
     return userService.getUserBySlug(slug);
@@ -97,9 +101,18 @@ public class UserController {
    * @return ResponseEntity containing the updated user DTO.
    */
   @PutMapping("/{slug}")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Update user",
       description = "Update user information by slug",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user to update",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated details of the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "User updated successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),
@@ -115,16 +128,9 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @MutationMapping(name = "updateUser")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
-  public UserDto updateUser(
-      @RequestBody(
-        description = "Updated details of the user", required = true,
-        content = @Content(schema = @Schema(implementation = UserDto.class))
-      )
-      @Valid @Argument UserDto userDto,
 
-      @Parameter(description = "Slug of the user to update")
+  public UserDto updateUser(
+      @Valid @RequestBody @Argument UserDto userDto,
       @PathVariable(name = "slug") @Argument String slug
   ) {
     return userService.updateUser(userDto, slug);
@@ -136,9 +142,14 @@ public class UserController {
    * @param slug The slug of the user to delete.
    */
   @DeleteMapping("/{slug}")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Delete user by slug",
       description = "Delete user by slug",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user to delete",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "User deleted successfully"),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
@@ -152,10 +163,8 @@ public class UserController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  @MutationMapping(name = "deleteUserBySlug")
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+
   public void deleteUserBySlug(
-      @Parameter(description = "Slug of the user to delete")
       @PathVariable(name = "slug") @Argument String slug
   ) {
     userService.deleteUserBySlug(slug);
@@ -171,6 +180,10 @@ public class UserController {
   @Operation(
       summary = "Get projects by user username",
       description = "Fetches all projects associated with a user identified by the username",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user whose projects are to be retrieved",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved projects",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
@@ -184,8 +197,8 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+
   public List<ProjectDto> getProjectsByUserSlug(
-      @Parameter(description = "Slug of the user whose projects are to be retrieved")
       @PathVariable(name = "slug") String slug
   ) {
     return projectService.getProjectsBySlug(slug);
@@ -201,6 +214,10 @@ public class UserController {
   @Operation(
       summary = "Get teams by user username",
       description = "Fetches all teams associated with a user identified by the username",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user whose teams are to be retrieved",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved teams",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
@@ -214,8 +231,8 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
+
   public List<TeamDto> getTeamsByUserSlug(
-      @Parameter(description = "Slug of the user whose teams are to be retrieved")
       @PathVariable(name = "slug") String slug
   ) {
     return teamService.getTeamsBySlug(slug);
@@ -233,8 +250,23 @@ public class UserController {
    * @return A paginated list of tasks assigned to the user.
    */
   @GetMapping("/{slug}/tasks/assigned-to")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(summary = "Get tasks assigned to a user for a project and team",
       description = "Retrieve tasks assigned to a user by slug, project, and team with pagination",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+        @Parameter(name = "projectName", description = "Name of the project",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha"),
+        @Parameter(name = "teamName", description = "Name of the team",
+          required = true, in = ParameterIn.PATH, example = "Team Alpha"),
+        @Parameter(name = "page", description = "Page number (0-based)",
+          required = true, in = ParameterIn.QUERY, example = "0"),
+        @Parameter(name = "size", description = "Number of task comments per page",
+          required = true, in = ParameterIn.QUERY, example = "10"),
+        @Parameter(name = "sort", description = "Sort criteria (e.g., 'id,asc')",
+          required = true, in = ParameterIn.QUERY, example = "id,asc"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto[].class))),
@@ -248,24 +280,13 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+
   public Page<TaskDto> getTasksAssignedToUser(
-      @Parameter(description = "Slug of the user")
       @PathVariable String slug,
-
-      @Parameter(description = "Name of the project")
       @RequestParam String projectName,
-
-      @Parameter(description = "Name of the team")
       @RequestParam String teamName,
-
-      @Parameter(description = "Page number (0-based)", example = "0")
       @RequestParam(defaultValue = "0") int page,
-
-      @Parameter(description = "Number of tasks per page", example = "10")
       @RequestParam(defaultValue = "10") int size,
-
-      @Parameter(description = "Sort criteria (e.g. id,asc)", example = "id,asc")
       @RequestParam(defaultValue = "id,asc") String sort
   ) {
     String[] sortParams = sort.split(",");
@@ -286,9 +307,24 @@ public class UserController {
    * @return A paginated list of tasks assigned by the user.
    */
   @GetMapping("/{slug}/tasks/assigned-by")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Get tasks assigned by a user for a project and team",
       description = "Retrieve tasks assigned by a user by slug, project, and team with pagination",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+        @Parameter(name = "projectName", description = "Name of the project",
+          required = true, in = ParameterIn.PATH, example = "Project Alpha"),
+        @Parameter(name = "teamName", description = "Name of the team",
+          required = true, in = ParameterIn.PATH, example = "Team Alpha"),
+        @Parameter(name = "page", description = "Page number (0-based)",
+          required = true, in = ParameterIn.QUERY, example = "0"),
+        @Parameter(name = "size", description = "Number of task comments per page",
+          required = true, in = ParameterIn.QUERY, example = "10"),
+        @Parameter(name = "sort", description = "Sort criteria (e.g., 'id,asc')",
+          required = true, in = ParameterIn.QUERY, example = "id,asc"),
+      },
       responses = {
         @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = TaskDto[].class))),
@@ -302,24 +338,13 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
+
   public Page<TaskDto> getTasksAssignedByUser(
-      @Parameter(description = "Slug of the user")
       @PathVariable String slug,
-
-      @Parameter(description = "Name of the project")
       @RequestParam String projectName,
-
-      @Parameter(description = "Name of the team")
       @RequestParam String teamName,
-
-      @Parameter(description = "Page number (0-based)", example = "0")
       @RequestParam(defaultValue = "0") int page,
-
-      @Parameter(description = "Number of tasks per page", example = "10")
       @RequestParam(defaultValue = "10") int size,
-
-      @Parameter(description = "Sort criteria (e.g. id,asc)", example = "id,asc")
       @RequestParam(defaultValue = "id,asc") String sort
   ) {
     String[] sortParams = sort.split(",");
@@ -328,6 +353,8 @@ public class UserController {
     return taskService.getAllTasksAssignedByUser(slug, projectName, teamName, pageable);
   }
 
+
+
   /**
    * Uploads a photo for a user.
    *
@@ -335,9 +362,18 @@ public class UserController {
    * @param slug the unique identifier (slug) of the user.
    */
   @PostMapping("/{slug}/image")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Upload a photo for a user",
       description = "Upload a photo for the user identified by their ID",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user to upload the photo for",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Image details to upload for the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserImageDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "204", description = "Photo uploaded successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -353,15 +389,8 @@ public class UserController {
       }
   )
   @ResponseStatus(CREATED)
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public void uploadUserPhoto(
-      @RequestBody(
-        description = "Image details to upload for the user", required = true,
-        content = @Content(schema = @Schema(implementation = UserImageDto.class))
-      )
-      @Valid @ModelAttribute UserImageDto imageDto,
-
-      @Parameter(description = "Slug of the user to upload the photo for")
+      @Valid @RequestBody @ModelAttribute UserImageDto imageDto,
       @PathVariable(name = "slug") String slug
   ) {
     userService.uploadUserPhoto(slug, imageDto);
@@ -374,9 +403,18 @@ public class UserController {
    * @param slug     The unique identifier (slug) of the user.
    */
   @PutMapping("/{slug}/image")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Update a photo for a user",
       description = "Update the photo for the user identified by their ID",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user to update the photo for",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Updated image details for the user", required = true,
+        content = @Content(schema = @Schema(implementation = UserImageDto.class))
+      ),
       responses = {
         @ApiResponse(responseCode = "200", description = "Photo updated successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -391,15 +429,8 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public void updateUserPhoto(
-      @RequestBody(
-        description = "Updated image details for the user", required = true,
-        content = @Content(schema = @Schema(implementation = UserImageDto.class))
-      )
-      @Valid @ModelAttribute UserImageDto imageDto,
-
-      @Parameter(description = "Slug of the user to update the photo for")
+      @Valid @RequestBody @ModelAttribute UserImageDto imageDto,
       @PathVariable(name = "slug") String slug
   ) {
     userService.updateUserPhoto(slug, imageDto);
@@ -411,9 +442,14 @@ public class UserController {
    * @param slug The unique identifier (slug) of the user.
    */
   @DeleteMapping("/{slug}/image")
+  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   @Operation(
       summary = "Delete a photo for a user",
       description = "Delete the photo for the user identified by their ID",
+      parameters = {
+        @Parameter(name = "slug", description = "Slug of the user whose photo is to be deleted",
+          required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
+      },
       responses = {
         @ApiResponse(responseCode = "204", description = "Photo deleted successfully"),
         @ApiResponse(responseCode = "400", description = "Invalid input data",
@@ -429,9 +465,7 @@ public class UserController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  @PreAuthorize("@expressionService.canAccessUserDataBySlug(#slug)")
   public void deleteUserPhoto(
-      @Parameter(description = "Slug of the user whose photo is to be deleted")
       @PathVariable(name = "slug") String slug
   ) {
     userService.deleteUserPhoto(slug);
