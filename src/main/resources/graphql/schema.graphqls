@@ -14,6 +14,12 @@ type Query {
     getTeamByName(teamName: String!): TeamDto!
     getUsersWithRolesForTeam(teamName: String!): [TeamUserDto!]!
     getProjectsForTeam(teamName: String!): [ProjectTeamDto!]!
+
+    getUserBySlug(slug: String!): UserDto!
+    getProjectsByUserSlug(slug: String!): [ProjectDto!]!
+    getTeamsByUserSlug(slug: String!): [TeamDto!]!
+    getTasksAssignedToUser(slug: String!,projectName: String!,teamName: String!,page: Int = 0,size: Int = 10,sort: String = "id,asc"): [TaskDto!]!
+    getTasksAssignedByUser(slug: String!,projectName: String!,teamName: String!,page: Int = 0,size: Int = 10,sort: String = "id,asc"): [TaskDto!]!
 }
 
 type Mutation {
@@ -40,4 +46,7 @@ type Mutation {
     updateTeam(teamName: String!, teamDto: TeamInput!): TeamDto!
     deleteTeam(teamName: String!): Boolean
     addUsersToTeam(teamName: String!, teamUserDtoList: [TeamUserInput!]!): [TeamUserDto!]!
+
+    updateUser(slug: String!, userDto: UserInput!): UserDto!
+    deleteUserBySlug(slug: String!): Boolean
 }

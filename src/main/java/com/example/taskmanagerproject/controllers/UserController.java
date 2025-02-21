@@ -86,7 +86,7 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @QueryMapping(name = "getUserBySlug")
   public UserDto getUserBySlug(
       @PathVariable(name = "slug") @Argument String slug
   ) {
@@ -128,7 +128,7 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @MutationMapping(name = "updateUser")
   public UserDto updateUser(
       @Valid @RequestBody @Argument UserDto userDto,
       @PathVariable(name = "slug") @Argument String slug
@@ -163,7 +163,7 @@ public class UserController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-
+  @MutationMapping(name = "deleteUserBySlug")
   public void deleteUserBySlug(
       @PathVariable(name = "slug") @Argument String slug
   ) {
@@ -197,9 +197,9 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @QueryMapping(name = "getProjectsByUserSlug")
   public List<ProjectDto> getProjectsByUserSlug(
-      @PathVariable(name = "slug") String slug
+      @PathVariable(name = "slug") @Argument String slug
   ) {
     return projectService.getProjectsBySlug(slug);
   }
@@ -231,9 +231,9 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @QueryMapping(name = "getTeamsByUserSlug")
   public List<TeamDto> getTeamsByUserSlug(
-      @PathVariable(name = "slug") String slug
+      @PathVariable(name = "slug") @Argument String slug
   ) {
     return teamService.getTeamsBySlug(slug);
   }
@@ -257,9 +257,9 @@ public class UserController {
         @Parameter(name = "slug", description = "Slug of the user",
           required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
         @Parameter(name = "projectName", description = "Name of the project",
-          required = true, in = ParameterIn.PATH, example = "Project Alpha"),
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
         @Parameter(name = "teamName", description = "Name of the team",
-          required = true, in = ParameterIn.PATH, example = "Team Alpha"),
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
         @Parameter(name = "page", description = "Page number (0-based)",
           required = true, in = ParameterIn.QUERY, example = "0"),
         @Parameter(name = "size", description = "Number of task comments per page",
@@ -280,14 +280,14 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @QueryMapping(name = "getTasksAssignedToUser")
   public Page<TaskDto> getTasksAssignedToUser(
-      @PathVariable String slug,
-      @RequestParam String projectName,
-      @RequestParam String teamName,
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "id,asc") String sort
+      @PathVariable @Argument String slug,
+      @RequestParam @Argument String projectName,
+      @RequestParam @Argument String teamName,
+      @RequestParam(defaultValue = "0") @Argument int page,
+      @RequestParam(defaultValue = "10") @Argument int size,
+      @RequestParam(defaultValue = "id,asc") @Argument String sort
   ) {
     String[] sortParams = sort.split(",");
     Direction direction = fromString(sortParams[1]);
@@ -315,9 +315,9 @@ public class UserController {
         @Parameter(name = "slug", description = "Slug of the user",
           required = true, in = ParameterIn.PATH, example = "alice-johnson-89123073"),
         @Parameter(name = "projectName", description = "Name of the project",
-          required = true, in = ParameterIn.PATH, example = "Project Alpha"),
+          required = true, in = ParameterIn.QUERY, example = "Project Alpha"),
         @Parameter(name = "teamName", description = "Name of the team",
-          required = true, in = ParameterIn.PATH, example = "Team Alpha"),
+          required = true, in = ParameterIn.QUERY, example = "Team Alpha"),
         @Parameter(name = "page", description = "Page number (0-based)",
           required = true, in = ParameterIn.QUERY, example = "0"),
         @Parameter(name = "size", description = "Number of task comments per page",
@@ -338,14 +338,14 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-
+  @QueryMapping(name = "getTasksAssignedByUser")
   public Page<TaskDto> getTasksAssignedByUser(
-      @PathVariable String slug,
-      @RequestParam String projectName,
-      @RequestParam String teamName,
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "10") int size,
-      @RequestParam(defaultValue = "id,asc") String sort
+      @PathVariable @Argument String slug,
+      @RequestParam @Argument String projectName,
+      @RequestParam @Argument String teamName,
+      @RequestParam(defaultValue = "0") @Argument int page,
+      @RequestParam(defaultValue = "10") @Argument int size,
+      @RequestParam(defaultValue = "id,asc") @Argument String sort
   ) {
     String[] sortParams = sort.split(",");
     Direction direction = fromString(sortParams[1]);

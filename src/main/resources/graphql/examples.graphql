@@ -594,3 +594,68 @@ mutation AddUsersToTeam {
 }
 
 
+
+
+
+query GetUserBySlug {
+    getUserBySlug(slug: "alice-johnson-89123073") {
+        id
+        fullName
+        username
+        slug
+        image
+    }
+}
+
+query GetProjectsByUserSlug {
+    getProjectsByUserSlug(slug: "alice-johnson-89123073") {
+        id
+        name
+        description
+        creator {
+            fullName
+        }
+    }
+}
+
+query GetTeamsByUserSlug {
+    getTeamsByUserSlug(slug: "alice-johnson-89123073") {
+        id
+        name
+        description
+        creator {
+            fullName
+        }
+    }
+}
+
+query GetTasksAssignedToUser {
+    getTasksAssignedToUser(
+        slug: "alice-johnson-89123073"
+        projectName: "Updated Project Name"
+        teamName: "New Team"
+        page: 0
+        size: 10
+        sort: "id,asc"
+    ) {
+        id
+        title
+        description
+    }
+}
+
+query GetTasksAssignedByUser {
+    getTasksAssignedByUser(
+        slug: "alice-johnson-89123073"
+        projectName: "Updated Project Name"
+        teamName: "New Team"
+        page: 0
+        size: 10
+        sort: "id,asc"
+    ) {
+        id
+        title
+        description
+    }
+}
+
