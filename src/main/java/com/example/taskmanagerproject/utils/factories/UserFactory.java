@@ -1,5 +1,6 @@
 package com.example.taskmanagerproject.utils.factories;
 
+import static com.example.taskmanagerproject.utils.MessageUtil.JWT_MISSING_REQUIRED_CLAIMS;
 import static com.example.taskmanagerproject.utils.MessageUtil.KEYCLOAK_ERROR_FAILED_TO_CREATE_USER;
 import static com.example.taskmanagerproject.utils.MessageUtil.KEYCLOAK_ERROR_GENERIC_CREATION;
 import static java.lang.String.format;
@@ -8,6 +9,7 @@ import static java.util.UUID.randomUUID;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.KeycloakUserCreationException;
+import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.github.slugify.Slugify;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
@@ -16,6 +18,8 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,6 +44,29 @@ public final class UserFactory {
   public UserFactory(Slugify slugGenerator, Keycloak keycloak) {
     this.slugGenerator = slugGenerator;
     this.keycloak = keycloak;
+  }
+
+  /**
+   * Creates a local User entity from JwtAuthenticationToken.
+   * This does NOT create user in Keycloak, just maps claims to your User entity.
+   *
+   * @param jwtAuth the JWT authentication token from Spring Security context
+   * @return User entity built from JWT claims
+   */
+  public User createUserFromRequest(JwtAuthenticationToken jwtAuth) {
+    Jwt jwt = jwtAuth.getToken();
+    String email = jwt.getClaim("email");
+    String fullName = jwt.getClaim("name");
+
+    if (email == null || fullName == null) {
+      throw new ValidationException(JWT_MISSING_REQUIRED_CLAIMS);
+    }
+
+    return User.builder()
+      .username(email)
+      .fullName(fullName)
+      .slug(generateSlug(fullName))
+      .build();
   }
 
   /**

@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.services;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.example.taskmanagerproject.dtos.users.UserImageDto;
 import com.example.taskmanagerproject.entities.users.User;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 /**
  * Service interface for managing users.
@@ -35,12 +36,12 @@ public interface UserService {
   UserDto updateUser(UserDto user, String slug);
 
   /**
-   * Creates a new user.
+   * Creates a new User entity based on the information extracted from the given JWT authentication token.
    *
-   * @param user the user data to create
-   * @return the created User entity
+   * @param jwtAuth the JWT authentication token containing user claims
+   * @return the created UserDto entity mapped from JWT claims
    */
-  User createUser(UserDto user);
+  UserDto createUser(JwtAuthenticationToken jwtAuth);
 
   /**
    * Checks if a user is the owner of a specific task.

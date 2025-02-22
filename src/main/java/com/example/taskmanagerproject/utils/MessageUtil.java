@@ -99,12 +99,12 @@ public class MessageUtil {
       = "Request rate exceeded. Please slow down and try again shortly.";
   public static final String RATE_LIMIT_EXECUTION_ERROR
       = "Error during rate-limited execution.";
-  public static final String RATE_LIMIT_UNEXPECTED_ERROR
-      = "Unexpected error during rate-limited execution.";
 
   public static final String KEYCLOAK_ERROR_FAILED_TO_CREATE_USER
       = "Failed to create user in Keycloak. Status: %d. Details: %s";
   public static final String KEYCLOAK_ERROR_GENERIC_CREATION
       = "An error occurred during Keycloak user creation for %s. Details: %s";
+  public static final String JWT_MISSING_REQUIRED_CLAIMS
+      = "JWT token does not contain required user claims: email, name";
 
 }

@@ -52,9 +52,6 @@ public record UserDto(
     )
     String slug,
 
-    @NotNull(message = "Password cannot be null!")
-    @NotBlank(message = "Password cannot be blank!")
-    @Size(min = 6, max = 25, message = "Password must be between 6 and 25 characters long!")
     @JsonProperty(access = WRITE_ONLY)
     @Schema(
       description = "The password of the user",
