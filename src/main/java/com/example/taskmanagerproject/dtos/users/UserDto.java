@@ -55,7 +55,8 @@ public record UserDto(
     @JsonProperty(access = WRITE_ONLY)
     @Schema(
       description = "The password of the user",
-      example = "password123"
+      example = "password123",
+      hidden = true
     )
     String password,
 

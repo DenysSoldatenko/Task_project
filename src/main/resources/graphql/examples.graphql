@@ -658,4 +658,3 @@ query GetTasksAssignedByUser {
         description
     }
 }
-

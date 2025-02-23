@@ -46,7 +46,4 @@ type Mutation {
     updateTeam(teamName: String!, teamDto: TeamInput!): TeamDto!
     deleteTeam(teamName: String!): Boolean
     addUsersToTeam(teamName: String!, teamUserDtoList: [TeamUserInput!]!): [TeamUserDto!]!
-
-    updateUser(slug: String!, userDto: UserInput!): UserDto!
-    deleteUserBySlug(slug: String!): Boolean
 }

@@ -47,7 +47,6 @@ public class AuthenticationInfoController {
   )
   @ResponseStatus(HttpStatus.OK)
   public String getUserInfo(Authentication authentication) {
-    // TODO: REFACTOR METHOD
     return authenticationService.logAuthenticationInfo(authentication);
   }
 }

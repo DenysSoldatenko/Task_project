@@ -30,7 +30,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -160,7 +159,6 @@ public class UserController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
   )
-  @MutationMapping(name = "updateUser")
   public UserDto updateUser(
       @Valid @RequestBody @Argument UserDto userDto,
       @PathVariable(name = "slug") @Argument String slug
@@ -195,7 +193,6 @@ public class UserController {
       }
   )
   @ResponseStatus(NO_CONTENT)
-  @MutationMapping(name = "deleteUserBySlug")
   public void deleteUserBySlug(
       @PathVariable(name = "slug") @Argument String slug
   ) {

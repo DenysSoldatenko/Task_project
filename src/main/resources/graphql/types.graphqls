@@ -1,6 +1,6 @@
 scalar LocalDateTime
 
-### Project & Team Types ###
+### Project & Team & User Types ###
 type ProjectDto {
     id: ID!
     name: String!
