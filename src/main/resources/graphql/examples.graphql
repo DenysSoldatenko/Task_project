@@ -1,3 +1,14 @@
+# ⚠️ NOTE:
+# These queries and mutations use example values such as:
+# - Project names (e.g. "New Project", "Updated Project Name")
+# - Team names (e.g. "Team Beta", "Illinois giants")
+# - User slugs (e.g. "alice-johnson-89123073")
+# - IDs (e.g. id: 28210)
+# - Usernames/emails (e.g. "alice12345@gmail.com")
+
+# 🔄 Be sure to replace these with actual values from your own database
+# before executing any queries or mutations.
+
 query GetProjectByName {
     getProjectByName(projectName: "New Project") {
         id
@@ -278,16 +289,16 @@ mutation CreateTaskComment {
     createTaskComment(
         taskCommentDto: {
             task: {
-                id: 28210                                             # Replace with actual project name
-                slug: "task-28210"                                    # Replace with actual project name
+                id: 28210
+                slug: "task-28210"
                 project: {
-                    name: "DuBuque-Medhurst"                          # Replace with actual project name
-                    description: "A sample project description"       # Replace with actual project description
+                    name: "DuBuque-Medhurst"
+                    description: "A sample project description"
                     creator: { id: 1, username: "alice12345@gmail.com" }
                 }
                 team: {
-                    name: "Illinois giants"                           # Replace with actual team name
-                    description: "A great team"                       # Replace with actual team description
+                    name: "Illinois giants"
+                    description: "A great team"
                     creator: { id: 1, username: "alice12345@gmail.com" }
                 }
                 title: "Task Title"
@@ -295,13 +306,13 @@ mutation CreateTaskComment {
                 expirationDate: "2025-12-31T23:59:59"
                 taskStatus: "APPROVED"
                 priority: "CRITICAL"
-                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }   # Replace with actual assignee
-                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" } # Replace with actual assigner
+                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }
+                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" }
                 images: []
             }
-            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }         # Replace with actual sender info
-            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }     # Replace with actual receiver info
-            message: "Soluta odit vero nesciunt a blanditiis veniam. (Message #1111)" # Replace with actual message
+            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }
+            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }
+            message: "Soluta odit vero nesciunt a blanditiis veniam. (Message #1111)"
         }
     ) {
         id
@@ -324,19 +335,19 @@ mutation CreateTaskComment {
 
 mutation UpdateTaskComment {
     updateTaskComment(
-        id: 37381,                                                     # Replace with the actual TaskComment ID to update
+        id: 37381,
         taskCommentDto: {
             task: {
                 id: 28210
                 slug: "task-28210"
                 project: {
-                    name: "DuBuque-Medhurst"                           # Replace with actual project name
-                    description: "A sample project description"        # Replace with actual project description
+                    name: "DuBuque-Medhurst"
+                    description: "A sample project description"
                     creator: { id: 1, username: "alice12345@gmail.com" }
                 }
                 team: {
-                    name: "Illinois giants"                            # Replace with actual team name
-                    description: "A great team"                        # Replace with actual team description
+                    name: "Illinois giants"
+                    description: "A great team"
                     creator: { id: 1, username: "alice12345@gmail.com" }
                 }
                 title: "Task Title"
@@ -344,12 +355,12 @@ mutation UpdateTaskComment {
                 expirationDate: "2025-12-31T23:59:59"
                 taskStatus: "APPROVED"
                 priority: "HIGH"
-                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }   # Replace with actual assignee
-                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" } # Replace with actual assigner
+                assignedTo: { id: 200, username: "mitsue.steuber@yahoo.com" }
+                assignedBy: { id: 201, username: "aracelis.collier@yahoo.com" }
                 images: []
             }
-            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }         # Replace with actual sender
-            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }     # Replace with actual receiver
+            sender: { id: 132, username: "mitsue.steuber@yahoo.com" }
+            receiver: { id: 131, username: "aracelis.collier@yahoo.com" }
             message: "🔄 Updated message content"
         }
     ) {
