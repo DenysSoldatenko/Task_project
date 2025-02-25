@@ -32,7 +32,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -91,37 +90,6 @@ public class UserController {
       @PathVariable(name = "slug") @Argument String slug
   ) {
     return userService.getUserBySlug(slug);
-  }
-
-  /**
-   * Creates a new user from JWT authentication token.
-   *
-   * @param jwtAuth The JWT authentication token (injected automatically)
-   * @return The created UserDto
-   */
-  @PostMapping()
-  @PreAuthorize("isAuthenticated()")
-  @Operation(
-      summary = "Create user from JWT token",
-      description = "Creates a new user in the system based on the JWT token claims",
-      responses = {
-        @ApiResponse(responseCode = "201", description = "User created successfully",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid or missing claims in JWT",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "401", description = "Unauthorized access",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "403", description = "Access denied",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "404", description = "User not found",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
-      }
-  )
-  @ResponseStatus(CREATED)
-  public UserDto createUserFromJwt(JwtAuthenticationToken jwtAuth) {
-    return userService.createUser(jwtAuth);
   }
 
   /**

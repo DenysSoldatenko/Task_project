@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
     userValidator.validateUserDto(userDto);
 
     user.setFullName(userDto.fullName());
+    user.setSlug(userDto.slug());
 
     User updatedUser = userRepository.save(user);
     return userMapper.toDto(updatedUser);

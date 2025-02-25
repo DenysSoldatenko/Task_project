@@ -45,9 +45,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       info.append("Principal class: ").append(principalType).append("\n");
     }
 
-    // Also log to server logs for traceability
-    log.info(info.toString());
-
     return info.toString();
   }
 }
