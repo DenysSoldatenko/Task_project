@@ -22,9 +22,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,13 +40,11 @@ public class RoleServiceImpl implements RoleService {
   private final RoleHierarchyRepository roleHierarchyRepository;
 
   @Override
-  @Cacheable(value = "roles", key = "'all_roles'")
   public List<RoleDto> getAllRoles() {
     return roleRepository.findAll().stream().map(roleMapper::toDto).toList();
   }
 
   @Override
-  @Cacheable(value = "roles", key = "#roleName")
   public RoleDto getRoleByName(String roleName) {
     Role role = roleRepository.findByName(roleName)
         .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
@@ -58,7 +53,6 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   @Transactional
-  @CachePut(value = "roles", key = "#roleDto.name")
   public RoleDto createRole(RoleDto roleDto) {
     roleValidator.validateRoleDto(roleDto);
     Role newRole = RoleFactory.createRoleFromRequest(roleDto);
@@ -68,7 +62,6 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   @Transactional
-  @CachePut(value = "roles", key = "#roleDto.name")
   public RoleDto updateRole(String roleName, RoleDto roleDto) {
     Role existingRole = roleRepository.findByName(roleName)
         .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));
@@ -84,7 +77,6 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   @Transactional
-  @CacheEvict(value = "roles", key = "#roleName")
   public void deleteRole(String roleName) {
     Role existingRole = roleRepository.findByName(roleName)
         .orElseThrow(() -> new ResourceNotFoundException(ROLE_NOT_FOUND_WITH_NAME + roleName));

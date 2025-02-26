@@ -6,14 +6,10 @@ spring:
     location: application-banner.txt
   config:
     import: optional:file:.env[.properties]
-  cache:
-    type: redis
-    cache-names: redis-cache
   data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      database: ${REDIS_DATABASE}
+    jdbc:
+      repositories:
+        enabled: false
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST}:5432/${DATASOURCE_DATABASE}?currentSchema=${DATASOURCE_SCHEMA}
     username: ${DATASOURCE_USERNAME}

@@ -13,9 +13,6 @@ import com.example.taskmanagerproject.utils.factories.UserFactory;
 import com.example.taskmanagerproject.utils.mappers.UserMapper;
 import com.example.taskmanagerproject.utils.validators.UserValidator;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -36,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(value = "UserService::getUserBySlug", key = "#slug")
   public UserDto getUserBySlug(String slug) {
     User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
@@ -45,7 +41,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(value = "UserService::getByUsername", key = "#username")
   public User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_USERNAME + username));
@@ -53,7 +48,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  @CachePut(value = "UserService::getUserBySlug", key = "#slug")
   public UserDto updateUser(UserDto userDto, String slug) {
     User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
@@ -80,14 +74,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(value = "UserService::isTaskOwner", key = "#userId + '.' + #taskId")
   public boolean isUserTaskOwner(Long userId, Long taskId) {
     return userRepository.isTaskOwner(userId, taskId);
   }
 
   @Override
   @Transactional
-  @CacheEvict(value = "UserService::getById", key = "#slug")
   public void deleteUserBySlug(String slug) {
     User user = userRepository.findBySlug(slug)
         .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_SLUG + slug));
@@ -110,7 +102,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(value = "UserService::isUserAssignedToTask", key = "#userId + '.' + #taskId")
   public boolean isUserAssignedToTask(Long userId, Long taskId) {
     return userRepository.isUserAssignedToTask(userId, taskId);
   }

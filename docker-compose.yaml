@@ -3,8 +3,6 @@ networks:
     driver: bridge
 
 volumes:
-  redis_data:
-    driver: local
   postgres_data:
     driver: local
   minio_data:
@@ -47,18 +45,6 @@ services:
       POSTGRES_USER: ${DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
       POSTGRES_DB: ${DATASOURCE_DATABASE}
-
-  redis:
-    image: redis:7.2-rc-alpine
-    restart: always
-    container_name: redis
-    networks:
-      - app-network
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    volumes:
-      - redis_data:/data
 
   minio:
     image: minio/minio:latest
