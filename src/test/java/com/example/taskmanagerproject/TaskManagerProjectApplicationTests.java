@@ -10,11 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TaskManagerProjectApplicationTests {
 
-	@Autowired
-	private AuthenticationServiceImpl authenticationService;
+  @Autowired
+  private AuthenticationServiceImpl authenticationService;
 
-	@Test
-	void contextLoads() {
-		assertNotNull(authenticationService);
-	}
+  @Test
+  void contextLoads() {
+    assertNotNull(authenticationService);
+  }
 }
