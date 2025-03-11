@@ -1,69 +1,68 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version "${springBootVersion}"
-	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation "org.springframework.boot:spring-boot-starter-data-jdbc:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-graphql:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
-	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-graphql:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${springBootVersion}"
 
-	implementation "org.keycloak:keycloak-admin-client:${keycloakAdminVersion}"
-	implementation "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
-	implementation "org.springframework:spring-test:${springTestVersion}"
-	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerRegistryPrometheusVersion}"
-	implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
+    implementation "org.keycloak:keycloak-admin-client:${keycloakAdminVersion}"
+    implementation "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
+    implementation "io.micrometer:micrometer-registry-prometheus:${micrometerRegistryPrometheusVersion}"
+    implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
 
-	implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
-	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
-	implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationVersion}"
-	implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
-	implementation "net.datafaker:datafaker:${datafakerVersion}"
-	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
-	implementation "io.minio:minio:${minioVersion}"
-	implementation "com.github.slugify:slugify:${slugifyVersion}"
-	implementation "com.graphql-java-kickstart:graphql-java-servlet:${graphqlJavaServletVersion}"
-	implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+    implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
+    implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+    implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationVersion}"
+    implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
+    implementation "net.datafaker:datafaker:${datafakerVersion}"
+    implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+    implementation "io.minio:minio:${minioVersion}"
+    implementation "com.github.slugify:slugify:${slugifyVersion}"
+    implementation "com.graphql-java-kickstart:graphql-java-servlet:${graphqlJavaServletVersion}"
+    implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
-	implementation "org.jsoup:jsoup:${jsoupVersion}"
-	implementation "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}"
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
+    implementation "org.xhtmlrenderer:flying-saucer-pdf:${flyingSaucerVersion}"
 
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}") {
-		exclude group: "io.swagger.core.v3", module: "swagger-annotations"
-	}
-	implementation "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenApiVersion}") {
+        exclude group: "io.swagger.core.v3", module: "swagger-annotations"
+    }
+    implementation "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
-	runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
-	compileOnly "org.projectlombok:lombok:${lombokVersion}"
-	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructProcessorVersion}"
+    runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructProcessorVersion}"
 
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

@@ -3,6 +3,7 @@ package com.example.taskmanagerproject.configurations.initializers;
 import static com.example.taskmanagerproject.utils.MessageUtil.IMAGE_DOWNLOAD_ERROR;
 import static java.lang.String.format;
 
+import com.example.taskmanagerproject.dtos.images.ImageMultipartFileDto;
 import com.example.taskmanagerproject.dtos.users.UserImageDto;
 import com.example.taskmanagerproject.exceptions.ImageProcessingException;
 import com.example.taskmanagerproject.repositories.UserRepository;
@@ -10,7 +11,6 @@ import com.example.taskmanagerproject.services.UserService;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +57,6 @@ public class ImageGeneratorService {
     if (imageBytes == null || imageBytes.length == 0) {
       throw new ImageProcessingException(IMAGE_DOWNLOAD_ERROR + imageUrl);
     }
-    return new MockMultipartFile("file", "profile.jpg", "image/jpeg", imageBytes);
+    return new ImageMultipartFileDto(imageBytes, "file", "profile.jpg", "image/jpeg");
   }
 }
