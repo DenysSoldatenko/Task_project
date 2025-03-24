@@ -26,6 +26,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link TaskCommentRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Retrieving paged comments by task slug, including empty and non-existent slugs</li>
+ *   <li>Finding comments by task and sender, including multiple comments and empty results</li>
+ *   <li>Checking existence of comments by task ID</li>
+ *   <li>Finding distinct task IDs by comment slug or comment ID</li>
+ * </ul>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -42,10 +53,14 @@ public class TaskCommentRepositoryTest {
   private TaskCommentRepository taskCommentRepository;
 
   private Task task;
+  private String taskSlug;
+
+  private Long userId;
+  private Long taskId;
+  private Long commentId;
+
   private User sender;
   private User receiver;
-  private String taskSlug;
-  private Long userId, taskId, commentId;
 
   @BeforeEach
   void setUp() {

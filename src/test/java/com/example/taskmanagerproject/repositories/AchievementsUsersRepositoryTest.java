@@ -23,6 +23,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link AchievementsUsersRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Finding {@link AchievementsUsers} by composite ID</li>
+ *   <li>Deletion by composite ID and idempotency of deletion operations</li>
+ *   <li>Existence checks based on user, team, project, and achievement IDs</li>
+ *   <li>Retrieving all achievements linked to a specific user</li>
+ *   <li>Handling queries involving non-existent IDs gracefully</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -38,7 +51,11 @@ public class AchievementsUsersRepositoryTest {
   @Autowired
   private AchievementsUsersRepository achievementsUsersRepository;
 
-  private Long userId, teamId, projectId, achievementId;
+  private Long userId;
+  private Long teamId;
+  private Long projectId;
+  private Long achievementId;
+
   private AchievementsUsersId achievementsUsersId;
 
   @BeforeEach

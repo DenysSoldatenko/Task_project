@@ -20,6 +20,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link ProjectTeamRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Retrieving all project-team links by project name or team name</li>
+ *   <li>Checking existence of specific project-team links</li>
+ *   <li>Handling empty or non-existent project or team names</li>
+ *   <li>Verifying behavior with multiple projects or teams associated</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -35,12 +47,15 @@ public class ProjectTeamRepositoryTest {
   @Autowired
   private ProjectTeamRepository projectTeamRepository;
 
-  private Long projectId;
   private Long teamId;
-  private String projectName, teamName;
+  private Long projectId;
+
+  private String teamName;
+  private String projectName;
+
   private User user;
-  private Project project;
   private Team team;
+  private Project project;
 
   @BeforeEach
   void setUp() {

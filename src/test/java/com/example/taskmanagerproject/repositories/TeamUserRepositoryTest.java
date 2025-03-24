@@ -24,6 +24,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link TeamUserRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Retrieving all team-user associations by team name, including empty and non-existent team names</li>
+ *   <li>Finding a role by team name and username, handling valid, invalid, and empty inputs</li>
+ *   <li>Finding a random user with a higher role within a team, testing presence and absence scenarios</li>
+ *   <li>Checking existence of a team-user association by user ID and team ID</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

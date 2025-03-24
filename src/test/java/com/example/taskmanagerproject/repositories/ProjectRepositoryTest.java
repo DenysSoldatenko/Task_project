@@ -23,6 +23,20 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link ProjectRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Querying projects by name, including handling of empty or non-existent names</li>
+ *   <li>Determining user roles within projects by project name and username</li>
+ *   <li>Verifying existence of projects by user ID and project ID</li>
+ *   <li>Checking existence of projects by project name</li>
+ *   <li>Retrieving projects associated with a user's slug</li>
+ *   <li>Ensuring correct behavior when querying multiple teams or projects</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -38,11 +52,17 @@ public class ProjectRepositoryTest {
   @Autowired
   private ProjectRepository projectRepository;
 
+  private User user;
+  private User secondUser;
+
   private Long userId;
-  private Long teamId;
   private Long projectId;
-  private String projectName, username, slug, secondUsername;
-  private User user, secondUser;
+
+  private String slug;
+  private String username;
+  private String secondUsername;
+  private String projectName;
+
   private Team team;
   private Role role;
   private Project project;
@@ -51,14 +71,13 @@ public class ProjectRepositoryTest {
   void setUp() {
     user = createUser();
     userId = user.getId();
-    username = user.getUsername();
     slug = user.getSlug();
+    username = user.getUsername();
 
     secondUser = createUser();
     secondUsername = secondUser.getUsername();
 
     team = createTeam(user);
-    teamId = team.getId();
 
     project = createProject(user);
     projectId = project.getId();
@@ -250,8 +269,6 @@ public class ProjectRepositoryTest {
     pt.setId(new ProjectTeamId(team.getId(), project.getId()));
     pt.setProject(project);
     pt.setTeam(team);
-
     return pt;
   }
-
 }

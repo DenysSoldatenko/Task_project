@@ -23,6 +23,19 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link AchievementRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Saving new achievements and enforcing validation constraints (e.g., non-null title)</li>
+ *   <li>Finding achievements by ID, including cases with missing entries</li>
+ *   <li>Deleting achievements and verifying removal behavior</li>
+ *   <li>Querying achievements associated with a specific user, team, and project</li>
+ *   <li>Graceful handling of operations with invalid or non-existent IDs</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -38,7 +51,11 @@ public class AchievementRepositoryTest {
   @Autowired
   private AchievementRepository achievementRepository;
 
-  private Long userId, teamId, projectId, achievementId;
+  private Long userId;
+  private Long teamId;
+  private Long projectId;
+  private Long achievementId;
+
   private final String title = "Test Achievement";
   private final String description = "Test Description";
 
@@ -46,10 +63,13 @@ public class AchievementRepositoryTest {
   void setUp() {
     User user = createUser();
     userId = user.getId();
+
     Team team = createTeam(user);
     teamId = team.getId();
+
     Project project = createProject(user);
     projectId = project.getId();
+
     Achievement ach = createAchievement(title, description, "img_url");
     achievementId = ach.getId();
 

@@ -19,6 +19,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link TeamRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Finding teams by name, including handling non-existent and empty names</li>
+ *   <li>Checking existence of teams by name, including empty and non-existent names</li>
+ *   <li>Retrieving teams associated with a user by their slug</li>
+ *   <li>Handling users with multiple team memberships and verifying correct teams are returned</li>
+ *   <li>Verifying empty results for invalid or empty user slugs</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -34,16 +47,16 @@ public class TeamRepositoryTest {
   @Autowired
   private TeamRepository teamRepository;
 
+  private Role role;
+
   private User user;
   private Long userId;
   private String userSlug;
 
+  private String teamName;
+
   private User secondUser;
   private String secondUserSlug;
-
-  private Role role;
-
-  private String teamName;
 
   @BeforeEach
   void setUp() {

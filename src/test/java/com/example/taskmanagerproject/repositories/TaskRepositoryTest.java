@@ -1,7 +1,6 @@
 package com.example.taskmanagerproject.repositories;
 
 import static com.example.taskmanagerproject.entities.tasks.TaskPriority.CRITICAL;
-import static com.example.taskmanagerproject.entities.tasks.TaskPriority.LOW;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.entities.tasks.TaskStatus.CANCELLED;
 import static java.time.LocalDateTime.now;
@@ -35,6 +34,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link TaskRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Retrieving task metrics by assigned user, including edge cases with no tasks</li>
+ *   <li>Getting top performer metrics by team and project</li>
+ *   <li>Fetching project metrics by project name</li>
+ *   <li>Retrieving all team member metrics by team and project</li>
+ *   <li>Obtaining daily and monthly task completion rates</li>
+ *   <li>Finding tasks assigned to or assigned by a user, including pagination and empty results</li>
+ *   <li>Getting all completed tasks assigned to a user</li>
+ *   <li>Finding random approved tasks for user by team and project</li>
+ *   <li>Finding expiring tasks for a user within a date range</li>
+ *   <li>Checking if a task has been cancelled based on task history</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -51,16 +68,21 @@ public class TaskRepositoryTest {
   private TaskRepository taskRepository;
 
   private Task task;
+
+  private Long firstUserId;
+
   private Long teamId;
   private Long taskId;
   private Long projectId;
+
+  private String teamName;
+  private String projectName;
+
   private User firstUser;
   private User secondUser;
-  private String teamName;
-  private Long firstUserId;
-  private String projectName;
-  private LocalDateTime endDate;
+
   private LocalDateTime startDate;
+  private LocalDateTime endDate;
 
   @BeforeEach
   void setUp() {

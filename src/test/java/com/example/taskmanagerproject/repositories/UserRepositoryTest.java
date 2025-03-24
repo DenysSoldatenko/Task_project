@@ -23,6 +23,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link UserRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Finding users by username and slug, including empty and non-existent values</li>
+ *   <li>Checking if a user is the owner of a task or assigned to a task</li>
+ *   <li>Verifying project and team creator status</li>
+ *   <li>Determining if a user holds a leadership position in teams or projects</li>
+ *   <li>General leadership role checks across the system</li>
+ * </ul>
+ * </p>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

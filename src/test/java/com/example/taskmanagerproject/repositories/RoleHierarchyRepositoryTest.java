@@ -16,6 +16,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link RoleHierarchyRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Retrieving hierarchies by higher or lower roles</li>
+ *   <li>Handling multiple hierarchies</li>
+ *   <li>Checking existence of specific hierarchies</li>
+ *   <li>Verifying empty results when no hierarchies exist</li>
+ * </ul>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -31,8 +42,12 @@ public class RoleHierarchyRepositoryTest {
   @Autowired
   private RoleHierarchyRepository roleHierarchyRepository;
 
-  private Long roleHierarchyId, adminRoleId, memberRoleId;
-  private Role adminRole, memberRole;
+  private Long adminRoleId;
+  private Long memberRoleId;
+
+  private Role adminRole;
+  private Role memberRole;
+
   private RoleHierarchy roleHierarchy;
 
   @BeforeEach
@@ -44,7 +59,6 @@ public class RoleHierarchyRepositoryTest {
     memberRoleId = memberRole.getId();
 
     roleHierarchy = createRoleHierarchy(adminRole, memberRole);
-    roleHierarchyId = roleHierarchy.getId();
 
     entityManager.flush();
   }

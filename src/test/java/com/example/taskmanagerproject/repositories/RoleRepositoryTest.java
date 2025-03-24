@@ -21,6 +21,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link RoleRepository} interface.
+ *
+ * <p>Test cover:
+ * <ul>
+ *   <li>Finding roles by name, including non-existent and empty names</li>
+ *   <li>Checking existence of roles by name</li>
+ *   <li>Retrieving a user's role within a team</li>
+ *   <li>Handling multiple users in the same team with different roles</li>
+ * </ul>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

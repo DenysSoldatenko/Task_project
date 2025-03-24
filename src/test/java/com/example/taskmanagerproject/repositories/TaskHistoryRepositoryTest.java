@@ -9,7 +9,6 @@ import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.tasks.Task;
 import com.example.taskmanagerproject.entities.tasks.TaskHistory;
 import com.example.taskmanagerproject.entities.tasks.TaskPriority;
-import com.example.taskmanagerproject.entities.tasks.TaskStatus;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.users.User;
 import java.util.List;
@@ -22,6 +21,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Integration tests for the {@link TaskHistoryRepository} interface.
+ *
+ * <p>Tests cover:
+ * <ul>
+ *   <li>Retrieving task histories by new task status value</li>
+ *   <li>Handling multiple task histories for the same status</li>
+ * </ul>
+ */
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
