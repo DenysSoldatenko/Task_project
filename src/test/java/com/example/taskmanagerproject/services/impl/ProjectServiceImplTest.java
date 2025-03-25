@@ -68,13 +68,14 @@ class ProjectServiceImplTest {
   private ProjectTeam projectTeam;
   private ProjectTeamDto projectTeamDto;
 
-  private final String projectName = "TestProject";
-  private final String newProjectName = "TestProject 2";
-  private final String teamName = "TestTeam";
-  private final String slug = "test-slug";
-  private final String username = "testuser";
   private final Long userId = 1L;
   private final Long projectId = 1L;
+
+  private final String slug = "test-slug";
+  private final String username = "testuser";
+  private final String teamName = "TestTeam";
+  private final String projectName = "TestProject";
+  private final String newProjectName = "TestProject 2";
 
   @BeforeEach
   void setUp() {

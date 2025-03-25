@@ -75,6 +75,7 @@ class RoleServiceImplTest {
     roleDto = mock(RoleDto.class);
     roleHierarchy = mock(RoleHierarchy.class);
     roleHierarchyDto = mock(RoleHierarchyDto.class);
+
     when(role.getName()).thenReturn(roleName);
     when(roleDto.name()).thenReturn(roleName);
     when(roleDto.description()).thenReturn("Test Description");

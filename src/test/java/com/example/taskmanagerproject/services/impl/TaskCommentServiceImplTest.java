@@ -50,13 +50,15 @@ class TaskCommentServiceImplTest {
   @InjectMocks
   private TaskCommentServiceImpl taskCommentService;
 
+  private Pageable pageable;
+  private final Long taskId = 1L;
+  private final Long commentId = 1L;
+
+  private final String slug = "test-slug";
+  private final String message = "Test Comment";
+
   private TaskComment taskComment;
   private TaskCommentDto taskCommentDto;
-  private final String slug = "test-slug";
-  private final Long commentId = 1L;
-  private final Long taskId = 1L;
-  private final String message = "Test Comment";
-  private Pageable pageable;
 
   @BeforeEach
   void setUp() {
@@ -64,6 +66,7 @@ class TaskCommentServiceImplTest {
     taskComment = mock(TaskComment.class);
     taskCommentDto = mock(TaskCommentDto.class);
     pageable = PageRequest.of(0, 10);
+
     when(taskCommentDto.message()).thenReturn(message);
     when(taskCommentMapper.toDto(taskComment)).thenReturn(taskCommentDto);
     when(taskCommentFactory.createTaskCommentFromDto(taskCommentDto)).thenReturn(taskComment);

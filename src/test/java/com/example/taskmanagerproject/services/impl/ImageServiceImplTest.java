@@ -23,11 +23,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 class ImageServiceImplTest {
 
-  @Mock private MinioClient minioClient;
-  @Mock private MinioProperties minioProperties;
-  @Mock private MultipartFile multipartFile;
+  @Mock
+  private MinioClient minioClient;
 
-  @InjectMocks private ImageServiceImpl imageService;
+  @Mock
+  private MinioProperties minioProperties;
+
+  @Mock
+  private MultipartFile multipartFile;
+
+  @InjectMocks
+  private ImageServiceImpl imageService;
 
   @BeforeEach
   void setUp() throws Exception {

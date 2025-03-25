@@ -65,9 +65,9 @@ class TeamServiceImplTest {
   private TeamDto teamDto;
   private TeamUser teamUser;
   private TeamUserDto teamUserDto;
+  private final String slug = "test-slug";
   private final String teamName = "TestTeam";
   private final String description = "Test Description";
-  private final String slug = "test-slug";
 
   @BeforeEach
   void setUp() {

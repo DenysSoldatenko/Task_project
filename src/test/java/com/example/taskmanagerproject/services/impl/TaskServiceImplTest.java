@@ -5,6 +5,7 @@ import static com.example.taskmanagerproject.entities.tasks.TaskStatus.APPROVED;
 import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_DELETE;
 import static com.example.taskmanagerproject.utils.MessageUtil.NO_IMAGE_TO_UPDATE;
 import static com.example.taskmanagerproject.utils.MessageUtil.TASK_NOT_FOUND_WITH_ID;
+import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -82,23 +83,27 @@ class TaskServiceImplTest {
   @InjectMocks
   private TaskServiceImpl taskService;
 
+  private static final String ACHIEVEMENT_TOPIC = "achievement-topic";
+
+  private Pageable pageable;
+
   private Task task;
   private TaskDto taskDto;
   private TaskImageDto taskImageDto;
-  private User user;
+
   private final Long taskId = 1L;
   private final Long userId = 1L;
-  private final String username = "testuser";
-  private final String title = "Test Task";
-  private final String description = "Test Description";
-  private final TaskStatus status = APPROVED;
-  private final LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
+
   private final String slug = "test-slug";
-  private final String projectName = "TestProject";
+  private final String title = "Test Task";
   private final String teamName = "TestTeam";
+  private final String username = "testuser";
+  private final String projectName = "TestProject";
+  private final String description = "Test Description";
   private final String imageName = "test-image.jpg";
-  private Pageable pageable;
-  private static final String ACHIEVEMENT_TOPIC = "achievement-topic";
+
+  private final TaskStatus status = APPROVED;
+  private final LocalDateTime expirationDate = now().plusDays(1);
 
   @BeforeEach
   void setUp() {
@@ -106,8 +111,11 @@ class TaskServiceImplTest {
     task = mock(Task.class);
     taskDto = mock(TaskDto.class);
     taskImageDto = mock(TaskImageDto.class);
-    user = mock(User.class);
+
+    User user = mock(User.class);
     pageable = PageRequest.of(0, 10);
+
+    when(user.getId()).thenReturn(userId);
     when(taskMapper.toDto(task)).thenReturn(taskDto);
     when(taskDto.title()).thenReturn(title);
     when(taskDto.description()).thenReturn(description);
@@ -116,7 +124,6 @@ class TaskServiceImplTest {
     when(taskDto.expirationDate()).thenReturn(expirationDate);
     when(task.getId()).thenReturn(taskId);
     when(task.getAssignedTo()).thenReturn(user);
-    when(user.getId()).thenReturn(userId);
     when(task.getTeam()).thenReturn(mock(com.example.taskmanagerproject.entities.teams.Team.class));
     when(task.getTeam().getId()).thenReturn(1L);
     when(task.getProject()).thenReturn(mock(com.example.taskmanagerproject.entities.projects.Project.class));

@@ -64,13 +64,15 @@ class UserServiceImplTest {
   private User user;
   private UserDto userDto;
   private JwtAuthenticationToken jwtAuth;
-  private final String slug = "test-slug";
-  private final String username = "testuser";
-  private final String fullName = "Test User";
-  private final String teamName = "TestTeam";
-  private final String projectName = "TestProject";
+
   private final Long userId = 1L;
   private final Long taskId = 1L;
+
+  private final String slug = "test-slug";
+  private final String fullName = "Test User";
+  private final String username = "testuser";
+  private final String teamName = "TestTeam";
+  private final String projectName = "TestProject";
 
   @BeforeEach
   void setUp() {
@@ -79,6 +81,7 @@ class UserServiceImplTest {
     userDto = mock(UserDto.class);
     imageDto = mock(UserImageDto.class);
     jwtAuth = mock(JwtAuthenticationToken.class);
+
     when(userMapper.toDto(user)).thenReturn(userDto);
     when(userDto.fullName()).thenReturn(fullName);
     when(userDto.slug()).thenReturn(slug);

@@ -32,10 +32,12 @@ class TeamUserServiceImplTest {
 
   private Role role;
   private TeamUser teamUser;
-  private final String teamName = "TestTeam";
-  private final String username = "testuser";
+
   private final Long teamId = 1L;
   private final Long userId = 1L;
+
+  private final String teamName = "TestTeam";
+  private final String username = "testuser";
 
   @BeforeEach
   void setUp() {

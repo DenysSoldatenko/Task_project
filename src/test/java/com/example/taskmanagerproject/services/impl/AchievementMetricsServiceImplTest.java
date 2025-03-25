@@ -31,16 +31,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AchievementMetricsServiceImplTest {
 
   @Mock
-  TaskRepository taskRepository;
+  private TaskRepository taskRepository;
 
   @Mock
-  TaskCommentRepository taskCommentRepository;
+  private TaskCommentRepository taskCommentRepository;
 
   @InjectMocks
-  AchievementMetricsServiceImpl service;
+  private AchievementMetricsServiceImpl service;
 
-  KafkaTaskCompletionDto event;
-  Long taskId = 1L, userId = 1L, projectId = 2L, teamId = 3L;
+  private final Long taskId = 1L;
+  private final Long userId = 1L;
+  private final Long teamId = 3L;
+  private final Long projectId = 2L;
+
+  private KafkaTaskCompletionDto event;
 
   @BeforeEach
   void setUp() {

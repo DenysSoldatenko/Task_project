@@ -39,10 +39,11 @@ class ReportDataServiceImplTest {
   private User user;
   private Team team;
   private Project project;
+  private Object[] metrics;
+  private Achievement achievement;
+
   private LocalDateTime startDate;
   private LocalDateTime endDate;
-  private Achievement achievement;
-  private Object[] metrics;
 
   @BeforeEach
   void setUp() {
@@ -54,6 +55,7 @@ class ReportDataServiceImplTest {
     metrics = new Object[]{1L, "data"};
     startDate = LocalDateTime.of(2025, 1, 1, 0, 0);
     endDate = LocalDateTime.of(2025, 1, 31, 23, 59);
+
     when(user.getId()).thenReturn(1L);
     when(team.getId()).thenReturn(1L);
     when(team.getName()).thenReturn("TestTeam");
