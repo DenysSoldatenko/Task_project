@@ -30,6 +30,7 @@ class ProjectTeamFactoryTest {
 
   @Mock
   private TeamRepository teamRepository;
+
   @Mock
   private ProjectRepository projectRepository;
 

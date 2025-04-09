@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Test;
 class TaskFactoryTest {
 
   private TaskFactory taskFactory;
-  private ProjectRepository projectRepository;
   private TeamRepository teamRepository;
   private UserRepository userRepository;
+  private ProjectRepository projectRepository;
 
   @BeforeEach
   void setUp() {

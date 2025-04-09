@@ -31,8 +31,8 @@ class ProjectFactoryTest {
   @InjectMocks
   private ProjectFactory projectFactory;
 
-  private ProjectDto projectDto;
   private User user;
+  private ProjectDto projectDto;
 
   @BeforeEach
   void setUp() {
