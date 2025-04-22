@@ -76,6 +76,8 @@ public class ReportController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
@@ -124,6 +126,8 @@ public class ReportController {
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
       }
@@ -167,6 +171,8 @@ public class ReportController {
           @ApiResponse(responseCode = "401", description = "Unauthorized access",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
           @ApiResponse(responseCode = "403", description = "Access denied",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+          @ApiResponse(responseCode = "404", description = "Resource not found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
           @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
@@ -212,6 +218,8 @@ public class ReportController {
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
@@ -263,6 +271,8 @@ public class ReportController {
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "403", description = "Access denied",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
+        @ApiResponse(responseCode = "404", description = "Resource not found",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class)))
