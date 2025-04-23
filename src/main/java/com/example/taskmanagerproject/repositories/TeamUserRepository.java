@@ -1,8 +1,8 @@
 package com.example.taskmanagerproject.repositories;
 
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
-import com.example.taskmanagerproject.entities.users.Role;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

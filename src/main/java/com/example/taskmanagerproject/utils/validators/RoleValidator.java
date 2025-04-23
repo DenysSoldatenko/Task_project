@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.utils.validators;
 import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_ALREADY_EXISTS;
 import static java.util.Arrays.stream;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import jakarta.validation.Validator;

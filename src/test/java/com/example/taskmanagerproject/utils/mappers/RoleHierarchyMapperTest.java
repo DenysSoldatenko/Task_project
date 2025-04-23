@@ -3,10 +3,10 @@ package com.example.taskmanagerproject.utils.mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
-import com.example.taskmanagerproject.entities.users.Role;
-import com.example.taskmanagerproject.entities.users.RoleHierarchy;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.dtos.roles.RoleHierarchyDto;
+import com.example.taskmanagerproject.entities.roles.Role;
+import com.example.taskmanagerproject.entities.roles.RoleHierarchy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

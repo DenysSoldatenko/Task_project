@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.entities.users;
+package com.example.taskmanagerproject.entities.roles;
 
 /**
  * Enumeration representing the possible roles in the application.

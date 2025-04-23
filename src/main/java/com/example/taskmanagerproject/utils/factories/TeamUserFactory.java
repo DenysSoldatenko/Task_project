@@ -7,10 +7,10 @@ import static com.example.taskmanagerproject.utils.MessageUtil.USER_NOT_FOUND_WI
 import static java.lang.String.format;
 
 import com.example.taskmanagerproject.dtos.teams.TeamUserDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
-import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.exceptions.ValidationException;

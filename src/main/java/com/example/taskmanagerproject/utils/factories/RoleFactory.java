@@ -1,7 +1,7 @@
 package com.example.taskmanagerproject.utils.factories;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import lombok.experimental.UtilityClass;
 
 /**

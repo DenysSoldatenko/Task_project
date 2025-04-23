@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import jakarta.validation.ConstraintViolation;

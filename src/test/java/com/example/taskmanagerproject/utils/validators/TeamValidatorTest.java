@@ -11,10 +11,10 @@ import static org.mockito.Mockito.when;
 
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
-import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.ValidationException;
 import com.example.taskmanagerproject.repositories.RoleRepository;

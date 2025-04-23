@@ -2,9 +2,9 @@ package com.example.taskmanagerproject.utils.factories;
 
 import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WITH_NAME;
 
-import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
-import com.example.taskmanagerproject.entities.users.Role;
-import com.example.taskmanagerproject.entities.users.RoleHierarchy;
+import com.example.taskmanagerproject.dtos.roles.RoleHierarchyDto;
+import com.example.taskmanagerproject.entities.roles.Role;
+import com.example.taskmanagerproject.entities.roles.RoleHierarchy;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;

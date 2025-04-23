@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.dtos.users;
+package com.example.taskmanagerproject.dtos.roles;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 

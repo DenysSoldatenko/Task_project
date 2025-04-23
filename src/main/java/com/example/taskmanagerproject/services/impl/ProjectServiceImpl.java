@@ -6,7 +6,7 @@ import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import com.example.taskmanagerproject.entities.projects.Project;
 import com.example.taskmanagerproject.entities.projects.ProjectTeam;
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.ProjectRepository;
 import com.example.taskmanagerproject.repositories.ProjectTeamRepository;

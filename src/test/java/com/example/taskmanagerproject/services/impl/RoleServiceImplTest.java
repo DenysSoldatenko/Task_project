@@ -16,11 +16,11 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.dtos.users.RoleHierarchyDto;
-import com.example.taskmanagerproject.dtos.users.RoleHierarchyListDto;
-import com.example.taskmanagerproject.entities.users.Role;
-import com.example.taskmanagerproject.entities.users.RoleHierarchy;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.dtos.roles.RoleHierarchyDto;
+import com.example.taskmanagerproject.dtos.roles.RoleHierarchyListDto;
+import com.example.taskmanagerproject.entities.roles.Role;
+import com.example.taskmanagerproject.entities.roles.RoleHierarchy;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleHierarchyRepository;
 import com.example.taskmanagerproject.repositories.RoleRepository;

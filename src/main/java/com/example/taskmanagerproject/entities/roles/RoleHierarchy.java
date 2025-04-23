@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.entities.users;
+package com.example.taskmanagerproject.entities.roles;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

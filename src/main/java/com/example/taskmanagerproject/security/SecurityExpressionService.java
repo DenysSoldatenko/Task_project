@@ -1,18 +1,18 @@
 package com.example.taskmanagerproject.security;
 
-import static com.example.taskmanagerproject.entities.users.RoleName.ADMIN;
-import static com.example.taskmanagerproject.entities.users.RoleName.MANAGER;
-import static com.example.taskmanagerproject.entities.users.RoleName.PRODUCT_OWNER;
-import static com.example.taskmanagerproject.entities.users.RoleName.SCRUM_MASTER;
-import static com.example.taskmanagerproject.entities.users.RoleName.TEAM_LEAD;
+import static com.example.taskmanagerproject.entities.roles.RoleName.ADMIN;
+import static com.example.taskmanagerproject.entities.roles.RoleName.MANAGER;
+import static com.example.taskmanagerproject.entities.roles.RoleName.PRODUCT_OWNER;
+import static com.example.taskmanagerproject.entities.roles.RoleName.SCRUM_MASTER;
+import static com.example.taskmanagerproject.entities.roles.RoleName.TEAM_LEAD;
 import static java.util.Arrays.asList;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
-import com.example.taskmanagerproject.entities.users.Role;
-import com.example.taskmanagerproject.entities.users.RoleName;
+import com.example.taskmanagerproject.entities.roles.Role;
+import com.example.taskmanagerproject.entities.roles.RoleName;
 import com.example.taskmanagerproject.services.ProjectService;
 import com.example.taskmanagerproject.services.TaskCommentService;
 import com.example.taskmanagerproject.services.TeamService;

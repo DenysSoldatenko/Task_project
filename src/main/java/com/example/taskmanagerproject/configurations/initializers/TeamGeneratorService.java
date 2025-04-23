@@ -4,10 +4,10 @@ import static com.example.taskmanagerproject.utils.MessageUtil.ROLE_NOT_FOUND_WI
 import static java.time.LocalDateTime.now;
 import static java.util.stream.IntStream.range;
 
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.teams.Team;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
 import com.example.taskmanagerproject.entities.teams.TeamUserId;
-import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.entities.users.User;
 import com.example.taskmanagerproject.exceptions.ResourceNotFoundException;
 import com.example.taskmanagerproject.repositories.RoleRepository;

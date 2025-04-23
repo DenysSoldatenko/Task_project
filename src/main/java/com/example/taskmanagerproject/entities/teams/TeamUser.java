@@ -1,6 +1,6 @@
 package com.example.taskmanagerproject.entities.teams;
 
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.users.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.EmbeddedId;

@@ -2,7 +2,7 @@ package com.example.taskmanagerproject.dtos.teams;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

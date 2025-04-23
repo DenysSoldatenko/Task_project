@@ -10,8 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import com.example.taskmanagerproject.entities.roles.Role;
 import com.example.taskmanagerproject.entities.teams.TeamUser;
-import com.example.taskmanagerproject.entities.users.Role;
 import com.example.taskmanagerproject.repositories.TeamUserRepository;
 import java.util.Collections;
 import java.util.List;

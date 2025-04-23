@@ -3,8 +3,8 @@ package com.example.taskmanagerproject.utils.factories;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.example.taskmanagerproject.dtos.users.RoleDto;
-import com.example.taskmanagerproject.entities.users.Role;
+import com.example.taskmanagerproject.dtos.roles.RoleDto;
+import com.example.taskmanagerproject.entities.roles.Role;
 import org.junit.jupiter.api.Test;
 
 class RoleFactoryTest {

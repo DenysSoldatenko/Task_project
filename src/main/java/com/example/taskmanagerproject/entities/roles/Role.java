@@ -1,4 +1,4 @@
-package com.example.taskmanagerproject.entities.users;
+package com.example.taskmanagerproject.entities.roles;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
