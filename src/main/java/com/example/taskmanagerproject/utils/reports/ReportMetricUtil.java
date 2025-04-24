@@ -75,9 +75,12 @@ public class ReportMetricUtil {
    * @param duration The duration to be formatted, expected to be in minutes.
    * @return A string representing the formatted duration in hours and minutes.
    */
-  public String formatDuration(Object duration) {
-    double minutes = parseDouble(duration.toString());
-    return format(Locale.US, "%.1f hours, %.1f minutes", minutes / 60, minutes % 60);
+  public static String formatDuration(Object duration) {
+    double totalMinutes = parseDouble(duration.toString());
+    int wholeHours = (int) (totalMinutes / 60);
+    double remainingMinutes = totalMinutes % 60;
+
+    return String.format(Locale.US, "%.1f hours, %.1f minutes", (double) wholeHours, remainingMinutes);
   }
 
   /**
@@ -89,6 +92,7 @@ public class ReportMetricUtil {
   public String formatRoleName(Object roleName) {
     String role = roleName.toString().toLowerCase();
     return Arrays.stream(role.split("_"))
+      .filter(word -> !word.isEmpty()) // skip empty words
       .map(word -> toUpperCase(word.charAt(0)) + word.substring(1))
       .collect(joining(" "));
   }
