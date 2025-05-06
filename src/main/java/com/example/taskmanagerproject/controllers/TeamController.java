@@ -162,7 +162,7 @@ public class TeamController {
       },
       responses = {
         @ApiResponse(responseCode = "200", description = "Projects found successfully",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectDto.class))),
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProjectTeamDto.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized access",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))),
         @ApiResponse(responseCode = "404", description = "Team not found",
