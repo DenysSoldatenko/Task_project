@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,7 +23,6 @@ import com.example.taskmanagerproject.dtos.projects.ProjectDto;
 import com.example.taskmanagerproject.dtos.projects.ProjectTeamDto;
 import com.example.taskmanagerproject.dtos.teams.TeamDto;
 import com.example.taskmanagerproject.dtos.users.UserDto;
-import com.example.taskmanagerproject.security.SecurityExpressionService;
 import com.example.taskmanagerproject.services.ProjectService;
 import java.time.Instant;
 import java.util.List;
@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -58,7 +57,6 @@ import org.springframework.web.context.WebApplicationContext;
  *   <li>JWT tokens with missing, malformed, or expired claims</li>
  *   <li>Validation of nested DTOs (e.g. malformed or null {@code TeamDto} or {@code ProjectDto})</li>
  *   <li>Business logic exceptions beyond simple {@code RuntimeException} (e.g. {@code EntityNotFoundException})</li>
- *   <li>Service-layer security checks via {@link SecurityExpressionService}</li>
  * </ul>
  *
  * <p>To improve test granularity, consider complementing these integration tests with
@@ -76,9 +74,6 @@ class ProjectControllerTest {
 
   @MockBean
   private ProjectService projectService;
-
-  @MockBean
-  private SecurityExpressionService expressionService;
 
   private Jwt validJwt;
   private String projectName;
@@ -116,7 +111,7 @@ class ProjectControllerTest {
 
       mockMvc.perform(post("/api/v2/projects")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"Project Alpha\",\"description\":\"Description\"}"))
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.id", is(1)))
@@ -124,14 +119,14 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.description", is("Description")));
 
       verify(projectService).createProject(any(ProjectDto.class));
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
 
     @Test
     void shouldReturn400ForInvalidProjectDto() throws Exception {
       mockMvc.perform(post("/api/v2/projects")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"\",\"description\":\"\"}"))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.message").exists())
@@ -145,7 +140,7 @@ class ProjectControllerTest {
 
       mockMvc.perform(post("/api/v2/projects")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"Project Alpha\",\"description\":\"Description\"}"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Creation failed")))
@@ -153,7 +148,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(projectService).createProject(any(ProjectDto.class));
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
   }
 
@@ -173,7 +168,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.description", is("Description")));
 
       verify(projectService).getProjectByName(projectName);
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
 
     @Test
@@ -188,7 +183,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(projectService).getProjectByName(projectName);
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
   }
 
@@ -204,7 +199,7 @@ class ProjectControllerTest {
       mockMvc.perform(get("/api/v2/projects/{projectName}/teams", projectName)).andExpect(status().isOk());
 
       verify(projectService).getTeamsForProject(projectName);
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
 
     @Test
@@ -219,7 +214,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(projectService).getTeamsForProject(projectName);
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
   }
 
@@ -233,7 +228,7 @@ class ProjectControllerTest {
 
       mockMvc.perform(put("/api/v2/projects/{projectName}", projectName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"Project Alpha\",\"description\":\"Updated Description\"}"))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id", is(1)))
@@ -248,14 +243,14 @@ class ProjectControllerTest {
 
       mockMvc.perform(put("/api/v2/projects/{projectName}", projectName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"\",\"description\":\"\"}"))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.message").exists())
           .andExpect(jsonPath("$.status", is("400")))
           .andExpect(jsonPath("$.error", is("Bad Request")));
 
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
 
     @Test
@@ -264,7 +259,7 @@ class ProjectControllerTest {
 
       mockMvc.perform(put("/api/v2/projects/{projectName}", projectName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"Project Alpha\",\"description\":\"Updated Description\"}"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Update failed")))
@@ -272,7 +267,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(projectService).updateProject(eq(projectName), any(ProjectDto.class));
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
   }
 
@@ -304,7 +299,7 @@ class ProjectControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(projectService).deleteProject(projectName);
-      verifyNoMoreInteractions(projectService, expressionService);
+      verifyNoMoreInteractions(projectService);
     }
   }
 
@@ -314,34 +309,34 @@ class ProjectControllerTest {
 
     @Test
     void shouldReturn201AndUpdatedProject() throws Exception {
-      when(projectService.addTeamToProject(eq(projectName), any(List.class))).thenReturn(projectDto);
+      when(projectService.addTeamToProject(eq(projectName), any())).thenReturn(projectDto);
 
       mockMvc.perform(post("/api/v2/projects/{projectName}/teams", projectName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("[{\"teamId\":1,\"role\":\"Developer\"}]"))
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.id", is(1)))
           .andExpect(jsonPath("$.name", is("Project Alpha")))
           .andExpect(jsonPath("$.description", is("Description")));
 
-      verify(projectService).addTeamToProject(eq(projectName), any(List.class));
+      verify(projectService).addTeamToProject(eq(projectName), any());
     }
 
     @Test
     void shouldReturn500WhenServiceFails() throws Exception {
-      when(projectService.addTeamToProject(eq(projectName), any(List.class))).thenThrow(new RuntimeException("Team addition failed"));
+      when(projectService.addTeamToProject(eq(projectName), any())).thenThrow(new RuntimeException("Team addition failed"));
 
       mockMvc.perform(post("/api/v2/projects/{projectName}/teams", projectName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_USER")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("[{\"teamId\":1,\"role\":\"Developer\"}]"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Team addition failed")))
           .andExpect(jsonPath("$.status", is("500")))
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
-      verify(projectService).addTeamToProject(eq(projectName), any(List.class));
+      verify(projectService).addTeamToProject(eq(projectName), any());
     }
   }
 }

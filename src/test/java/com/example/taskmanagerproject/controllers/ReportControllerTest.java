@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.taskmanagerproject.security.SecurityExpressionService;
 import com.example.taskmanagerproject.services.ReportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,9 +76,6 @@ class ReportControllerTest {
   @MockBean
   private ReportService reportService;
 
-  @MockBean
-  private SecurityExpressionService expressionService;
-
   private String username;
   private String teamName;
   private String projectName;
@@ -123,7 +119,7 @@ class ReportControllerTest {
           .andExpect(content().bytes(pdfData));
 
       verify(reportService).buildUserReport(username, teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
 
     @Test
@@ -143,7 +139,7 @@ class ReportControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(reportService).buildUserReport(username, teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
   }
 
@@ -168,7 +164,7 @@ class ReportControllerTest {
           .andExpect(content().bytes(pdfData));
 
       verify(reportService).buildTeamReport(teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
 
     @Test
@@ -187,7 +183,7 @@ class ReportControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(reportService).buildTeamReport(teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
   }
 
@@ -211,7 +207,7 @@ class ReportControllerTest {
           .andExpect(content().bytes(pdfData));
 
       verify(reportService).buildProjectReport(projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
 
     @Test
@@ -229,7 +225,7 @@ class ReportControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(reportService).buildProjectReport(projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
   }
 
@@ -254,7 +250,7 @@ class ReportControllerTest {
           .andExpect(content().bytes(pdfData));
 
       verify(reportService).buildTopPerformersInTeamReport(teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
 
     @Test
@@ -273,7 +269,7 @@ class ReportControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(reportService).buildTopPerformersInTeamReport(teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
   }
 
@@ -299,7 +295,7 @@ class ReportControllerTest {
           .andExpect(content().bytes(pdfData));
 
       verify(reportService).buildTaskProgressReport(username, teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
 
     @Test
@@ -319,7 +315,7 @@ class ReportControllerTest {
           .andExpect(jsonPath("$.error", is("Internal Server Error")));
 
       verify(reportService).buildTaskProgressReport(username, teamName, projectName, startDate, endDate);
-      verifyNoMoreInteractions(reportService, expressionService);
+      verifyNoMoreInteractions(reportService);
     }
   }
 }

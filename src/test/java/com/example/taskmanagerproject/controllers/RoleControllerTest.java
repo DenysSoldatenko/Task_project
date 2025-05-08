@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -209,7 +209,7 @@ class RoleControllerTest {
 
       mockMvc.perform(post("/api/v2/roles")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"USER\",\"description\":\"User role\"}"))
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.id", is(1)))
@@ -224,7 +224,7 @@ class RoleControllerTest {
     void shouldReturn400ForInvalidRoleDto() throws Exception {
       mockMvc.perform(post("/api/v2/roles")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"\",\"description\":\"\"}"))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.message").exists())
@@ -240,7 +240,7 @@ class RoleControllerTest {
 
       mockMvc.perform(post("/api/v2/roles")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"USER\",\"description\":\"User role\"}"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Creation failed")))
@@ -262,7 +262,7 @@ class RoleControllerTest {
 
       mockMvc.perform(put("/api/v2/roles/{roleName}", roleName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"USER\",\"description\":\"Updated user role\"}"))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id", is(1)))
@@ -277,7 +277,7 @@ class RoleControllerTest {
     void shouldReturn400ForInvalidRoleDto() throws Exception {
       mockMvc.perform(put("/api/v2/roles/{roleName}", roleName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"\",\"description\":\"\"}"))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.message").exists())
@@ -293,7 +293,7 @@ class RoleControllerTest {
 
       mockMvc.perform(put("/api/v2/roles/{roleName}", roleName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("{\"name\":\"USER\",\"description\":\"Updated user role\"}"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Update failed")))
@@ -315,7 +315,7 @@ class RoleControllerTest {
 
       mockMvc.perform(delete("/api/v2/roles/{roleName}", roleName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON))
+          .contentType(APPLICATION_JSON))
           .andExpect(status().isNoContent())
           .andExpect(content().string(""));
 
@@ -329,7 +329,7 @@ class RoleControllerTest {
 
       mockMvc.perform(delete("/api/v2/roles/{roleName}", roleName)
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON))
+          .contentType(APPLICATION_JSON))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Deletion failed")))
           .andExpect(jsonPath("$.status", is("500")))
@@ -370,7 +370,7 @@ class RoleControllerTest {
 
       mockMvc.perform(post("/api/v2/roles/hierarchies")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("[{\"parentRoleName\":\"ADMIN\",\"childRoleName\":\"USER\"}]"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Creation failed")))
@@ -392,7 +392,7 @@ class RoleControllerTest {
 
       mockMvc.perform(delete("/api/v2/roles/hierarchies")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("[{\"parentRoleName\":\"ADMIN\",\"childRoleName\":\"USER\"}]"))
           .andExpect(status().isNoContent())
           .andExpect(content().string(""));
@@ -407,7 +407,7 @@ class RoleControllerTest {
 
       mockMvc.perform(delete("/api/v2/roles/hierarchies")
           .with(jwt().jwt(validJwt).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(APPLICATION_JSON)
           .content("[{\"parentRoleName\":\"ADMIN\",\"childRoleName\":\"USER\"}]"))
           .andExpect(status().isInternalServerError())
           .andExpect(jsonPath("$.message", is("Deletion failed")))

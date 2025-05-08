@@ -113,7 +113,6 @@ class TaskControllerTest {
   private Duration duration;
   private String projectName;
   private UserDto receiverDto;
-  private ProjectDto projectDto;
 
   @BeforeEach
   void setUp() {
@@ -124,7 +123,7 @@ class TaskControllerTest {
 
     senderDto = new UserDto(1L, "sender", "sender@gmail.com", "", "", null);
     receiverDto = new UserDto(2L, "receiver", "receiver@gmail.com", "", "", null);
-    projectDto = new ProjectDto(1L, "Project Alpha", "This is a description of Project Alpha", senderDto);
+    ProjectDto projectDto = new ProjectDto(1L, "Project Alpha", "This is a description of Project Alpha", senderDto);
     taskDto = new TaskDto(
       1L, projectDto, null, "Fix the bug in the login module", "Fix the bug in the login module",
       now(), now().plusDays(5), now().plusDays(3), APPROVED, CRITICAL, receiverDto, senderDto, null
