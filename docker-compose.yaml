@@ -20,14 +20,12 @@ services:
     depends_on:
       - postgres
       - minio
-      - redis
     ports:
       - '8080:8080'
     env_file:
       - .env
     environment:
       MINIO_URL: ${DOCKER_MINIO_URL}
-      REDIS_HOST: ${DOCKER_REDIS_HOST}
       DATASOURCE_HOST: ${DOCKER_DATASOURCE_HOST}
       BOOTSTRAP_SERVER: ${DOCKER_BOOTSTRAP_SERVER}
 
@@ -196,4 +194,3 @@ services:
     environment:
       KEYCLOAK_ADMIN: ${DOCKER_KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${DOCKER_KEYCLOAK_ADMIN_PASSWORD}
-
