@@ -65,7 +65,7 @@ public class ReportTemplateUtil {
    * @return The HTML string representing the user's image.
    */
   public static String generateImageUser(String userImageUrl) {
-    return "<img src=\"" + (userImageUrl.contains("dummyimage.com") ? userImageUrl : "http://127.0.0.1:9000/images/" + userImageUrl) + "\" alt=\"User Image\" class=\"user-img\"><br/>\n";
+    return "<img src=\"" + (userImageUrl.contains("dummyimage.com") ? userImageUrl : "http://minio:9000/images/" + userImageUrl) + "\" alt=\"User Image\" class=\"user-img\"><br/>\n";
   }
 
   /**

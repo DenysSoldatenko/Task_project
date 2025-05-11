@@ -1,0 +1,103 @@
+spring:
+  application:
+    name: "application"
+    version: 0.0.1-SNAPSHOT
+  banner:
+    location: application-banner.txt
+  config:
+    import: optional:file:.env[.properties]
+  data:
+    jdbc:
+      repositories:
+        enabled: false
+  datasource:
+    url: jdbc:postgresql://${DATASOURCE_HOST}:5432/${DATASOURCE_DATABASE}?currentSchema=${DATASOURCE_SCHEMA}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:liquibase/db.changelog.yaml
+    enabled: true
+    default-schema: task_list
+  graphql:
+    graphiql:
+      enabled: true
+  jpa:
+    open-in-view: false
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVER}
+    topic:
+      name: "achievement-topic"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: achievement_group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+      authorizationserver:
+        endpoint:
+          token-uri: ${KEYCLOAK_TOKEN_URI}
+          authorization-uri: ${KEYCLOAK_AUTH_URI}
+      client:
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI}
+
+
+keycloak:
+  admin-server-url: ${KEYCLOAK_ADMIN_SERVER_URL}
+  admin-realm: ${KEYCLOAK_ADMIN_REALM}
+  target-realm: ${KEYCLOAK_TARGET_REALM}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD}
+
+
+minio:
+  bucket: ${MINIO_BUCKET}
+  url: ${MINIO_URL}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secretKey: ${MINIO_SECRET_KEY}
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+
+springdoc:
+  override-with-generic-response: false
+  swagger-ui:
+    oauth:
+      client-id: ${KEYCLOAK_CLIENT_ID}
+      client-secret: ${KEYCLOAK_CLIENT_SECRET}

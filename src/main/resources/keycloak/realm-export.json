@@ -5,19 +5,30 @@
     {
       "clientId": "task-project-cc",
       "name": "Task project",
+      "enabled": true,
       "protocol": "openid-connect",
-      "publicClient": true,
+      "publicClient": false,
       "secret": "7OrbhFIsfmcvnHrs6GLFOnx9ylgXxBo3",
       "redirectUris": [
-        "http://localhost:8080/*",
-        "http://application:8080/*"
+        "http://localhost:8080/swagger-ui/oauth2-redirect.html"
       ],
       "webOrigins": [
-        "http://localhost:8080",
-        "http://application:8080/*"
+        "http://localhost:8080"
       ],
       "standardFlowEnabled": true,
-      "serviceAccountsEnabled": true
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "baseUrl": "http://localhost:8080",
+      "rootUrl": "http://localhost:8080",
+      "adminUrl": "http://localhost:8080",
+      "attributes": {
+        "post.logout.redirect.uris": "+",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.session.required": "true"
+      },
+      "defaultClientScopes": ["openid", "profile", "email"],
+      "optionalClientScopes": []
     }
   ]
 }

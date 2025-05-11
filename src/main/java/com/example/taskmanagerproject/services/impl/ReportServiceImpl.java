@@ -26,11 +26,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-  private static final String USER_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/user_performance_template.html";
-  private static final String TOP_PERFORMERS_TEMPLATE_PATH = "src/main/resources/report_templates/top_performers_template.html";
-  private static final String TASK_PROGRESS_TEMPLATE_PATH = "src/main/resources/report_templates/task_progress_template.html";
-  private static final String TEAM_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/team_performance_template.html";
-  private static final String PROJECT_PERFORMANCE_TEMPLATE_PATH = "src/main/resources/report_templates/project_performance_template.html";
+  private static final String USER_PERFORMANCE_TEMPLATE_PATH = "report_templates/user_performance_template.html";
+  private static final String TOP_PERFORMERS_TEMPLATE_PATH = "report_templates/top_performers_template.html";
+  private static final String TASK_PROGRESS_TEMPLATE_PATH = "report_templates/task_progress_template.html";
+  private static final String TEAM_PERFORMANCE_TEMPLATE_PATH = "report_templates/team_performance_template.html";
+  private static final String PROJECT_PERFORMANCE_TEMPLATE_PATH = "report_templates/project_performance_template.html";
 
   private final ReportValidator reportValidator;
   private final ReportDataService reportDataService;

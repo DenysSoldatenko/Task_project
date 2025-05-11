@@ -4,105 +4,118 @@ networks:
 
 volumes:
   postgres_data:
-    driver: local
   minio_data:
-    driver: local
   pgadmin_data:
-    driver: local
 
 services:
+
   application:
     build:
       context: .
     container_name: task-project
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - app-network
-    depends_on:
-      - postgres
-      - minio
-    ports:
-      - '8080:8080'
-    env_file:
-      - .env
-    environment:
-      MINIO_URL: ${DOCKER_MINIO_URL}
-      DATASOURCE_HOST: ${DOCKER_DATASOURCE_HOST}
-      BOOTSTRAP_SERVER: ${DOCKER_BOOTSTRAP_SERVER}
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health || exit 1
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 5s
 
   postgres:
     image: postgres:15.1-alpine
     container_name: postgres
-    networks:
-      - app-network
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ./src/main/resources/preliquibase/init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
       - postgres_data:/var/lib/postgresql/data
-    env_file:
-      - .env
+    env_file: .env
     environment:
-      POSTGRES_USER: ${DATASOURCE_USERNAME}
-      POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
-      POSTGRES_DB: ${DATASOURCE_DATABASE}
+      POSTGRES_USER: ${DOCKER_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${DOCKER_DATASOURCE_PASSWORD}
+      POSTGRES_DB: ${DOCKER_DATASOURCE_DATABASE}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DOCKER_DATASOURCE_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4:7.5
     container_name: pgadmin
-    networks:
-      - app-network
     ports:
       - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    env_file: .env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${DOCKER_PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_PASSWORD}
     depends_on:
-      - postgres
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-
-  minio:
-    image: minio/minio:latest
-    container_name: minio
+      postgres:
+        condition: service_healthy
     networks:
       - app-network
+
+  minio:
+    image: minio/minio:RELEASE.2025-01-20T14-49-07Z
+    container_name: minio
     command: server ~/minio --console-address :9090
     ports:
-      - '9090:9090'
-      - '9000:9000'
+      - "9000:9000"
+      - "9090:9090"
     volumes:
       - minio_data:/minio
-    env_file:
-      - .env
+    env_file: .env
     environment:
       MINIO_ROOT_USER: ${DOCKER_MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${DOCKER_MINIO_SECRET_KEY}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
     container_name: zookeeper
-    networks:
-      - app-network
     ports:
-      - '22181:2181'
-    env_file:
-      - .env
+      - "22181:2181"
+    env_file: .env
     environment:
       ZOOKEEPER_CLIENT_PORT: ${DOCKER_ZOOKEEPER_CLIENT_PORT}
       ZOOKEEPER_TICK_TIME: ${DOCKER_ZOOKEEPER_TICK_TIME}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.4.4
     container_name: cp-kafka
-    networks:
-      - app-network
-    depends_on:
-      zookeeper:
-        condition: service_healthy
     ports:
-      - '29092:29092'
-    env_file:
-      - .env
+      - "29092:29092"
+    env_file: .env
     environment:
       KAFKA_BROKER_ID: ${DOCKER_KAFKA_BROKER_ID}
       KAFKA_ZOOKEEPER_CONNECT: ${DOCKER_KAFKA_ZOOKEEPER_CONNECT}
@@ -110,20 +123,25 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${DOCKER_KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
       KAFKA_INTER_BROKER_LISTENER_NAME: ${DOCKER_KAFKA_INTER_BROKER_LISTENER_NAME}
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${DOCKER_KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    networks:
+      - app-network
 
   kafdrop:
     image: obsidiandynamics/kafdrop:3.27.0
     container_name: kafdrop
-    networks:
-      - app-network
-    depends_on:
-      - kafka
     ports:
-      - '9080:9000'
-    env_file:
-      - .env
+      - "9080:9000"
+    env_file: .env
     environment:
       KAFKA_BROKERCONNECT: ${DOCKER_KAFKA_BROKERCONNECT}
+    depends_on:
+      kafka:
+        condition: service_started
+    networks:
+      - app-network
 
   loki:
     image: grafana/loki:3.5.0
@@ -139,31 +157,29 @@ services:
   promtail:
     image: grafana/promtail:3.0.0
     container_name: promtail
-    networks:
-      - app-network
+    command: -config.file=/etc/promtail/docker-config.yaml
     volumes:
       - ./src/main/resources/grafana/promtail-config.yaml:/etc/promtail/docker-config.yaml
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-    command: -config.file=/etc/promtail/docker-config.yaml
+    networks:
+      - app-network
 
   prometheus:
     image: prom/prometheus:v3.3.1
     container_name: prometheus
-    networks:
-      - app-network
     ports:
-      - '9091:9090'
+      - "9091:9090"
     volumes:
       - ./src/main/resources/grafana/prometheus-config.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-network
 
   grafana:
     image: grafana/grafana:12.0.0
     container_name: grafana
-    networks:
-      - app-network
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - ./src/main/resources/grafana/grafana-config.yml:/etc/grafana/provisioning/datasources/datasources.yml
     entrypoint:
@@ -171,26 +187,32 @@ services:
       - -c
       - |
         /run.sh
-    env_file:
-      - .env
+    env_file: .env
     environment:
       GF_PATHS_PROVISIONING: ${DOCKER_GF_PATHS_PROVISIONING}
       GF_AUTH_ANONYMOUS_ENABLED: ${DOCKER_GF_AUTH_ANONYMOUS_ENABLED}
       GF_AUTH_ANONYMOUS_ORG_ROLE: ${DOCKER_GF_AUTH_ANONYMOUS_ORG_ROLE}
       GF_FEATURE_TOGGLES_ENABLE: ${DOCKER_GF_FEATURE_TOGGLES_ENABLE}
+    networks:
+      - app-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: keycloak
-    networks:
-      - app-network
+    command: start-dev --import-realm --hostname=host.docker.internal --hostname-strict=true
     ports:
-      - '8081:8080'
-    command: start-dev --import-realm
-    env_file:
-      - .env
+      - "8081:8080"
     volumes:
       - ./src/main/resources/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    env_file: .env
     environment:
-      KEYCLOAK_ADMIN: ${DOCKER_KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN: ${DOCKER_KEYCLOAK_ADMIN_USERNAME}
       KEYCLOAK_ADMIN_PASSWORD: ${DOCKER_KEYCLOAK_ADMIN_PASSWORD}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/realms/task-realm/.well-known/openid-configuration"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+

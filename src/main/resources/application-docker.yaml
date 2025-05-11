@@ -11,9 +11,9 @@ spring:
       repositories:
         enabled: false
   datasource:
-    url: jdbc:postgresql://${DATASOURCE_HOST}:5432/${DATASOURCE_DATABASE}?currentSchema=${DATASOURCE_SCHEMA}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://${DOCKER_DATASOURCE_HOST}:5432/${DOCKER_DATASOURCE_DATABASE}?currentSchema=${DOCKER_DATASOURCE_SCHEMA}
+    username: ${DOCKER_DATASOURCE_USERNAME}
+    password: ${DOCKER_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   liquibase:
     change-log: classpath:liquibase/db.changelog.yaml
@@ -24,12 +24,8 @@ spring:
       enabled: true
   jpa:
     open-in-view: false
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
   kafka:
-    bootstrap-servers: ${BOOTSTRAP_SERVER}
+    bootstrap-servers: ${DOCKER_BOOTSTRAP_SERVER}
     topic:
       name: "achievement-topic"
     producer:
@@ -45,42 +41,33 @@ spring:
           json:
             trusted:
               packages: '*'
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI}
-      authorizationserver:
-        endpoint:
-          token-uri: ${KEYCLOAK_TOKEN_URI}
-          authorization-uri: ${KEYCLOAK_AUTH_URI}
+          issuer-uri: ${DOCKER_KEYCLOAK_ISSUER_URI}
       client:
-        registration:
-          keycloak:
-            client-id: ${KEYCLOAK_CLIENT_ID}
-            client-secret: ${KEYCLOAK_CLIENT_SECRET}
-            authorization-grant-type: authorization_code
-            scope: openid, profile, email
         provider:
           keycloak:
-            issuer-uri: ${KEYCLOAK_ISSUER_URI}
-
+            issuer-uri: ${DOCKER_KEYCLOAK_ISSUER_URI}
+            authorization-uri: ${DOCKER_KEYCLOAK_AUTH_URI}
+            token-uri: ${DOCKER_KEYCLOAK_TOKEN_URI}
+            jwk-set-uri: ${DOCKER_KEYCLOAK_JWK_SET_URI}
 
 keycloak:
-  admin-server-url: ${KEYCLOAK_ADMIN_SERVER_URL}
-  admin-realm: ${KEYCLOAK_ADMIN_REALM}
-  target-realm: ${KEYCLOAK_TARGET_REALM}
-  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
-  admin-username: ${KEYCLOAK_ADMIN_USERNAME}
-  admin-password: ${KEYCLOAK_ADMIN_PASSWORD}
-
+  admin-server-url: ${DOCKER_KEYCLOAK_ADMIN_SERVER_URL}
+  admin-realm: ${DOCKER_KEYCLOAK_ADMIN_REALM}
+  target-realm: ${DOCKER_KEYCLOAK_TARGET_REALM}
+  admin-client-id: ${DOCKER_KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-username: ${DOCKER_KEYCLOAK_ADMIN_USERNAME}
+  admin-password: ${DOCKER_KEYCLOAK_ADMIN_PASSWORD}
 
 minio:
-  bucket: ${MINIO_BUCKET}
-  url: ${MINIO_URL}
-  accessKey: ${MINIO_ACCESS_KEY}
-  secretKey: ${MINIO_SECRET_KEY}
-
+  bucket: ${DOCKER_MINIO_BUCKET}
+  url: ${DOCKER_MINIO_URL}
+  accessKey: ${DOCKER_MINIO_ACCESS_KEY}
+  secretKey: ${DOCKER_MINIO_SECRET_KEY}
 
 management:
   endpoints:
@@ -98,10 +85,12 @@ management:
       export:
         enabled: true
 
-
 springdoc:
   override-with-generic-response: false
+  oauth2:
+    authorization-url: ${DOCKER_KEYCLOAK_AUTH_URI}
+    token-url: ${DOCKER_KEYCLOAK_TOKEN_URI}
   swagger-ui:
     oauth:
-      client-id: ${KEYCLOAK_CLIENT_ID}
-      client-secret: ${KEYCLOAK_CLIENT_SECRET}
+      client-id: ${DOCKER_KEYCLOAK_CLIENT_ID}
+      client-secret: ${DOCKER_KEYCLOAK_CLIENT_SECRET}

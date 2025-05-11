@@ -23,10 +23,10 @@ public class SwaggerConfig {
 
   private static final String OAUTH2_SCHEME = "KeycloakOAuth";
 
-  @Value("${spring.security.oauth2.authorizationserver.endpoint.authorization-uri}")
+  @Value("${springdoc.oauth2.authorization-url}")
   private String authorizationEndpoint;
 
-  @Value("${spring.security.oauth2.authorizationserver.endpoint.token-uri}")
+  @Value("${springdoc.oauth2.token-url}")
   private String tokenEndpoint;
 
   /**

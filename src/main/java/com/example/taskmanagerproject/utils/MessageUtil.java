@@ -47,6 +47,8 @@ public class MessageUtil {
 
   public static final String TEMPLATE_LOAD_ERROR
       = "Failed to load HTML template from file: ";
+  public static final String TEMPLATE_NOT_FOUND_ERROR
+      = "Template not found: ";
   public static final String PDF_GENERATION_ERROR
       = "Failed to generate PDF.";
   public static final String TASK_METRICS_NOT_FOUND_ERROR

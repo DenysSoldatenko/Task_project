@@ -2,16 +2,16 @@ package com.example.taskmanagerproject.utils.factories;
 
 import static com.example.taskmanagerproject.utils.MessageUtil.PDF_GENERATION_ERROR;
 import static com.example.taskmanagerproject.utils.MessageUtil.TEMPLATE_LOAD_ERROR;
+import static com.example.taskmanagerproject.utils.MessageUtil.TEMPLATE_NOT_FOUND_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.readString;
 import static org.jsoup.nodes.Document.OutputSettings.Syntax.xml;
 import static org.jsoup.nodes.Entities.EscapeMode.xhtml;
 
 import com.example.taskmanagerproject.exceptions.PdfGenerationException;
 import com.lowagie.text.DocumentException;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -36,8 +36,11 @@ public class PdfGenerationFactory {
    */
   public static String loadTemplate(String filePath) {
     log.info("Loading HTML template from file: {}", filePath);
-    try {
-      return readString(new File(filePath).toPath(), UTF_8);
+    try (InputStream inputStream = PdfGenerationFactory.class.getClassLoader().getResourceAsStream(filePath)) {
+      if (inputStream == null) {
+        throw new PdfGenerationException(TEMPLATE_NOT_FOUND_ERROR + filePath);
+      }
+      return new String(inputStream.readAllBytes(), UTF_8);
     } catch (IOException e) {
       log.error("Error loading HTML template from file: {}", filePath, e);
       throw new PdfGenerationException(TEMPLATE_LOAD_ERROR + filePath);
