@@ -131,6 +131,49 @@ The system will **fail to start** if any essential environment variable is missi
 > ✅ All configuration variables should be placed in a `.env` file and referenced using `env_file` in Docker Compose for consistent environment replication.
 
 
+## 🚀 Usage
+
+Once the application is running at `http://localhost:8080`, follow these steps to begin using the system.
+
+---
+
+### ✅ Step 1: Initialize Sample Data
+
+Open Swagger UI at: `http://localhost:8080/swagger-ui/index.html#/Data%20Initialization%20Controller/initializeDatabase`
+
+Call the `initializeDatabase` endpoint to populate the system with mock data. This will:
+
+- Create **2 projects**, **2 teams**, and **20 users**
+- Assign **100 to 401 tasks** (per user except the admin)
+- Add **1 to 5 comments** to each **non-approved task**
+
+⏳ *This process takes approximately **1.5 minutes**. Once complete, you’ll see the message:* "Data initialization completed successfully!"
+
+At this point, **Kafka** will automatically emit events in the background to check for **user achievements** based on task activity.
+
+---
+
+### 🔐 Step 2: Authenticate via Swagger UI
+
+Use **Keycloak OAuth2** to authorize yourself before using secured endpoints:
+
+1. Open: `http://localhost:8080/swagger-ui/index.html`
+2. Click the **Authorize** button.
+3. Use the following configuration:
+  - **Authorization URL**:  
+    `http://host.docker.internal:8081/realms/task-realm/protocol/openid-connect/auth`
+  - **Token URL**:  
+    `http://host.docker.internal:8081/realms/task-realm/protocol/openid-connect/token`
+  - **Flow**: `authorizationCode`
+4. Enter the credentials:
+  - **Username (Email)**: Obtain from `pgAdmin`
+  - **Password**: `password` (default for all demo users)
+
+---
+
+### ✅ Step 3: Use the System Features
+
+After authenticating, you can fully use all system features through Swagger UI according to your permissions.
 
 
 
